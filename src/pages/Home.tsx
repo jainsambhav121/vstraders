@@ -30,7 +30,7 @@ export const Home = () => {
   return (
     <div className="bg-white pb-20">
       {/* Hero Section */}
-      <section className="relative h-screen min-h-[700px] flex items-center overflow-hidden">
+      <section className="relative h-screen min-h-[600px] flex items-center overflow-hidden">
         <div className="absolute inset-0 z-0">
           <img
             src="https://images.unsplash.com/photo-1505693416388-b0346d6771b4?auto=format&fit=crop&q=80&w=2000"
@@ -51,7 +51,7 @@ export const Home = () => {
               <span className="w-12 h-px bg-purple-500"></span>
               <span className="text-purple-400 font-medium uppercase tracking-widest text-sm">Premium Sleep Collection</span>
             </div>
-            <h1 className="text-6xl md:text-8xl font-serif font-bold leading-tight mb-6 tracking-tight">
+            <h1 className="text-5xl md:text-7xl lg:text-8xl font-serif font-bold leading-tight mb-6 tracking-tight">
               Experience the <br/>
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-400 italic">Art of Comfort</span>
             </h1>
@@ -73,7 +73,7 @@ export const Home = () => {
             </div>
 
             {/* Trust Badges */}
-            <div className="mt-16 flex items-center gap-8 text-sm font-medium text-gray-300 border-t border-white/10 pt-8">
+            <div className="mt-16 flex flex-wrap items-center gap-8 text-sm font-medium text-gray-300 border-t border-white/10 pt-8">
               <div className="flex items-center gap-2">
                 <Truck size={18} className="text-purple-400" />
                 <span>Free Delivery</span>
@@ -91,8 +91,12 @@ export const Home = () => {
         </div>
       </section>
 
-      {/* Categories Section - Centered and Polished */}
-      <section className="container mx-auto px-4 md:px-8 -mt-20 relative z-20">
+      {/* Categories Section - Fixed Spacing */}
+      <section className="container mx-auto px-4 md:px-8 py-16 relative z-20">
+        <div className="text-center mb-12">
+           <span className="text-purple-600 font-bold uppercase tracking-widest text-xs mb-3 block">Our Collections</span>
+           <h2 className="text-4xl font-serif font-bold text-black">Shop by Category</h2>
+        </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {categories.map((cat, idx) => (
             <motion.div
@@ -102,15 +106,14 @@ export const Home = () => {
               transition={{ delay: idx * 0.1 }}
               viewport={{ once: true }}
             >
-              {/* Changed rounded-xl to rounded-md for smaller radius */}
-              <Link to={`/shop?category=${cat.id}`} className="group block relative h-80 rounded-md overflow-hidden shadow-2xl">
+              <Link to={`/shop?category=${cat.id}`} className="group block relative h-80 rounded-md overflow-hidden shadow-lg border border-gray-100">
                 <img
                   src={cat.image}
                   alt={cat.name}
                   className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110 grayscale group-hover:grayscale-0"
                 />
                 {/* Overlay */}
-                <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-colors duration-500" />
+                <div className="absolute inset-0 bg-black/30 group-hover:bg-black/20 transition-colors duration-500" />
                 
                 {/* Content - Centered */}
                 <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center">
@@ -130,7 +133,7 @@ export const Home = () => {
       </section>
 
       {/* Featured Products */}
-      <section className="py-24 container mx-auto px-4 md:px-8">
+      <section className="py-12 container mx-auto px-4 md:px-8">
         <div className="text-center mb-16">
           <span className="text-purple-600 font-bold uppercase tracking-widest text-xs mb-3 block">Curated For You</span>
           <h2 className="text-5xl font-serif font-bold text-black mb-4">Best Sellers</h2>
