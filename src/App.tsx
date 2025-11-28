@@ -22,6 +22,12 @@ import { AdminLogin } from './pages/admin/AdminLogin';
 import { AdminDashboard } from './pages/admin/AdminDashboard';
 import { AdminProducts } from './pages/admin/AdminProducts';
 import { AdminOrders } from './pages/admin/AdminOrders';
+import { AdminUsers } from './pages/admin/AdminUsers';
+import { AdminMarketing } from './pages/admin/AdminMarketing';
+import { AdminPayments } from './pages/admin/AdminPayments';
+import { AdminSupport } from './pages/admin/AdminSupport';
+import { AdminContent } from './pages/admin/AdminContent';
+import { AdminSettings } from './pages/admin/AdminSettings';
 import { useAdminStore } from './store/useAdminStore';
 
 // Scroll to top on route change
@@ -63,8 +69,12 @@ function App() {
           <Route path="dashboard" element={<AdminDashboard />} />
           <Route path="products" element={<AdminProducts />} />
           <Route path="orders" element={<AdminOrders />} />
-          {/* Placeholders for other modules */}
-          <Route path="*" element={<div className="p-8">Module under construction</div>} />
+          <Route path="users" element={<AdminUsers />} />
+          <Route path="marketing" element={<AdminMarketing />} />
+          <Route path="payments" element={<AdminPayments />} />
+          <Route path="support" element={<AdminSupport />} />
+          <Route path="content" element={<AdminContent />} />
+          <Route path="settings" element={<AdminSettings />} />
         </Route>
 
         {/* Customer Routes */}
