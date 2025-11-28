@@ -14,11 +14,9 @@ export const Shop = () => {
   
   const { products } = useProductStore();
   
-  // Updated default range for INR
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 100000]);
   const [showFilters, setShowFilters] = useState(false);
 
-  // Reset filters when search query changes
   useEffect(() => {
     if (searchQuery) {
       // Optional: Reset category if searching
@@ -54,11 +52,11 @@ export const Shop = () => {
   };
 
   return (
-    <div className="container mx-auto px-4 py-12">
+    <div className="container mx-auto px-4 py-12 pt-24">
       {/* Header */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">
+          <h1 className="text-3xl font-serif font-bold text-black">
             {searchQuery ? `Search results for "${searchQuery}"` : 'Shop All Products'}
           </h1>
           <p className="text-gray-500 mt-2">
@@ -81,7 +79,7 @@ export const Shop = () => {
           {activeCategory !== 'all' && (
             <button 
               onClick={() => handleCategoryChange('all')}
-              className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-gray-100 text-sm text-gray-700 hover:bg-gray-200"
+              className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-gray-100 text-sm text-black hover:bg-gray-200"
             >
               Category: {categories.find(c => c.id === activeCategory)?.name || activeCategory} <X size={14} />
             </button>
@@ -93,7 +91,7 @@ export const Shop = () => {
                 newParams.delete('search');
                 setSearchParams(newParams);
               }}
-              className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-gray-100 text-sm text-gray-700 hover:bg-gray-200"
+              className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-gray-100 text-sm text-black hover:bg-gray-200"
             >
               Search: {searchQuery} <X size={14} />
             </button>
@@ -101,14 +99,14 @@ export const Shop = () => {
           {priceRange[1] < 100000 && (
             <button 
               onClick={() => setPriceRange([0, 100000])}
-              className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-gray-100 text-sm text-gray-700 hover:bg-gray-200"
+              className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-gray-100 text-sm text-black hover:bg-gray-200"
             >
               Price: {formatPrice(priceRange[0])} - {formatPrice(priceRange[1])} <X size={14} />
             </button>
           )}
           <button 
             onClick={clearFilters}
-            className="text-sm text-gray-500 underline hover:text-gray-900 ml-2"
+            className="text-sm text-gray-500 underline hover:text-black ml-2"
           >
             Clear all
           </button>
@@ -122,13 +120,13 @@ export const Shop = () => {
           showFilters ? "block" : "hidden md:block"
         )}>
           <div>
-            <h3 className="font-bold text-gray-900 mb-4 text-lg">Categories</h3>
+            <h3 className="font-bold text-black mb-4 text-lg font-serif">Categories</h3>
             <div className="space-y-3">
               <button
                 onClick={() => handleCategoryChange('all')}
                 className={cn(
                   "block w-full text-left text-sm transition-colors",
-                  activeCategory === 'all' ? "font-bold text-gray-900" : "text-gray-500 hover:text-gray-900"
+                  activeCategory === 'all' ? "font-bold text-purple-600" : "text-gray-500 hover:text-black"
                 )}
               >
                 All Products
@@ -139,7 +137,7 @@ export const Shop = () => {
                   onClick={() => handleCategoryChange(cat.id)}
                   className={cn(
                     "block w-full text-left text-sm transition-colors",
-                    activeCategory === cat.id ? "font-bold text-gray-900" : "text-gray-500 hover:text-gray-900"
+                    activeCategory === cat.id ? "font-bold text-purple-600" : "text-gray-500 hover:text-black"
                   )}
                 >
                   {cat.name}
@@ -149,7 +147,7 @@ export const Shop = () => {
           </div>
 
           <div>
-            <h3 className="font-bold text-gray-900 mb-4 text-lg">Price Range</h3>
+            <h3 className="font-bold text-black mb-4 text-lg font-serif">Price Range</h3>
             <div className="space-y-6">
               <input
                 type="range"
@@ -158,9 +156,9 @@ export const Shop = () => {
                 step="500"
                 value={priceRange[1]}
                 onChange={(e) => setPriceRange([priceRange[0], parseInt(e.target.value)])}
-                className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-gray-900"
+                className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-black"
               />
-              <div className="flex justify-between text-sm font-medium text-gray-900">
+              <div className="flex justify-between text-sm font-medium text-black">
                 <span>{formatPrice(priceRange[0])}</span>
                 <span>{formatPrice(priceRange[1])}</span>
               </div>

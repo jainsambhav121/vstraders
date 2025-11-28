@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, useLocation, Navigate } from 'r
 import { Toaster } from 'react-hot-toast';
 import { Header } from './components/layout/Header';
 import { Footer } from './components/layout/Footer';
+import { MobileNav } from './components/layout/MobileNav';
 import { Home } from './pages/Home';
 import { Shop } from './pages/Shop';
 import { ProductDetails } from './pages/ProductDetails';
@@ -51,10 +52,11 @@ const ProtectedAdminRoute = ({ children }: { children: React.ReactNode }) => {
 
 // Main Layout Wrapper for Customer Site
 const CustomerLayout = ({ children }: { children: React.ReactNode }) => (
-  <div className="flex min-h-screen flex-col bg-white font-sans text-gray-900 selection:bg-black selection:text-white">
+  <div className="flex min-h-screen flex-col bg-offwhite font-sans text-navy-900 selection:bg-gold-500 selection:text-white">
     <Header />
     <main className="flex-1">{children}</main>
     <Footer />
+    <MobileNav />
   </div>
 );
 
@@ -101,12 +103,13 @@ function App() {
         } />
       </Routes>
       <Toaster 
-        position="bottom-right"
+        position="top-center"
         toastOptions={{
           style: {
-            background: '#000',
+            background: '#0A0F1F',
             color: '#fff',
-            borderRadius: '0px',
+            borderRadius: '8px',
+            border: '1px solid #D4AF37',
           },
         }}
       />

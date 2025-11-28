@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { ShoppingCart, Heart, User, Menu, X, Search } from 'lucide-react';
+import { ShoppingBag, Heart, User, Search, X, Menu } from 'lucide-react';
 import { useCartStore, useWishlistStore, useAuthStore } from '../../store/useStore';
-import { Button } from '../ui/Button';
 import { motion, AnimatePresence } from 'framer-motion';
+import { cn } from '../../lib/utils';
 
 export const Header = () => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   
   const cartItems = useCartStore((state) => state.items);
   const wishlistItems = useWishlistStore((state) => state.items);
@@ -16,17 +17,16 @@ export const Header = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const navLinks = [
-    { name: 'Home', path: '/' },
-    { name: 'Shop', path: '/shop' },
-    { name: 'Blog', path: '/blog' },
-    { name: 'Contact', path: '/contact' },
-    { name: 'Support', path: '/support' },
-  ];
-
-  // Close mobile menu and search on route change
   useEffect(() => {
-    setIsMenuOpen(false);
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 20);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  useEffect(() => {
+    setIsMobileMenuOpen(false);
     setIsSearchOpen(false);
   }, [location.pathname]);
 
@@ -39,158 +39,176 @@ export const Header = () => {
     }
   };
 
+  // Determine text color based on scroll and page (assume dark header on home initially if transparent)
+  // For Black & White theme, we want high contrast.
+  const isHome = location.pathname === '/';
+  const headerTextColor = isScrolled || !isHome ? "text-black" : "text-white";
+  const headerBg = isScrolled ? "bg-white/95 backdrop-blur-md shadow-sm" : "bg-transparent";
+
   return (
     <>
-      <header className="sticky top-0 z-50 w-full bg-white/95 backdrop-blur-md border-b border-gray-100 transition-all duration-300">
-        <div className="container mx-auto px-4 md:px-6">
-          <div className="flex h-20 items-center justify-between">
-            {/* Mobile Menu Button */}
-            <button
-              className="md:hidden p-2 -ml-2 text-gray-600 hover:text-gray-900"
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-            >
-              {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
-            </button>
-
+      <header 
+        className={cn(
+          "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
+          headerBg,
+          isScrolled ? "py-3" : "py-6"
+        )}
+      >
+        <div className="container mx-auto px-4 md:px-8">
+          <div className="flex items-center justify-between">
             {/* Logo */}
-            <Link to="/" className="flex items-center space-x-2 group">
-              <span className="text-2xl font-bold tracking-tight text-gray-900 group-hover:opacity-80 transition-opacity">VSTRADERS</span>
+            <Link to="/" className="relative z-10 group">
+              <h1 className={cn(
+                "text-2xl md:text-3xl font-bold tracking-tighter transition-colors",
+                headerTextColor
+              )}>
+                VS<span className="text-purple-600">TRADERS</span>
+              </h1>
             </Link>
 
-            {/* Desktop Navigation */}
+            {/* Desktop Nav */}
             <nav className="hidden md:flex items-center space-x-8">
-              {navLinks.map((link) => (
+              {[
+                { name: 'Home', path: '/' },
+                { name: 'Shop', path: '/shop' },
+                { name: 'Mattresses', path: '/shop?category=mattresses' },
+                { name: 'Pillows', path: '/shop?category=pillows' },
+                { name: 'Blog', path: '/blog' },
+              ].map((link) => (
                 <Link
                   key={link.path}
                   to={link.path}
-                  className={`text-sm font-medium transition-colors hover:text-gray-900 ${
-                    location.pathname === link.path ? 'text-gray-900' : 'text-gray-500'
-                  }`}
+                  className={cn(
+                    "text-sm font-medium uppercase tracking-wider transition-colors hover:text-purple-600 relative group",
+                    headerTextColor
+                  )}
                 >
                   {link.name}
+                  <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-purple-600 transition-all group-hover:w-full" />
                 </Link>
               ))}
             </nav>
 
             {/* Actions */}
-            <div className="flex items-center space-x-1 md:space-x-4">
+            <div className="flex items-center space-x-2 md:space-x-6">
               <button 
                 onClick={() => setIsSearchOpen(!isSearchOpen)}
-                className="p-2 text-gray-600 hover:text-gray-900 transition-colors hover:bg-gray-50 rounded-full"
-                aria-label="Search"
+                className={cn("p-2 transition-colors hover:text-purple-600", headerTextColor)}
               >
-                <Search size={20} />
+                <Search size={20} strokeWidth={1.5} />
               </button>
               
-              <Link to="/wishlist" className="p-2 text-gray-600 hover:text-gray-900 transition-colors relative hover:bg-gray-50 rounded-full">
-                <Heart size={20} />
+              <Link to="/wishlist" className={cn("p-2 transition-colors hover:text-purple-600 relative hidden md:block", headerTextColor)}>
+                <Heart size={20} strokeWidth={1.5} />
                 {wishlistItems.length > 0 && (
-                  <span className="absolute top-1 right-1 h-2 w-2 rounded-full bg-red-500 ring-2 ring-white" />
+                  <span className="absolute top-1 right-1 h-2 w-2 rounded-full bg-purple-600" />
                 )}
               </Link>
 
-              <Link to="/cart" className="p-2 text-gray-600 hover:text-gray-900 transition-colors relative hover:bg-gray-50 rounded-full">
-                <ShoppingCart size={20} />
+              <Link to="/cart" className={cn("p-2 transition-colors hover:text-purple-600 relative hidden md:block", headerTextColor)}>
+                <ShoppingBag size={20} strokeWidth={1.5} />
                 {cartItems.length > 0 && (
-                  <span className="absolute -top-0.5 -right-0.5 h-4 w-4 rounded-full bg-gray-900 text-[10px] font-bold text-white flex items-center justify-center ring-2 ring-white">
+                  <span className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-purple-600 text-white text-[10px] font-bold flex items-center justify-center">
                     {cartItems.length}
                   </span>
                 )}
               </Link>
 
-              {isAuthenticated ? (
-                <Link to="/account" className="p-2 text-gray-600 hover:text-gray-900 transition-colors hover:bg-gray-50 rounded-full">
-                  <User size={20} />
-                </Link>
-              ) : (
-                <Button 
-                  variant="primary" 
-                  size="sm" 
-                  className="hidden md:inline-flex ml-2"
-                  onClick={() => navigate('/login')}
-                >
-                  Login
-                </Button>
-              )}
+              <Link to={isAuthenticated ? "/account" : "/login"} className={cn("p-2 transition-colors hover:text-purple-600 hidden md:block", headerTextColor)}>
+                <User size={20} strokeWidth={1.5} />
+              </Link>
+
+              <button 
+                className={cn("md:hidden p-2", headerTextColor)}
+                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              >
+                {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+              </button>
             </div>
           </div>
         </div>
+      </header>
 
-        {/* Search Bar Overlay */}
-        <AnimatePresence>
-          {isSearchOpen && (
-            <motion.div
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              transition={{ duration: 0.2 }}
-              className="absolute top-full left-0 w-full bg-white border-b border-gray-100 shadow-lg py-4 px-4 z-40"
-            >
-              <div className="container mx-auto max-w-3xl">
-                <form onSubmit={handleSearch} className="relative">
+      {/* Search Overlay */}
+      <AnimatePresence>
+        {isSearchOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            className="fixed top-0 left-0 w-full bg-white/95 backdrop-blur-xl z-[60] py-8 shadow-2xl"
+          >
+            <div className="container mx-auto px-4 relative">
+              <button 
+                onClick={() => setIsSearchOpen(false)}
+                className="absolute right-4 top-0 text-gray-400 hover:text-black"
+              >
+                <X size={24} />
+              </button>
+              <form onSubmit={handleSearch} className="max-w-3xl mx-auto mt-4">
+                <div className="relative border-b-2 border-gray-200 focus-within:border-purple-600 transition-colors">
                   <input
                     type="text"
-                    placeholder="Search for products..."
+                    placeholder="Search for luxury bedding..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     autoFocus
-                    className="w-full pl-12 pr-4 py-3 bg-gray-50 border-none rounded-lg focus:ring-2 focus:ring-gray-900 text-gray-900 placeholder-gray-400"
+                    className="w-full py-4 bg-transparent text-2xl md:text-4xl font-serif text-black placeholder-gray-300 focus:outline-none"
                   />
-                  <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
-                  <button 
-                    type="button"
-                    onClick={() => setIsSearchOpen(false)}
-                    className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
-                  >
-                    <X size={16} />
+                  <button type="submit" className="absolute right-0 top-1/2 -translate-y-1/2 text-black hover:text-purple-600">
+                    <Search size={32} strokeWidth={1} />
                   </button>
-                </form>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+                </div>
+              </form>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
-        {/* Mobile Menu */}
-        <AnimatePresence>
-          {isMenuOpen && (
-            <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
-              exit={{ opacity: 0, height: 0 }}
-              className="md:hidden border-t border-gray-100 bg-white overflow-hidden"
-            >
-              <div className="container mx-auto px-4 py-4 flex flex-col space-y-2">
-                {navLinks.map((link) => (
+      {/* Mobile Menu */}
+      <AnimatePresence>
+        {isMobileMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0, x: '100%' }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: '100%' }}
+            transition={{ type: "spring", damping: 25, stiffness: 200 }}
+            className="fixed inset-0 z-40 bg-white"
+          >
+            <div className="flex flex-col h-full pt-24 px-6 pb-8">
+              <nav className="flex flex-col space-y-6">
+                {[
+                  { name: 'Home', path: '/' },
+                  { name: 'Shop All', path: '/shop' },
+                  { name: 'Mattresses', path: '/shop?category=mattresses' },
+                  { name: 'Pillows', path: '/shop?category=pillows' },
+                  { name: 'Bedsheets', path: '/shop?category=bedsheets' },
+                  { name: 'Blog', path: '/blog' },
+                ].map((link) => (
                   <Link
                     key={link.path}
                     to={link.path}
-                    className={`px-4 py-3 rounded-lg text-base font-medium ${
-                      location.pathname === link.path 
-                        ? 'bg-gray-50 text-gray-900' 
-                        : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
-                    }`}
+                    className="text-2xl font-serif text-black hover:text-purple-600 transition-colors"
+                    onClick={() => setIsMobileMenuOpen(false)}
                   >
                     {link.name}
                   </Link>
                 ))}
-                {!isAuthenticated && (
-                  <div className="pt-4 px-4">
-                    <Button 
-                      variant="primary" 
-                      className="w-full"
-                      onClick={() => {
-                        navigate('/login');
-                      }}
-                    >
-                      Login / Register
-                    </Button>
-                  </div>
-                )}
+              </nav>
+              
+              <div className="mt-auto space-y-6 border-t border-gray-100 pt-8">
+                <Link to="/account" className="flex items-center gap-3 text-lg font-medium text-black">
+                  <User size={24} /> Account
+                </Link>
+                <Link to="/support" className="flex items-center gap-3 text-lg font-medium text-black">
+                  <div className="w-6 h-6 rounded-full border border-black flex items-center justify-center text-xs">?</div>
+                  Support
+                </Link>
               </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </header>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </>
   );
 };
