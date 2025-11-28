@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@headlessui/react": "^1.7.19",
+    "@supabase/supabase-js": "^2.86.0",
     "axios": "^1.6.8",
     "clsx": "^2.1.0",
     "echarts": "^5.5.0",
