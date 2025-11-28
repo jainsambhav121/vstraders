@@ -24,7 +24,7 @@ export const Header = () => {
     { name: 'Support', path: '/support' },
   ];
 
-  // Close mobile menu on route change
+  // Close mobile menu and search on route change
   useEffect(() => {
     setIsMenuOpen(false);
     setIsSearchOpen(false);
@@ -77,6 +77,7 @@ export const Header = () => {
               <button 
                 onClick={() => setIsSearchOpen(!isSearchOpen)}
                 className="p-2 text-gray-600 hover:text-gray-900 transition-colors hover:bg-gray-50 rounded-full"
+                aria-label="Search"
               >
                 <Search size={20} />
               </button>
@@ -122,6 +123,7 @@ export const Header = () => {
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.2 }}
               className="absolute top-full left-0 w-full bg-white border-b border-gray-100 shadow-lg py-4 px-4 z-40"
             >
               <div className="container mx-auto max-w-3xl">

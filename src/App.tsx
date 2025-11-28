@@ -8,6 +8,7 @@ import { Shop } from './pages/Shop';
 import { ProductDetails } from './pages/ProductDetails';
 import { Cart } from './pages/Cart';
 import { Checkout } from './pages/Checkout';
+import { OrderSuccess } from './pages/OrderSuccess';
 import { Auth } from './pages/Auth';
 import { Account } from './pages/Account';
 import { Wishlist } from './pages/Wishlist';
@@ -50,7 +51,7 @@ const ProtectedAdminRoute = ({ children }: { children: React.ReactNode }) => {
 
 // Main Layout Wrapper for Customer Site
 const CustomerLayout = ({ children }: { children: React.ReactNode }) => (
-  <div className="flex min-h-screen flex-col bg-white font-sans text-gray-900">
+  <div className="flex min-h-screen flex-col bg-white font-sans text-gray-900 selection:bg-black selection:text-white">
     <Header />
     <main className="flex-1">{children}</main>
     <Footer />
@@ -86,6 +87,7 @@ function App() {
               <Route path="/product/:id" element={<ProductDetails />} />
               <Route path="/cart" element={<Cart />} />
               <Route path="/checkout" element={<Checkout />} />
+              <Route path="/order-success" element={<OrderSuccess />} />
               <Route path="/login" element={<Auth />} />
               <Route path="/account" element={<Account />} />
               <Route path="/wishlist" element={<Wishlist />} />
@@ -98,7 +100,16 @@ function App() {
           </CustomerLayout>
         } />
       </Routes>
-      <Toaster position="bottom-right" />
+      <Toaster 
+        position="bottom-right"
+        toastOptions={{
+          style: {
+            background: '#000',
+            color: '#fff',
+            borderRadius: '0px',
+          },
+        }}
+      />
     </Router>
   );
 }

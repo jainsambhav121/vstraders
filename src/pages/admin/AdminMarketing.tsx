@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
-import { Tag, Plus, Trash2, Megaphone, Percent } from 'lucide-react';
+import { Tag, Plus, Trash2, Megaphone, Image as ImageIcon } from 'lucide-react';
 import { useAdminFeaturesStore } from '../../store/useAdminFeaturesStore';
 import { Button } from '../../components/ui/Button';
-import { formatPrice } from '../../lib/utils';
 import toast from 'react-hot-toast';
 
 export const AdminMarketing = () => {
@@ -16,6 +15,12 @@ export const AdminMarketing = () => {
     type: 'percentage',
     expiryDate: ''
   });
+
+  // Mock Banners State (Local for now as it wasn't in global store)
+  const [banners, setBanners] = useState([
+    { id: 1, title: 'Summer Sale', image: 'https://images.unsplash.com/photo-1505693416388-b0346d6771b4', active: true },
+    { id: 2, title: 'New Arrivals', image: 'https://images.unsplash.com/photo-1584100936595-c0654b55a2e6', active: false }
+  ]);
 
   const handleAddCoupon = (e: React.FormEvent) => {
     e.preventDefault();
@@ -162,11 +167,33 @@ export const AdminMarketing = () => {
           </div>
         </div>
       ) : (
-        <div className="text-center py-20 bg-white rounded-xl border border-gray-100">
-          <Megaphone size={48} className="mx-auto text-gray-300 mb-4" />
-          <h3 className="text-lg font-medium text-gray-900">Banner Management</h3>
-          <p className="text-gray-500 mb-6">Manage your homepage sliders and promotional banners here.</p>
-          <Button variant="outline">Add New Banner</Button>
+        <div className="space-y-6">
+          <div className="flex justify-between items-center">
+             <h3 className="text-lg font-medium text-gray-900">Active Banners</h3>
+             <Button size="sm" className="flex items-center gap-2"><Plus size={16} /> Add Banner</Button>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {banners.map((banner) => (
+              <div key={banner.id} className="bg-white rounded-xl border border-gray-100 overflow-hidden shadow-sm group">
+                <div className="relative h-48">
+                  <img src={banner.image} alt={banner.title} className="w-full h-full object-cover" />
+                  <div className="absolute top-2 right-2">
+                    <span className={`px-2 py-1 rounded text-xs font-bold ${banner.active ? 'bg-green-500 text-white' : 'bg-gray-500 text-white'}`}>
+                      {banner.active ? 'Active' : 'Inactive'}
+                    </span>
+                  </div>
+                </div>
+                <div className="p-4 flex justify-between items-center">
+                  <span className="font-medium">{banner.title}</span>
+                  <div className="flex gap-2">
+                     <button className="p-2 text-gray-500 hover:bg-gray-100 rounded"><ImageIcon size={16} /></button>
+                     <button className="p-2 text-red-500 hover:bg-red-50 rounded"><Trash2 size={16} /></button>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       )}
     </div>
