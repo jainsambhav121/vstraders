@@ -1,4 +1,3 @@
-
 import React from 'react';
 import StatCard from '../../components/admin/StatCard';
 import { products, orders, customers } from '../../data/mockData';
@@ -11,8 +10,12 @@ const DashboardPage: React.FC = () => {
 
     const recentOrders = orders.slice(0, 5);
 
+    // Mock data for charts
+    const monthlySales = [45, 60, 75, 50, 80, 95]; // Example percentages
+    const topProducts = products.slice(0, 5);
+
     return (
-        <div className="space-y-8">
+        <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
             <h1 className="text-3xl font-bold">Dashboard</h1>
             
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -23,19 +26,46 @@ const DashboardPage: React.FC = () => {
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-lg p-6 h-80 flex items-center justify-center">
-                    <p className="text-gray-400">Sales Analytics Chart - Coming Soon</p>
+                {/* Sales Chart */}
+                <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-lg p-6 h-80 flex flex-col">
+                    <h3 className="text-xl font-bold mb-4">Sales Analytics (Last 6 Months)</h3>
+                    <div className="flex-grow flex items-end justify-between gap-2 px-2 pb-2">
+                        {monthlySales.map((height, i) => (
+                            <div key={i} className="w-full flex flex-col items-center gap-2 group">
+                                <div className="text-xs text-transparent group-hover:text-white transition-colors">{height}%</div>
+                                <div 
+                                    className="w-full bg-white/20 hover:bg-white/40 rounded-t-md transition-all duration-500"
+                                    style={{ height: `${height}%` }}
+                                ></div>
+                                <div className="text-xs text-gray-500">M{i+1}</div>
+                            </div>
+                        ))}
+                    </div>
                 </div>
 
-                <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-lg p-6 h-80 flex items-center justify-center">
-                    <p className="text-gray-400">Top Selling Products - Coming Soon</p>
+                {/* Top Selling Products */}
+                <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-lg p-6 h-80 flex flex-col overflow-hidden">
+                    <h3 className="text-xl font-bold mb-4">Top Selling Products</h3>
+                    <div className="overflow-y-auto pr-2 space-y-3">
+                        {topProducts.map((product, idx) => (
+                            <div key={product.id} className="flex items-center gap-4 p-2 bg-white/5 rounded-lg hover:bg-white/10 transition-colors">
+                                <span className="font-bold text-gray-500 w-4">#{idx+1}</span>
+                                <img src={product.images[0]} alt="" className="w-10 h-10 rounded-md object-cover"/>
+                                <div className="flex-grow min-w-0">
+                                    <p className="font-semibold truncate">{product.title}</p>
+                                    <p className="text-xs text-gray-400">{product.category}</p>
+                                </div>
+                                <span className="font-bold">₹{product.price.toLocaleString()}</span>
+                            </div>
+                        ))}
+                    </div>
                 </div>
             </div>
 
             <div>
                 <h2 className="text-2xl font-bold mb-4">Recent Orders</h2>
                 <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-lg overflow-x-auto">
-                    <table className="w-full text-left">
+                    <table className="w-full text-left whitespace-nowrap">
                         <thead className="border-b border-white/10">
                             <tr>
                                 <th className="p-4">Order ID</th>
@@ -47,10 +77,10 @@ const DashboardPage: React.FC = () => {
                         </thead>
                         <tbody>
                             {recentOrders.map(order => (
-                                <tr key={order.id} className="border-b border-white/20 last:border-b-0 hover:bg-white/5">
-                                    <td className="p-4 font-mono">{order.id}</td>
+                                <tr key={order.id} className="border-b border-white/20 last:border-b-0 hover:bg-white/5 transition-colors">
+                                    <td className="p-4 font-mono text-sm">{order.id}</td>
                                     <td className="p-4">{order.customerName}</td>
-                                    <td className="p-4">{order.date}</td>
+                                    <td className="p-4 text-gray-400">{order.date}</td>
                                     <td className="p-4">
                                         <span className={`px-2 py-1 rounded-full text-xs font-semibold ${
                                             order.status === 'Delivered' ? 'bg-green-500/20 text-green-400' :
@@ -66,7 +96,6 @@ const DashboardPage: React.FC = () => {
                     </table>
                 </div>
             </div>
-
         </div>
     );
 };

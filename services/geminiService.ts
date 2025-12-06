@@ -1,4 +1,3 @@
-
 import { GoogleGenAI, Chat } from "@google/genai";
 
 // Ensure the API key is set in your environment variables
@@ -37,5 +36,36 @@ export const getChatbotResponse = async (message: string): Promise<string> => {
     } catch (error) {
         console.error("Error getting response from Gemini API:", error);
         return "Sorry, I'm having trouble connecting right now. Please try again later.";
+    }
+};
+
+export const analyzeImageForSearch = async (base64Data: string, mimeType: string): Promise<string> => {
+    if (!API_KEY) {
+        console.warn("No API Key available for image search");
+        return "Pillow"; // Fallback
+    }
+
+    try {
+        const response = await ai.models.generateContent({
+            model: 'gemini-2.5-flash',
+            contents: {
+                parts: [
+                    {
+                        inlineData: {
+                            mimeType: mimeType,
+                            data: base64Data
+                        }
+                    },
+                    {
+                        text: "Analyze this image and identify the main product. Return ONLY a 1-3 word search query to find this product in a furniture store (e.g. 'Grey Sofa', 'Cotton Pillow', 'King Mattress'). Do not add punctuation."
+                    }
+                ]
+            }
+        });
+
+        return response.text?.trim() || "";
+    } catch (error) {
+        console.error("Error analyzing image:", error);
+        throw error;
     }
 };

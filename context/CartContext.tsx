@@ -1,4 +1,3 @@
-
 import React, { createContext, useState, useContext, ReactNode } from 'react';
 import type { CartItem, Product } from '../types';
 
@@ -7,6 +6,7 @@ interface CartContextType {
     addToCart: (product: Product, quantity: number) => void;
     removeFromCart: (productId: number) => void;
     updateQuantity: (productId: number, quantity: number) => void;
+    clearCart: () => void;
     cartCount: number;
 }
 
@@ -43,10 +43,14 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         }
     };
 
+    const clearCart = () => {
+        setCart([]);
+    };
+
     const cartCount = cart.reduce((count, item) => count + item.quantity, 0);
 
     return (
-        <CartContext.Provider value={{ cart, addToCart, removeFromCart, updateQuantity, cartCount }}>
+        <CartContext.Provider value={{ cart, addToCart, removeFromCart, updateQuantity, clearCart, cartCount }}>
             {children}
         </CartContext.Provider>
     );

@@ -1,12 +1,29 @@
-
-import React from 'react';
+import React, { useState } from 'react';
 import { useCart } from '../context/CartContext';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { MinusIcon, PlusIcon } from '../components/icons';
+import { useToast } from '../context/ToastContext';
 
 const CartPage: React.FC = () => {
-    const { cart, removeFromCart, updateQuantity, cartCount } = useCart();
+    const { cart, removeFromCart, updateQuantity, clearCart, cartCount } = useCart();
+    const { showToast } = useToast();
+    const navigate = useNavigate();
+    const [isCheckingOut, setIsCheckingOut] = useState(false);
+
     const subtotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+
+    const handleCheckout = () => {
+        if (cartCount === 0) return;
+        
+        setIsCheckingOut(true);
+        // Simulate API call
+        setTimeout(() => {
+            setIsCheckingOut(false);
+            clearCart();
+            showToast("Order placed successfully! Thank you for shopping.", "success");
+            navigate('/');
+        }, 2000);
+    };
 
     return (
         <div className="container mx-auto px-4 py-8">
@@ -37,19 +54,19 @@ const CartPage: React.FC = () => {
                                 </div>
                                 <div className="flex items-center justify-between w-full sm:w-auto mt-4 sm:mt-0">
                                     <div className="flex items-center bg-white/10 border border-white/20 rounded-full">
-                                        <button onClick={() => updateQuantity(item.id, item.quantity - 1)} className="p-2"><MinusIcon className="w-4 h-4"/></button>
+                                        <button onClick={() => updateQuantity(item.id, item.quantity - 1)} className="p-2 hover:bg-white/10 rounded-l-full"><MinusIcon className="w-4 h-4"/></button>
                                         <span className="px-3 font-bold">{item.quantity}</span>
-                                        <button onClick={() => updateQuantity(item.id, item.quantity + 1)} className="p-2"><PlusIcon className="w-4 h-4"/></button>
+                                        <button onClick={() => updateQuantity(item.id, item.quantity + 1)} className="p-2 hover:bg-white/10 rounded-r-full"><PlusIcon className="w-4 h-4"/></button>
                                     </div>
-                                    <div className="flex items-center">
+                                    <div className="flex items-center ml-4">
                                         <p className="font-bold w-24 text-right">₹{(item.price * item.quantity).toFixed(2)}</p>
-                                        <button onClick={() => removeFromCart(item.id)} className="ml-4 text-gray-400 hover:text-white">&times;</button>
+                                        <button onClick={() => removeFromCart(item.id)} className="ml-4 text-gray-400 hover:text-red-500 transition-colors">&times;</button>
                                     </div>
                                 </div>
                             </div>
                         ))}
                     </div>
-                    <div className="bg-white/5 p-6 rounded-lg border border-white/10 h-fit">
+                    <div className="bg-white/5 p-6 rounded-lg border border-white/10 h-fit sticky top-24">
                         <h2 className="text-2xl font-bold mb-4">Order Summary</h2>
                         <div className="flex justify-between mb-2">
                             <span>Subtotal</span>
@@ -63,8 +80,17 @@ const CartPage: React.FC = () => {
                             <span>Total</span>
                             <span>₹{subtotal.toFixed(2)}</span>
                         </div>
-                         <button className="mt-6 w-full bg-white text-black font-bold py-3 px-8 rounded-full text-lg hover:bg-gray-200 transition-colors">
-                            Proceed to Checkout
+                         <button 
+                            onClick={handleCheckout}
+                            disabled={isCheckingOut}
+                            className="mt-6 w-full bg-white text-black font-bold py-3 px-8 rounded-full text-lg hover:bg-gray-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex justify-center items-center"
+                        >
+                            {isCheckingOut ? (
+                                <>
+                                    <div className="w-5 h-5 border-2 border-black border-t-transparent rounded-full animate-spin mr-2"></div>
+                                    Processing...
+                                </>
+                            ) : 'Proceed to Checkout'}
                         </button>
                     </div>
                 </div>

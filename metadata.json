@@ -1,5 +1,8 @@
 {
   "name": "VSTRADERS E-Commerce",
   "description": "A modern, responsive e-commerce website for VSTRADERS, featuring a product catalog, shopping cart, and a sleek black & white design with glassmorphism effects.",
-  "requestFramePermissions": []
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ]
 }

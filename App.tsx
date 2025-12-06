@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { HashRouter, Routes, Route } from 'react-router-dom';
 import HomePage from './pages/HomePage';
@@ -13,6 +12,7 @@ import Footer from './components/Footer';
 import MobileNav from './components/MobileNav';
 import { CartProvider } from './context/CartContext';
 import { AuthProvider } from './context/AuthContext';
+import { ToastProvider } from './context/ToastContext';
 import WishlistPage from './pages/WishlistPage';
 import CartPage from './pages/CartPage';
 import AuthPage from './pages/AuthPage';
@@ -47,16 +47,18 @@ const MainApp: React.FC = () => (
 const App: React.FC = () => {
     return (
         <AuthProvider>
-            <CartProvider>
-                <AdminAuthProvider>
-                    <HashRouter>
-                        <Routes>
-                            <Route path="/admin/*" element={<AdminRoutes />} />
-                            <Route path="/*" element={<MainApp />} />
-                        </Routes>
-                    </HashRouter>
-                </AdminAuthProvider>
-            </CartProvider>
+            <ToastProvider>
+                <CartProvider>
+                    <AdminAuthProvider>
+                        <HashRouter>
+                            <Routes>
+                                <Route path="/admin/*" element={<AdminRoutes />} />
+                                <Route path="/*" element={<MainApp />} />
+                            </Routes>
+                        </HashRouter>
+                    </AdminAuthProvider>
+                </CartProvider>
+            </ToastProvider>
         </AuthProvider>
     );
 };

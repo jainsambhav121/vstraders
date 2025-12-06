@@ -1,21 +1,27 @@
-
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import { products, reviews } from '../data/mockData';
-import { MinusIcon, PlusIcon } from '../components/icons';
+import { MinusIcon, PlusIcon, ShoppingCartIcon } from '../components/icons';
 import { useCart } from '../context/CartContext';
+import { useToast } from '../context/ToastContext';
 import ProductCard from '../components/ProductCard';
 
 const ProductDetailPage: React.FC = () => {
     const { id } = useParams<{ id: string }>();
-    const product = products.find(p => p.id === parseInt(id || ''));
-    const [quantity, setQuantity] = useState(1);
+    const product = products.find(p => p.id === Number(id));
     const [mainImage, setMainImage] = useState(product?.images[0]);
+    const [quantity, setQuantity] = useState(1);
+    const [selectedColor, setSelectedColor] = useState(product?.colors[0]);
+    const [selectedSize, setSelectedSize] = useState(product?.sizes[0]);
     const { addToCart } = useCart();
+    const { showToast } = useToast();
 
     useEffect(() => {
         if (product) {
             setMainImage(product.images[0]);
+            setSelectedColor(product.colors[0]);
+            setSelectedSize(product.sizes[0]);
+            window.scrollTo(0,0);
         }
     }, [product]);
 
@@ -23,96 +29,142 @@ const ProductDetailPage: React.FC = () => {
         return <div className="text-center py-20">Product not found.</div>;
     }
 
-    const relatedProducts = products.filter(p => p.category === product.category && p.id !== product.id).slice(0, 4);
-
-    const handleQuantityChange = (amount: number) => {
-        setQuantity(prev => Math.max(1, prev + amount));
-    };
-    
     const handleAddToCart = () => {
         addToCart(product, quantity);
-        alert(`${quantity} x ${product.title} added to cart!`);
+        showToast(`${product.title} added to cart`, "success");
     };
 
+    const relatedProducts = products.filter(p => p.category === product.category && p.id !== product.id).slice(0, 4);
+
     return (
-        <div className="container mx-auto px-4 py-8 space-y-16">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                {/* Image Gallery */}
-                <div>
-                    <div className="aspect-square bg-white/5 rounded-lg overflow-hidden border border-white/10 mb-4">
-                        <img 
-                            src={mainImage} 
-                            alt={product.title} 
-                            className="w-full h-full object-cover transition-opacity duration-300"
-                            referrerPolicy="no-referrer" 
-                        />
+        <div className="container mx-auto px-4 py-8">
+            {/* Breadcrumb */}
+            <nav className="text-gray-400 mb-8 text-sm">
+                <Link to="/" className="hover:text-white">Home</Link> &gt; 
+                <Link to="/shop" className="hover:text-white mx-1">Shop</Link> &gt; 
+                <span className="text-white mx-1">{product.title}</span>
+            </nav>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-12 mb-16">
+                {/* Images */}
+                <div className="space-y-4">
+                    <div className="aspect-square bg-white/5 rounded-lg overflow-hidden border border-white/10">
+                        <img src={mainImage} alt={product.title} className="w-full h-full object-cover"/>
                     </div>
-                    {/* Changed to flex-wrap so all thumbnails are visible without scrolling */}
-                    <div className="flex gap-2 flex-wrap">
-                        {product.images.map((img, index) => (
-                            <button key={index} onClick={() => setMainImage(img)} className={`flex-shrink-0 w-20 h-20 rounded-md overflow-hidden border-2 ${mainImage === img ? 'border-white' : 'border-transparent'}`}>
-                                <img 
-                                    src={img} 
-                                    alt={`${product.title} thumbnail ${index + 1}`} 
-                                    className="w-full h-full object-cover" 
-                                    referrerPolicy="no-referrer"
-                                />
+                    <div className="flex gap-4 overflow-x-auto pb-2">
+                        {product.images.map((img, idx) => (
+                            <button 
+                                key={idx} 
+                                onClick={() => setMainImage(img)}
+                                className={`w-20 h-20 flex-shrink-0 rounded-md overflow-hidden border-2 transition-all ${mainImage === img ? 'border-white' : 'border-transparent hover:border-white/50'}`}
+                            >
+                                <img src={img} alt={`${product.title} ${idx}`} className="w-full h-full object-cover"/>
                             </button>
                         ))}
                     </div>
                 </div>
 
-                {/* Product Info */}
-                <div className="flex flex-col">
-                    <span className="text-gray-400 uppercase tracking-wider">{product.category}</span>
-                    <h1 className="text-4xl font-bold my-2">{product.title}</h1>
-                    <p className="text-3xl font-bold mb-4">₹{product.price.toFixed(2)}</p>
-                    <p className="text-gray-300 mb-6">{product.description}</p>
-                    
-                    <h3 className="font-semibold mb-2">Key Features:</h3>
-                    <ul className="list-disc list-inside text-gray-300 mb-6 space-y-1">
-                        {product.keyFeatures.map((feature, i) => <li key={i}>{feature}</li>)}
-                    </ul>
-
-                    <div className="flex items-center gap-4 mb-6">
-                        <div className="flex items-center bg-white/10 border border-white/20 rounded-full">
-                            <button onClick={() => handleQuantityChange(-1)} className="p-3"><MinusIcon className="w-5 h-5"/></button>
-                            <span className="px-4 text-lg font-bold">{quantity}</span>
-                            <button onClick={() => handleQuantityChange(1)} className="p-3"><PlusIcon className="w-5 h-5"/></button>
+                {/* Details */}
+                <div>
+                    <h1 className="text-3xl md:text-4xl font-bold mb-2">{product.title}</h1>
+                    <div className="flex items-center gap-4 mb-4">
+                        <span className="text-2xl font-bold text-white">₹{product.price.toLocaleString()}</span>
+                        <div className="flex items-center text-yellow-500 text-sm">
+                            {'★'.repeat(Math.round(product.rating))} 
+                            <span className="text-gray-400 ml-2">({product.reviewsCount} reviews)</span>
                         </div>
-                         <button onClick={handleAddToCart} className="flex-1 bg-white text-black font-bold py-3 px-8 rounded-full text-lg hover:bg-gray-200 transition-colors">
-                            Add to Cart
+                    </div>
+                    
+                    <p className="text-gray-300 mb-6 leading-relaxed">{product.description}</p>
+
+                    <div className="space-y-6 mb-8">
+                        {/* Options */}
+                        <div>
+                            <span className="block text-sm text-gray-400 mb-2">Color</span>
+                            <div className="flex gap-3">
+                                {product.colors.map(color => (
+                                    <button
+                                        key={color}
+                                        onClick={() => setSelectedColor(color)}
+                                        className={`px-4 py-2 rounded-full border border-white/20 text-sm transition-colors ${selectedColor === color ? 'bg-white text-black font-bold' : 'hover:bg-white/10'}`}
+                                    >
+                                        {color}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+
+                        <div>
+                            <span className="block text-sm text-gray-400 mb-2">Size</span>
+                            <div className="flex gap-3">
+                                {product.sizes.map(size => (
+                                    <button
+                                        key={size}
+                                        onClick={() => setSelectedSize(size)}
+                                        className={`px-4 py-2 rounded-full border border-white/20 text-sm transition-colors ${selectedSize === size ? 'bg-white text-black font-bold' : 'hover:bg-white/10'}`}
+                                    >
+                                        {size}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+
+                        {/* Quantity */}
+                        <div>
+                            <span className="block text-sm text-gray-400 mb-2">Quantity</span>
+                            <div className="flex items-center w-max bg-white/10 border border-white/20 rounded-full">
+                                <button onClick={() => setQuantity(Math.max(1, quantity - 1))} className="p-3 hover:bg-white/10 rounded-full"><MinusIcon className="w-4 h-4"/></button>
+                                <span className="px-4 font-bold min-w-[3rem] text-center">{quantity}</span>
+                                <button onClick={() => setQuantity(quantity + 1)} className="p-3 hover:bg-white/10 rounded-full"><PlusIcon className="w-4 h-4"/></button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="flex gap-4">
+                        <button 
+                            onClick={handleAddToCart}
+                            className="flex-1 bg-white text-black font-bold py-3 rounded-full hover:bg-gray-200 transition-colors flex items-center justify-center gap-2"
+                        >
+                            <ShoppingCartIcon className="w-5 h-5"/> Add to Cart
                         </button>
+                    </div>
+
+                    {/* Features */}
+                    <div className="mt-8 border-t border-white/10 pt-6">
+                        <h3 className="font-bold mb-3">Key Features</h3>
+                        <ul className="list-disc list-inside text-gray-300 space-y-1">
+                            {product.keyFeatures.map((feat, i) => <li key={i}>{feat}</li>)}
+                        </ul>
                     </div>
                 </div>
             </div>
 
-            {/* Customer Reviews */}
-            <section>
-                 <h2 className="text-3xl font-bold text-center mb-8">Customer Reviews</h2>
-                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {/* Reviews Section */}
+            <div className="border-t border-white/10 pt-12">
+                <h2 className="text-2xl font-bold mb-8">Customer Reviews</h2>
+                <div className="grid md:grid-cols-3 gap-6">
                     {reviews.map(review => (
-                        <div key={review.id} className="bg-white/5 backdrop-blur-md p-6 rounded-lg border border-white/10">
-                            <div className="flex items-center mb-4">
-                                <img src={review.image} alt={review.name} className="w-12 h-12 rounded-full mr-4" />
+                        <div key={review.id} className="bg-white/5 p-6 rounded-lg border border-white/10">
+                            <div className="flex items-center gap-3 mb-4">
+                                <img src={review.image} alt={review.name} className="w-10 h-10 rounded-full"/>
                                 <div>
-                                    <h4 className="font-bold">{review.name}</h4>
-                                    <div className="flex">{'⭐'.repeat(review.rating)}</div>
+                                    <h4 className="font-bold text-sm">{review.name}</h4>
+                                    <div className="text-yellow-500 text-xs">{'★'.repeat(review.rating)}</div>
                                 </div>
                             </div>
-                            <p className="text-gray-300">{`"${review.comment}"`}</p>
+                            <p className="text-gray-300 text-sm italic">"{review.comment}"</p>
                         </div>
                     ))}
-                 </div>
-            </section>
-
-             {/* Related Products */}
-             <section>
-                <h2 className="text-3xl font-bold text-center mb-8">Related Products</h2>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                    {relatedProducts.map(p => <ProductCard key={p.id} product={p} />)}
                 </div>
-             </section>
+            </div>
+
+            {/* Related Products */}
+            <div className="mt-16">
+                 <h2 className="text-2xl font-bold mb-8">You Might Also Like</h2>
+                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                     {relatedProducts.map(p => <ProductCard key={p.id} product={p} />)}
+                 </div>
+            </div>
         </div>
     );
 };
