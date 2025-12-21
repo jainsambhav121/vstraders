@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 
 export default function Footer() {
   return (
-    <footer className="bg-muted text-muted-foreground">
+    <footer className="bg-muted text-muted-foreground hidden md:block">
       <div className="container mx-auto grid grid-cols-1 gap-8 px-4 py-12 md:grid-cols-4">
         <div className="space-y-4">
           <Link href="/" className="flex items-center gap-2 text-xl font-bold text-foreground">
