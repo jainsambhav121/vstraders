@@ -11,7 +11,7 @@ const findImage = (id: string) => {
 };
 
 export const categories: Category[] = [
-  { id: 'cat-1', name: 'Electronics', slug: 'electronics' },
+  { id: 'cat-1', name: 'Pillows', slug: 'pillows' },
   { id: 'cat-2', name: 'Fashion', slug: 'fashion' },
   { id: 'cat-3', name: 'Home Goods', slug: 'home-goods' },
   { id: 'cat-4', name: 'Office', slug: 'office' },
