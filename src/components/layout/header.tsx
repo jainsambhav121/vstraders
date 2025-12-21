@@ -22,8 +22,15 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog"
 import { Badge } from '@/components/ui/badge';
-import { categories } from '@/lib/data';
 import { MobileLink } from './mobile-link';
+
+const navLinks = [
+  { href: '/', label: 'Home' },
+  { href: '/products', label: 'Shop' },
+  { href: '/blog', label: 'Blog' },
+  { href: '/contact', label: 'Contact' },
+  { href: '/about', label: 'About' },
+];
 
 export default function Header() {
   return (
@@ -50,13 +57,13 @@ export default function Header() {
                   <Store className="h-6 w-6 text-primary" />
                   <span>VSTRADERS</span>
                 </Link>
-                {categories.map((category) => (
+                {navLinks.map((link) => (
                     <MobileLink
-                    key={category.id}
-                    href={`/category/${category.slug}`}
+                    key={link.href}
+                    href={link.href}
                     className="flex w-full items-center py-2 text-lg font-semibold"
                   >
-                    {category.name}
+                    {link.label}
                   </MobileLink>
                 ))}
               </div>
@@ -66,9 +73,9 @@ export default function Header() {
 
         <div className="hidden md:flex md:items-center md:gap-4 lg:gap-6">
             <nav className="flex items-center gap-4 text-sm font-medium text-muted-foreground">
-            {categories.map((category) => (
-                <Link key={category.id} href={`/category/${category.slug}`} className="transition-colors hover:text-foreground">
-                    {category.name}
+            {navLinks.map((link) => (
+                <Link key={link.href} href={link.href} className="transition-colors hover:text-foreground">
+                    {link.label}
                 </Link>
             ))}
             </nav>
