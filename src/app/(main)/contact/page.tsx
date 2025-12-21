@@ -115,7 +115,7 @@ export default function ContactPage() {
                   name="message"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Message</Form.Label>
+                      <FormLabel>Message</FormLabel>
                       <FormControl>
                         <Textarea
                           placeholder="How can we help you?"
