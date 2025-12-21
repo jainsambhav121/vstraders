@@ -55,7 +55,7 @@ export default function ProductsPage() {
                 <TableCell>
                   <Badge variant="outline">{product.category.name}</Badge>
                 </TableCell>
-                <TableCell>${product.price.toFixed(2)}</TableCell>
+                <TableCell>₹{product.price.toFixed(2)}</TableCell>
                 <TableCell>{product.stock}</TableCell>
                 <TableCell>{product.sku}</TableCell>
               </TableRow>

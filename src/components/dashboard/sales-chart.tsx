@@ -45,7 +45,7 @@ export default function SalesChart() {
             fontSize={12}
             tickLine={false}
             axisLine={false}
-            tickFormatter={(value) => `$${value}`}
+            tickFormatter={(value) => `₹${value}`}
           />
           <Tooltip cursor={{ fill: 'hsl(var(--accent))' }} content={<ChartTooltipContent />} />
           <Bar dataKey="total" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />

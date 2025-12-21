@@ -45,7 +45,7 @@ export default function ProductCard({ product }: ProductCardProps) {
         </div>
       </CardContent>
       <CardFooter className="flex items-center justify-between p-4 pt-0">
-        <p className="text-xl font-semibold">${product.price.toFixed(2)}</p>
+        <p className="text-xl font-semibold">₹{product.price.toFixed(2)}</p>
         <Button>Add to Cart</Button>
       </CardFooter>
     </Card>

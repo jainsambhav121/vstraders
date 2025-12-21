@@ -74,7 +74,7 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
               ({product.reviewCount} reviews)
             </span>
           </div>
-          <p className="mt-4 text-3xl font-bold">${product.price.toFixed(2)}</p>
+          <p className="mt-4 text-3xl font-bold">₹{product.price.toFixed(2)}</p>
           <p className="mt-4 text-muted-foreground">{product.description}</p>
           
           <div className="mt-8">
@@ -84,7 +84,7 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
           <div className="mt-8 space-y-4 rounded-lg border p-4">
             <div className="flex items-center gap-3">
               <Truck className="h-6 w-6 text-primary" />
-              <p>Free shipping on orders over $50</p>
+              <p>Free shipping on orders over ₹4000</p>
             </div>
              <div className="flex items-center gap-3">
               <CheckCircle className="h-6 w-6 text-green-500" />

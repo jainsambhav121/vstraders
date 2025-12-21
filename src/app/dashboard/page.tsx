@@ -29,7 +29,7 @@ export default function DashboardPage() {
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <StatsCard
           title="Total Revenue"
-          value="$45,231.89"
+          value="₹4,52,31,89"
           change="+20.1% from last month"
           icon={<DollarSign />}
         />
@@ -86,7 +86,7 @@ export default function DashboardPage() {
                     <TableCell>
                       <Badge variant={order.status === 'Delivered' ? 'default' : 'secondary'}>{order.status}</Badge>
                     </TableCell>
-                    <TableCell className="text-right">${order.total.toFixed(2)}</TableCell>
+                    <TableCell className="text-right">₹{order.total.toFixed(2)}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>

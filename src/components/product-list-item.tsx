@@ -45,7 +45,7 @@ export default function ProductListItem({ product }: ProductListItemProps) {
             </div>
           </div>
           <div className="mt-2 flex items-center justify-between">
-             <p className="text-lg font-semibold">${product.price.toFixed(2)}</p>
+             <p className="text-lg font-semibold">₹{product.price.toFixed(2)}</p>
              <Button size="sm">Add to Cart</Button>
           </div>
         </div>

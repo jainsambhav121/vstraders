@@ -136,7 +136,7 @@ export default function HomePage() {
                 <div className="flex flex-col items-center">
                     <Truck className="h-10 w-10 text-primary" />
                     <h4 className="mt-4 text-lg font-semibold">Free Shipping</h4>
-                    <p className="mt-1 text-muted-foreground">On all orders over $50</p>
+                    <p className="mt-1 text-muted-foreground">On all orders over ₹4000</p>
                 </div>
                 <div className="flex flex-col items-center">
                     <Tag className="h-10 w-10 text-primary" />

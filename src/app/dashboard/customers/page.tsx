@@ -47,7 +47,7 @@ export default function CustomersPage() {
                 </TableCell>
                 <TableCell>{customer.email}</TableCell>
                 <TableCell>{customer.orderCount}</TableCell>
-                <TableCell className="text-right">${customer.totalSpent.toFixed(2)}</TableCell>
+                <TableCell className="text-right">₹{customer.totalSpent.toFixed(2)}</TableCell>
               </TableRow>
             ))}
           </TableBody>
