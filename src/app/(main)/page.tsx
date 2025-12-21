@@ -57,7 +57,8 @@ export default function HomePage() {
                   <CarouselItem key={category.id} className="basis-1/2">
                      <Link
                         href={`/category/${category.slug}`}
-                        className="group flex h-full flex-col items-center justify-center gap-2 rounded-full border bg-card p-2 text-center transition-all hover:shadow-lg aspect-square"
+                        className="group flex h-full flex-col items-center justify-center gap-2 border bg-card p-2 text-center transition-all hover:shadow-lg aspect-square"
+                        style={{ borderRadius: '30px' }}
                       >
                         <div className="rounded-full bg-accent p-3 group-hover:bg-primary group-hover:text-primary-foreground">
                           <Tag className="h-6 w-6 text-accent-foreground group-hover:text-primary-foreground" />
@@ -76,7 +77,8 @@ export default function HomePage() {
               <Link
                 href={`/category/${category.slug}`}
                 key={category.id}
-                className="group flex flex-col items-center justify-center gap-2 rounded-full border bg-card p-4 text-center transition-all hover:shadow-lg aspect-square"
+                className="group flex flex-col items-center justify-center gap-2 border bg-card p-4 text-center transition-all hover:shadow-lg aspect-square"
+                style={{ borderRadius: '30px' }}
               >
                 <div className="rounded-full bg-accent p-4 group-hover:bg-primary group-hover:text-primary-foreground">
                   <Tag className="h-8 w-8 text-accent-foreground group-hover:text-primary-foreground" />
