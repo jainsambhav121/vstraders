@@ -61,7 +61,7 @@ export default function HomePage() {
           <h2 className="mb-6 text-center font-headline text-3xl font-bold">
             Featured Products
           </h2>
-          <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
+          <div className="grid grid-cols-2 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
             {featuredProducts.map((product) => (
               <ProductCard key={product.id} product={product} />
             ))}
@@ -90,7 +90,7 @@ export default function HomePage() {
           <h2 className="mb-6 text-center font-headline text-3xl font-bold">
             New Arrivals
           </h2>
-          <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
+          <div className="grid grid-cols-2 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
             {newArrivals.map((product) => (
               <ProductCard key={product.id} product={product} />
             ))}
