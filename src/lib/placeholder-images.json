@@ -2,51 +2,81 @@
   "placeholderImages": [
     {
       "id": "prod-1",
-      "description": "A modern, sleek smartwatch with a black band.",
-      "imageUrl": "https://images.unsplash.com/photo-1579721840641-7d0e67f1204e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxzbWFydHdhdGNoJTIwdGVjaG5vbG9neXxlbnwwfHx8fDE3NjYyMzQ5NDZ8MA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "smartwatch technology"
+      "description": "A soft microfiber pillow.",
+      "imageUrl": "https://images.unsplash.com/photo-1676956969614-b139307516bc?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxtaWNyb2ZpYmVyJTIwcGlsbG93fGVufDB8fHx8MTc2NjMyNTM2MHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "microfiber pillow"
     },
     {
       "id": "prod-2",
-      "description": "Comfortable wireless headphones with noise-cancelling.",
-      "imageUrl": "https://images.unsplash.com/photo-1764557159396-419b85356035?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxoZWFkcGhvbmVzJTIwYXVkaW98ZW58MHx8fHwxNzY2MjI5Nzc0fDA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "headphones audio"
+      "description": "A quilted pillow with a textured pattern.",
+      "imageUrl": "https://images.unsplash.com/photo-1646348207787-27876c97b1ff?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxxdWlsdGVkJTIwcGlsbG93fGVufDB8fHx8MTc2NjMyNTM2MHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "quilted pillow"
     },
     {
       "id": "prod-3",
-      "description": "A professional-grade camera for photography enthusiasts.",
-      "imageUrl": "https://images.unsplash.com/photo-1729857001644-ade54ca81f53?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxjYW1lcmElMjBwaG90b2dyYXBoeXxlbnwwfHx8fDE3NjYyMTkzNTF8MA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "camera photography"
+      "description": "A contour memory foam pillow for neck support.",
+      "imageUrl": "https://images.unsplash.com/photo-1629949008195-c15c25c5e9e9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxtZW1vcnktZm9hbSUyMHBpbGxvd3xlbnwwfHx8fDE3NjYzMjUzNjB8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "memory-foam pillow"
     },
     {
       "id": "prod-4",
-      "description": "A stylish leather backpack for everyday use.",
-      "imageUrl": "https://images.unsplash.com/photo-1633511199018-549377b370a1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8YmFja3BhY2slMjBmYXNoaW9ufGVufDB8fHx8MTc2NjMwMzQ1Mnww&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "backpack fashion"
+      "description": "A large king size hotel pillow.",
+      "imageUrl": "https://images.unsplash.com/photo-1559841644-08984562005a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxob3RlbCUyMHBpbGxvd3xlbnwwfHx8fDE3NjYzMjUzNjB8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "hotel pillow"
     },
     {
       "id": "prod-5",
-      "description": "A classic white ceramic mug.",
-      "imageUrl": "https://images.unsplash.com/photo-1662057918333-e414cdccfb5a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxtdWclMjBjb2ZmZWV8ZW58MHx8fHwxNzY2MTc4OTYxfDA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "mug coffee"
+      "description": "A long microfiber bolster pillow.",
+      "imageUrl": "https://images.unsplash.com/photo-1570786240066-c0d753711cfe?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxib2xzdGVyJTIwcGlsbG93fGVufDB8fHx8MTc2NjMyNTM2MHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "bolster pillow"
     },
     {
       "id": "prod-6",
-      "description": "A modern ergonomic office chair.",
-      "imageUrl": "https://images.unsplash.com/photo-1688578737279-8df94b290806?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8Y2hhaXIlMjBvZmZpY2V8ZW58MHx8fHwxNzY2MjM0OTQ2fDA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "chair office"
+      "description": "A plush microfiber cushion pillow.",
+      "imageUrl": "https://images.unsplash.com/photo-1654325633344-337ce2bac195?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxjdXNoaW9uJTIwcGlsbG93fGVufDB8fHx8MTc2NjMyNTM2MHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "cushion pillow"
     },
     {
       "id": "prod-7",
-      "description": "A set of high-quality kitchen knives.",
-      "imageUrl": "https://images.unsplash.com/photo-1674660346036-4b3df3f07cca?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxrbml2ZXMlMjBraXRjaGVufGVufDB8fHx8MTc2NjMwMzQ1Mnww&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "knives kitchen"
+      "description": "A large king size cushion pillow.",
+      "imageUrl": "https://images.unsplash.com/photo-1761330439252-325f2091e88d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxsYXJnZSUyMGN1c2hpb258ZW58MHx8fHwxNzY2MzI1MzYwfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "large cushion"
     },
     {
       "id": "prod-8",
-      "description": "An elegant fountain pen with a gold nib.",
-      "imageUrl": "https://images.unsplash.com/photo-1711523290219-6762b70926f0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxwZW4lMjB3cml0aW5nfGVufDB8fHx8MTc2NjMwMzQ1Mnww&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "pen writing"
+      "description": "A polyurethane king size mattress.",
+      "imageUrl": "https://images.unsplash.com/photo-1585801295748-9297b9b587b1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxraW5nLXNpemUlMjBtYXR0cmVzc3xlbnwwfHx8fDE3NjYzMjUzNjF8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "king-size mattress"
+    },
+    {
+      "id": "prod-9",
+      "description": "A three-foldable EPE mattress.",
+      "imageUrl": "https://images.unsplash.com/photo-1759176171789-0aa3f84d15ca?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxmb2xkYWJsZSUyMG1hdHRyZXNzfGVufDB8fHx8MTc2NjMyNTM2MHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "foldable mattress"
+    },
+    {
+      "id": "prod-10",
+      "description": "A sofa cum bed mattress.",
+      "imageUrl": "https://images.unsplash.com/photo-1484101403633-562f891dc89a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxzb2ZhJTIwYmVkfGVufDB8fHx8MTc2NjMyNTM2MHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "sofa bed"
+    },
+    {
+      "id": "prod-11",
+      "description": "A king size mattress zipper cover.",
+      "imageUrl": "https://images.unsplash.com/photo-1691703011149-5fc5a062319d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxtYXR0cmVzcyUyMGNvdmVyfGVufDB8fHx8MTc2NjMyNTM2MHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "mattress cover"
+    },
+    {
+      "id": "prod-12",
+      "description": "A king size waterproof mattress zipper cover.",
+      "imageUrl": "https://images.unsplash.com/photo-1603433828270-600fc33d0d68?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHx3YXRlcnByb29mJTIwY292ZXJ8ZW58MHx8fHwxNzY2MzI1MzYwfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "waterproof cover"
+    },
+    {
+      "id": "prod-13",
+      "description": "An elastic mattress protector.",
+      "imageUrl": "https://images.unsplash.com/photo-1759176171789-0aa3f84d15ca?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8bWF0dHJlc3MlMjBwcm90ZWN0b3J8ZW58MHx8fHwxNzY2MzI1MzYwfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "mattress protector"
     }
   ]
 }
