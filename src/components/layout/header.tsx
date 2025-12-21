@@ -14,6 +14,13 @@ import {
   Heart,
   Store
 } from 'lucide-react';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
 import { Badge } from '@/components/ui/badge';
 import { categories } from '@/lib/data';
 import { MobileLink } from './mobile-link';
@@ -77,9 +84,26 @@ export default function Header() {
             />
           </div>
           <div className="flex items-center gap-2">
-            <Button variant="ghost" size="icon" aria-label="Search">
-              <Search className="h-6 w-6 md:hidden" />
-            </Button>
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button variant="ghost" size="icon" aria-label="Search" className="md:hidden">
+                  <Search className="h-6 w-6" />
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-md">
+                <DialogHeader>
+                  <DialogTitle>Search Products</DialogTitle>
+                </DialogHeader>
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <Input
+                    type="search"
+                    placeholder="Search products..."
+                    className="w-full rounded-full bg-muted pl-10"
+                  />
+                </div>
+              </DialogContent>
+            </Dialog>
             <Button variant="ghost" size="icon" asChild aria-label="Account">
               <Link href="/login">
                 <User className="h-6 w-6" />
