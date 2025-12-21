@@ -132,7 +132,7 @@ export default function HomePage() {
         </section>
 
         <section className="mt-12 border-t py-12 md:mt-16 lg:mt-20">
-            <div className="grid grid-cols-1 gap-8 text-center md:grid-cols-3">
+            <div className="flex flex-col gap-8 text-center md:grid md:grid-cols-3">
                 <div className="flex flex-col items-center">
                     <Truck className="h-10 w-10 text-primary" />
                     <h4 className="mt-4 text-lg font-semibold">Free Shipping</h4>
