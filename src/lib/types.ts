@@ -58,3 +58,15 @@ export type Review = {
   comment: string;
   date: string;
 };
+
+export type BlogPost = {
+  id: string;
+  title: string;
+  slug: string;
+  author: string;
+  date: string;
+  excerpt: string;
+  imageUrl: string;
+  imageAlt: string;
+  featured: boolean;
+};

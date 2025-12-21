@@ -1,5 +1,5 @@
 import { PlaceHolderImages } from './placeholder-images';
-import type { Product, Category, Order, Customer, Review } from './types';
+import type { Product, Category, Order, Customer, Review, BlogPost } from './types';
 
 const findImage = (id: string) => {
   const image = PlaceHolderImages.find((img) => img.id === id);
@@ -200,4 +200,51 @@ export const customers: Customer[] = [
 export const reviews: Review[] = [
     { id: 'REV-001', customerName: 'Alice Johnson', rating: 5, title: 'Absolutely love it!', comment: 'The smart watch is amazing. The battery life is great and it looks very stylish.', date: '2023-09-01' },
     { id: 'REV-002', customerName: 'Bob Williams', rating: 4, title: 'Very good headphones', comment: 'The noise cancellation is effective, but the fit could be a bit more comfortable for long sessions.', date: '2023-08-28' },
+];
+
+export const blogPosts: BlogPost[] = [
+  {
+    id: 'blog-post-1',
+    title: 'The Ultimate Guide to Choosing the Perfect Pillow',
+    slug: 'perfect-pillow-guide',
+    author: 'Jane Doe',
+    date: 'Oct 26, 2023',
+    excerpt: 'Finding the right pillow is crucial for a good night\'s sleep. In this guide, we cover everything from materials to firmness to help you make the best choice.',
+    imageUrl: findImage('blog-1').url,
+    imageAlt: 'A person sleeping comfortably on a pillow.',
+    featured: true,
+  },
+  {
+    id: 'blog-post-2',
+    title: 'How to Style Your Living Room with Cushions',
+    slug: 'styling-with-cushions',
+    author: 'John Smith',
+    date: 'Oct 22, 2023',
+    excerpt: 'Cushions are a powerful design tool. Learn how to use different textures, colors, and sizes to transform your living space.',
+    imageUrl: findImage('blog-2').url,
+    imageAlt: 'A stylish living room with decorative cushions on a sofa.',
+    featured: true,
+  },
+  {
+    id: 'blog-post-3',
+    title: 'Mattress 101: A Comprehensive Guide',
+    slug: 'mattress-101',
+    author: 'Emily White',
+    date: 'Oct 18, 2023',
+    excerpt: 'From memory foam to innerspring, buying a mattress can be confusing. Our guide breaks down the types and features to consider.',
+    imageUrl: findImage('blog-3').url,
+    imageAlt: 'Cross-section of a mattress showing different layers.',
+    featured: false,
+  },
+  {
+    id: 'blog-post-4',
+    title: '5 Reasons to Use a Mattress Protector',
+    slug: 'why-use-mattress-protector',
+    author: 'Michael Brown',
+    date: 'Oct 15, 2023',
+    excerpt: 'A mattress protector is a small investment that can save you a lot of trouble. Here are five key benefits to protecting your mattress.',
+    imageUrl: findImage('blog-4').url,
+    imageAlt: 'A person fitting a mattress protector on a bed.',
+    featured: false,
+  },
 ];
