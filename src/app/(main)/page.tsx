@@ -121,7 +121,7 @@ export default function HomePage() {
         </section>
         
         <section className="mt-12 md:mt-16 lg:mt-20">
-          <h2 className="mb-6 text-center font-headline text-3xl font-bold">
+          <h2 className="mb-6 text-center fontheadline text-3xl font-bold">
             New Arrivals
           </h2>
           <div className="grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
@@ -132,7 +132,7 @@ export default function HomePage() {
         </section>
 
         <section className="mt-12 border-t py-12 md:mt-16 lg:mt-20">
-            <div className="flex flex-col gap-8 text-center md:grid md:grid-cols-3">
+            <div className="grid grid-cols-1 gap-8 text-center md:grid-cols-3">
                 <div className="flex flex-col items-center">
                     <Truck className="h-10 w-10 text-primary" />
                     <h4 className="mt-4 text-lg font-semibold">Free Shipping</h4>
