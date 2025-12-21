@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { categories } from '@/lib/data';
+import { MobileLink } from './mobile-link';
 
 export default function Header() {
   return (
@@ -43,13 +44,13 @@ export default function Header() {
                   <span>VSTRADERS</span>
                 </Link>
                 {categories.map((category) => (
-                    <Link
+                    <MobileLink
                     key={category.id}
                     href={`/category/${category.slug}`}
                     className="flex w-full items-center py-2 text-lg font-semibold"
                   >
                     {category.name}
-                  </Link>
+                  </MobileLink>
                 ))}
               </div>
             </SheetContent>
