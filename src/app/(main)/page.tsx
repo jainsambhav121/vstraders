@@ -57,12 +57,12 @@ export default function HomePage() {
                   <CarouselItem key={category.id} className="basis-1/2">
                      <Link
                         href={`/category/${category.slug}`}
-                        className="group flex h-full flex-col items-center justify-center gap-2 rounded-full border bg-card p-4 text-center transition-all hover:shadow-lg aspect-square"
+                        className="group flex h-full flex-col items-center justify-center gap-2 rounded-full border bg-card p-2 text-center transition-all hover:shadow-lg aspect-square"
                       >
-                        <div className="rounded-full bg-accent p-4 group-hover:bg-primary group-hover:text-primary-foreground">
-                          <Tag className="h-8 w-8 text-accent-foreground group-hover:text-primary-foreground" />
+                        <div className="rounded-full bg-accent p-3 group-hover:bg-primary group-hover:text-primary-foreground">
+                          <Tag className="h-6 w-6 text-accent-foreground group-hover:text-primary-foreground" />
                         </div>
-                        <span className="font-semibold text-card-foreground">
+                        <span className="font-semibold text-card-foreground text-sm">
                           {category.name}
                         </span>
                       </Link>
@@ -93,7 +93,7 @@ export default function HomePage() {
           <h2 className="mb-6 text-center font-headline text-3xl font-bold">
             Featured Products
           </h2>
-          <div className="grid grid-cols-2 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
+          <div className="grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
             {featuredProducts.map((product) => (
               <ProductCard key={product.id} product={product} />
             ))}
@@ -122,7 +122,7 @@ export default function HomePage() {
           <h2 className="mb-6 text-center font-headline text-3xl font-bold">
             New Arrivals
           </h2>
-          <div className="grid grid-cols-2 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
+          <div className="grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
             {newArrivals.map((product) => (
               <ProductCard key={product.id} product={product} />
             ))}
