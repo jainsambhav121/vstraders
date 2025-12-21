@@ -4,6 +4,11 @@ import { Button } from '@/components/ui/button';
 import { products, categories } from '@/lib/data';
 import ProductCard from '@/components/product-card';
 import { ArrowRight, Tag, Truck } from 'lucide-react';
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+} from "@/components/ui/carousel"
 
 export default function HomePage() {
   const featuredProducts = products.slice(0, 4);
@@ -39,7 +44,33 @@ export default function HomePage() {
           <h2 className="mb-6 text-center font-headline text-3xl font-bold">
             Shop by Category
           </h2>
-          <div className="grid grid-cols-2 gap-4 md:grid-cols-4 md:gap-6">
+          <div className="md:hidden">
+            <Carousel
+              opts={{
+                align: "start",
+              }}
+              className="w-full"
+            >
+              <CarouselContent>
+                {categories.map((category) => (
+                  <CarouselItem key={category.id} className="basis-1/2">
+                     <Link
+                        href={`/category/${category.slug}`}
+                        className="group flex h-full flex-col items-center justify-center gap-2 rounded-lg border bg-card p-4 text-center transition-all hover:shadow-lg"
+                      >
+                        <div className="rounded-full bg-accent p-4 group-hover:bg-primary group-hover:text-primary-foreground">
+                          <Tag className="h-8 w-8 text-accent-foreground group-hover:text-primary-foreground" />
+                        </div>
+                        <span className="font-semibold text-card-foreground">
+                          {category.name}
+                        </span>
+                      </Link>
+                  </CarouselItem>
+                ))}
+              </CarouselContent>
+            </Carousel>
+          </div>
+          <div className="hidden grid-cols-2 gap-4 md:grid md:grid-cols-4 md:gap-6">
             {categories.map((category) => (
               <Link
                 href={`/category/${category.slug}`}
