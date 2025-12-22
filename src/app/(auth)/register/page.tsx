@@ -12,7 +12,7 @@ import {
   GoogleAuthProvider,
   updateProfile,
 } from 'firebase/auth';
-import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
+import { doc, setDoc, serverTimestamp, getDoc } from 'firebase/firestore';
 import { useAuth, useFirestore } from '@/firebase';
 import { Button } from '@/components/ui/button';
 import {
@@ -62,10 +62,19 @@ export default function RegisterPage() {
   const createUserDocument = async (
     uid: string,
     email: string,
-    name: string
+    name: string,
+    isNewUser: boolean = false
   ) => {
     if (!firestore) return;
     const userRef = doc(firestore, 'users', uid);
+
+    if(isNewUser) {
+        const userDoc = await getDoc(userRef);
+        if(userDoc.exists()) {
+            return; // Document already exists, do nothing.
+        }
+    }
+    
     await setDoc(userRef, {
       uid,
       name,
@@ -75,7 +84,7 @@ export default function RegisterPage() {
       createdAt: serverTimestamp(),
       totalSpent: 0,
       orderCount: 0,
-    });
+    }, { merge: true });
   };
 
   const handleEmailSignUp = async (values: z.infer<typeof formSchema>) => {
@@ -92,7 +101,7 @@ export default function RegisterPage() {
       await createUserDocument(user.uid, user.email!, name);
 
       toast({ title: 'Account Created', description: "Welcome to VSTRADERS!" });
-      router.push('/dashboard');
+      router.push('/');
     } catch (error) {
       console.error('Sign up error:', error);
       let errorMessage = 'An unknown error occurred.';
@@ -126,10 +135,10 @@ export default function RegisterPage() {
       const result = await signInWithPopup(auth, provider);
       const user = result.user;
 
-      await createUserDocument(user.uid, user.email!, user.displayName || 'Google User');
+      await createUserDocument(user.uid, user.email!, user.displayName || 'Google User', true);
 
       toast({ title: 'Account Created', description: "Welcome!" });
-      router.push('/dashboard');
+      router.push('/');
     } catch (error) {
       if (error instanceof FirebaseError && error.code === 'auth/cancelled-popup-request') {
         // User closed the popup, do nothing

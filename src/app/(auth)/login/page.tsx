@@ -56,7 +56,7 @@ export default function LoginPage() {
     try {
       await signInWithEmailAndPassword(auth, values.email, values.password);
       toast({ title: 'Login Successful', description: "Welcome back!" });
-      router.push('/dashboard');
+      router.push('/');
     } catch (error) {
       console.error('Login error:', error);
       let errorMessage = 'An unknown error occurred.';
@@ -64,6 +64,7 @@ export default function LoginPage() {
           switch (error.code) {
               case 'auth/user-not-found':
               case 'auth/wrong-password':
+              case 'auth/invalid-credential':
                   errorMessage = 'Invalid email or password.';
                   break;
               case 'auth/invalid-email':
@@ -87,7 +88,7 @@ export default function LoginPage() {
     try {
       await signInWithPopup(auth, provider);
       toast({ title: 'Login Successful', description: "Welcome!" });
-      router.push('/dashboard');
+      router.push('/');
     } catch (error) {
       if (error instanceof FirebaseError && error.code === 'auth/cancelled-popup-request') {
         // User closed the popup, do nothing
