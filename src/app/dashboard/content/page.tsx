@@ -34,6 +34,7 @@ const contentFormSchema = z.object({
   aboutStory: z.string(),
   aboutMission: z.string(),
   aboutVision: z.string(),
+  aboutBannerUrl: z.string().url({ message: "Please enter a valid URL." }).or(z.literal('')),
 });
 
 export default function ContentPage() {
@@ -47,6 +48,7 @@ export default function ContentPage() {
       aboutStory: `Founded in 2023, VSTRADERS started with a simple idea: to make high-quality, comfortable, and stylish home essentials accessible to everyone. We noticed a gap in the market for affordable luxury in pillows, cushions, mattresses, and covers. What began as a small workshop has grown into a beloved brand, known for its dedication to quality craftsmanship and customer satisfaction.\n\nOur journey is one of passion for comfort and design. We believe that a comfortable home is a happy home, and every product we create is a testament to this philosophy. We source the finest materials and pay meticulous attention to detail to ensure that every item we sell brings lasting comfort and joy to our customers.`,
       aboutMission: `To enhance everyday living by providing superior comfort and style through our thoughtfully designed home essentials, ensuring every customer finds their perfect piece for a better night's sleep and a more beautiful home.`,
       aboutVision: `To be the leading and most trusted brand in home comfort, continuously innovating and inspiring our customers to create spaces where they can truly relax, recharge, and live their best lives.`,
+      aboutBannerUrl: 'https://picsum.photos/seed/about-hero/1800/400',
     },
   });
 
@@ -149,6 +151,20 @@ export default function ContentPage() {
                     </CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-6">
+                        <FormField
+                            control={form.control}
+                            name="aboutBannerUrl"
+                            render={({ field }) => (
+                                <FormItem>
+                                <FormLabel>About Page Banner Image URL</FormLabel>
+                                <FormControl>
+                                    <Input placeholder="https://example.com/about-banner.jpg" {...field} />
+                                </FormControl>
+                                <FormDescription>Enter the full URL for the banner image on the About Us page.</FormDescription>
+                                <FormMessage />
+                                </FormItem>
+                            )}
+                        />
                         <FormField
                             control={form.control}
                             name="aboutStory"
