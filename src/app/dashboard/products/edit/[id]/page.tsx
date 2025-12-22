@@ -30,14 +30,16 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { categories, products } from '@/lib/data';
+import { categories } from '@/lib/data';
 import { toast } from '@/hooks/use-toast';
 import Link from 'next/link';
 import { ChevronLeft, PlusCircle, Trash2 } from 'lucide-react';
 import { notFound, useParams } from 'next/navigation';
 import Image from 'next/image';
 import { Switch } from '@/components/ui/switch';
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useProducts } from '@/hooks/use-products';
+import { Skeleton } from '@/components/ui/skeleton';
 
 const formSchema = z.object({
   name: z.string().min(2, { message: 'Name must be at least 2 characters.' }),
@@ -72,34 +74,52 @@ export default function EditProductPage() {
   const params = useParams();
   const { id } = params;
 
+  const { products, loading } = useProducts();
   const product = products.find((p) => p.id === id);
-
-  if (!product) {
-    notFound();
-  }
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: product.name,
-      description: product.description,
-      category: product.category.slug,
-      price: product.price,
-      discountType: product.discount?.type,
-      discountValue: product.discount?.value,
-      stock: product.stock,
-      images: product.images.map(img => ({ url: img.url })),
-      primaryImageIndex: product.primaryImageIndex,
-      variants: product.variants,
-      isFeatured: product.isFeatured,
-      isBestSeller: product.isBestSeller,
-      isEnabled: product.isEnabled,
-      seoTitle: product.seoTitle,
-      seoMetaDescription: product.seoMetaDescription,
-      seoKeywords: product.seoKeywords.join(', '),
-      slug: product.slug,
+      name: '',
+      description: '',
+      price: 0,
+      stock: 0,
+      images: [{ url: '' }],
+      primaryImageIndex: 0,
+      variants: [],
+      isFeatured: false,
+      isBestSeller: false,
+      isEnabled: true,
+      seoTitle: '',
+      seoMetaDescription: '',
+      seoKeywords: '',
+      slug: '',
     },
   });
+
+  useEffect(() => {
+    if (product) {
+      form.reset({
+        name: product.name,
+        description: product.description,
+        category: product.category,
+        price: product.price,
+        discountType: product.discount?.type,
+        discountValue: product.discount?.value,
+        stock: product.stock,
+        images: product.images.map(img => ({ url: img.url })),
+        primaryImageIndex: product.primaryImageIndex,
+        variants: product.variants,
+        isFeatured: product.isFeatured,
+        isBestSeller: product.isBestSeller,
+        isEnabled: product.isEnabled,
+        seoTitle: product.seoTitle,
+        seoMetaDescription: product.seoMetaDescription,
+        seoKeywords: product.seoKeywords.join(', '),
+        slug: product.slug,
+      });
+    }
+  }, [product, form]);
 
   const { fields: imageFields, append: appendImage, remove: removeImage } = useFieldArray({
     control: form.control,
@@ -117,6 +137,30 @@ export default function EditProductPage() {
       title: 'Product Updated',
       description: `The product "${values.name}" has been successfully updated.`,
     });
+  }
+
+  if (loading) {
+    return (
+      <div className="mx-auto grid max-w-4xl flex-1 auto-rows-max gap-4">
+        <div className="flex items-center gap-4">
+            <Skeleton className="h-7 w-7 rounded-full" />
+            <Skeleton className="h-6 w-48" />
+        </div>
+         <div className="grid gap-4 md:grid-cols-[1fr_250px] lg:grid-cols-3 lg:gap-8">
+            <div className="grid auto-rows-max items-start gap-4 lg:col-span-2 lg:gap-8">
+                <Card><CardHeader><Skeleton className="h-5 w-40" /></CardHeader><CardContent><div className="space-y-4"><Skeleton className="h-8 w-full" /><Skeleton className="h-20 w-full" /></div></CardContent></Card>
+                <Card><CardHeader><Skeleton className="h-5 w-40" /></CardHeader><CardContent><Skeleton className="h-24 w-full" /></CardContent></Card>
+            </div>
+             <div className="grid auto-rows-max items-start gap-4 lg:gap-8">
+                <Card><CardHeader><Skeleton className="h-5 w-32" /></CardHeader><CardContent><Skeleton className="h-16 w-full" /></CardContent></Card>
+             </div>
+        </div>
+      </div>
+    )
+  }
+
+  if (!product) {
+    notFound();
   }
 
   return (
@@ -390,3 +434,5 @@ export default function EditProductPage() {
     </Form>
   );
 }
+
+    
