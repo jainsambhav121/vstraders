@@ -35,6 +35,8 @@ const contentFormSchema = z.object({
   aboutMission: z.string(),
   aboutVision: z.string(),
   aboutBannerUrl: z.string().url({ message: "Please enter a valid URL." }).or(z.literal('')),
+  privacyPolicy: z.string().min(1, "Privacy Policy cannot be empty."),
+  termsAndConditions: z.string().min(1, "Terms & Conditions cannot be empty."),
 });
 
 export default function ContentPage() {
@@ -49,6 +51,8 @@ export default function ContentPage() {
       aboutMission: `To enhance everyday living by providing superior comfort and style through our thoughtfully designed home essentials, ensuring every customer finds their perfect piece for a better night's sleep and a more beautiful home.`,
       aboutVision: `To be the leading and most trusted brand in home comfort, continuously innovating and inspiring our customers to create spaces where they can truly relax, recharge, and live their best lives.`,
       aboutBannerUrl: 'https://picsum.photos/seed/about-hero/1800/400',
+      privacyPolicy: `Your privacy is important to us. It is VSTRADERS' policy to respect your privacy regarding any information we may collect from you across our website...`,
+      termsAndConditions: `By accessing the website at VSTRADERS, you are agreeing to be bound by these terms of service, all applicable laws and regulations...`,
     },
   });
 
@@ -212,11 +216,36 @@ export default function ContentPage() {
                     <CardHeader>
                     <CardTitle>Policies</CardTitle>
                     <CardDescription>
-                        Manage content for Privacy Policy and Terms & Conditions.
+                        Manage content for Privacy Policy and Terms &amp; Conditions.
                     </CardDescription>
                     </CardHeader>
-                    <CardContent>
-                        <p className="text-muted-foreground">Policy management will be available here.</p>
+                    <CardContent className="space-y-6">
+                        <FormField
+                            control={form.control}
+                            name="privacyPolicy"
+                            render={({ field }) => (
+                                <FormItem>
+                                <FormLabel>Privacy Policy</FormLabel>
+                                <FormControl>
+                                    <Textarea className="min-h-[250px]" {...field} />
+                                </FormControl>
+                                <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={form.control}
+                            name="termsAndConditions"
+                            render={({ field }) => (
+                                <FormItem>
+                                <FormLabel>Terms &amp; Conditions</FormLabel>
+                                <FormControl>
+                                    <Textarea className="min-h-[250px]" {...field} />
+                                </FormControl>
+                                <FormMessage />
+                                </FormItem>
+                            )}
+                        />
                     </CardContent>
                 </Card>
                 </TabsContent>
