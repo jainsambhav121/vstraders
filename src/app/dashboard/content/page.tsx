@@ -1,8 +1,9 @@
 
+
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from 'react-hook-form';
+import { useForm, useFieldArray } from 'react-hook-form';
 import * as z from 'zod';
 import { Button } from '@/components/ui/button';
 import {
@@ -25,6 +26,13 @@ import {
 } from '@/components/ui/card';
 import { toast } from '@/hooks/use-toast';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
+import { PlusCircle, Trash2 } from 'lucide-react';
+
+const faqItemSchema = z.object({
+  question: z.string().min(1, 'Question cannot be empty.'),
+  answer: z.string().min(1, 'Answer cannot be empty.'),
+});
 
 const contentFormSchema = z.object({
   heroTitle: z.string(),
@@ -37,6 +45,7 @@ const contentFormSchema = z.object({
   aboutBannerUrl: z.string().url({ message: "Please enter a valid URL." }).or(z.literal('')),
   privacyPolicy: z.string().min(1, "Privacy Policy cannot be empty."),
   termsAndConditions: z.string().min(1, "Terms & Conditions cannot be empty."),
+  faqs: z.array(faqItemSchema),
 });
 
 export default function ContentPage() {
@@ -53,7 +62,16 @@ export default function ContentPage() {
       aboutBannerUrl: 'https://picsum.photos/seed/about-hero/1800/400',
       privacyPolicy: `Your privacy is important to us. It is VSTRADERS' policy to respect your privacy regarding any information we may collect from you across our website...`,
       termsAndConditions: `By accessing the website at VSTRADERS, you are agreeing to be bound by these terms of service, all applicable laws and regulations...`,
+      faqs: [
+        { question: 'What is your return policy?', answer: 'We offer a 30-day return policy on all our products. If you are not satisfied with your purchase, you can return it for a full refund.' },
+        { question: 'How long does shipping take?', answer: 'Shipping usually takes 5-7 business days within the country. International shipping times may vary.' },
+      ],
     },
+  });
+
+  const { fields: faqFields, append: appendFaq, remove: removeFaq } = useFieldArray({
+    control: form.control,
+    name: "faqs",
   });
 
   function onSubmit(values: z.infer<typeof contentFormSchema>) {
@@ -252,13 +270,69 @@ export default function ContentPage() {
                 <TabsContent value="faq">
                 <Card>
                     <CardHeader>
-                    <CardTitle>FAQ</CardTitle>
-                    <CardDescription>
-                        Manage Frequently Asked Questions.
-                    </CardDescription>
+                        <CardTitle>Frequently Asked Questions</CardTitle>
+                        <CardDescription>Manage the questions and answers displayed on your site.</CardDescription>
                     </CardHeader>
-                    <CardContent>
-                        <p className="text-muted-foreground">FAQ management will be available here.</p>
+                    <CardContent className="space-y-4">
+                        <Accordion type="single" collapsible className="w-full">
+                            {faqFields.map((field, index) => (
+                                <AccordionItem value={`item-${index}`} key={field.id}>
+                                    <div className="flex items-center gap-2">
+                                        <AccordionTrigger className="flex-1">
+                                            <span className="truncate">
+                                                {form.watch(`faqs.${index}.question`) || `Question ${index + 1}`}
+                                            </span>
+                                        </AccordionTrigger>
+                                        <Button
+                                            type="button"
+                                            variant="ghost"
+                                            size="icon"
+                                            onClick={() => removeFaq(index)}
+                                        >
+                                            <Trash2 className="h-4 w-4 text-destructive" />
+                                        </Button>
+                                    </div>
+                                    <AccordionContent className="space-y-4">
+                                        <FormField
+                                            control={form.control}
+                                            name={`faqs.${index}.question`}
+                                            render={({ field }) => (
+                                                <FormItem>
+                                                    <FormLabel>Question</FormLabel>
+                                                    <FormControl>
+                                                        <Input {...field} />
+                                                    </FormControl>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}
+                                        />
+                                        <FormField
+                                            control={form.control}
+                                            name={`faqs.${index}.answer`}
+                                            render={({ field }) => (
+                                                <FormItem>
+                                                    <FormLabel>Answer</FormLabel>
+                                                    <FormControl>
+                                                        <Textarea className="min-h-[100px]" {...field} />
+                                                    </FormControl>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}
+                                        />
+                                    </AccordionContent>
+                                </AccordionItem>
+                            ))}
+                        </Accordion>
+                         <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            className="mt-4"
+                            onClick={() => appendFaq({ question: '', answer: '' })}
+                        >
+                            <PlusCircle className="mr-2 h-4 w-4" />
+                            Add FAQ
+                        </Button>
                     </CardContent>
                 </Card>
                 </TabsContent>
@@ -268,3 +342,4 @@ export default function ContentPage() {
     </div>
   );
 }
+

@@ -152,6 +152,22 @@
         "updatedAt": { "type": "string", "format": "date-time" }
       }
     },
+    "FaqItem": {
+      "title": "FAQ Item",
+      "description": "A single frequently asked question and its answer.",
+      "type": "object",
+      "properties": {
+        "question": {
+          "type": "string",
+          "description": "The question."
+        },
+        "answer": {
+          "type": "string",
+          "description": "The answer to the question."
+        }
+      },
+      "required": ["question", "answer"]
+    },
     "HomepageContent": {
       "title": "Homepage Content",
       "description": "Content for the homepage sections.",
@@ -159,7 +175,14 @@
       "properties": {
         "heroText": { "type": "string" },
         "brandTagline": { "type": "string" },
-        "updatedAt": { "type": "string", "format": "date-time" }
+        "updatedAt": { "type": "string", "format": "date-time" },
+        "faqs": {
+          "type": "array",
+          "description": "A list of frequently asked questions.",
+          "items": {
+            "$ref": "#/entities/FaqItem"
+          }
+        }
       }
     }
   },
