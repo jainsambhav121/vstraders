@@ -14,15 +14,25 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { toast } from '@/hooks/use-toast';
+import { Textarea } from '@/components/ui/textarea';
+import { Switch } from '@/components/ui/switch';
 
 const settingsFormSchema = z.object({
     storeName: z.string().min(1, 'Store name is required.'),
     supportEmail: z.string().email('Invalid email address.'),
-    twitterUrl: z.string().url().or(z.literal('')),
-    facebookUrl: z.string().url().or(z.literal('')),
-    instagramUrl: z.string().url().or(z.literal('')),
+    twitterUrl: z.string().url({ message: "Please enter a valid URL." }).or(z.literal('')),
+    facebookUrl: z.string().url({ message: "Please enter a valid URL." }).or(z.literal('')),
+    instagramUrl: z.string().url({ message: "Please enter a valid URL." }).or(z.literal('')),
+    freeShippingThreshold: z.coerce.number().min(0),
+    flatRate: z.coerce.number().min(0),
+    allowCod: z.boolean().default(false),
+    stripeApiKey: z.string().optional(),
+    razorpayApiKey: z.string().optional(),
+    metaTitle: z.string().optional(),
+    metaDescription: z.string().optional(),
+    metaKeywords: z.string().optional(),
 });
 
 type SettingsFormValues = z.infer<typeof settingsFormSchema>;
@@ -37,6 +47,14 @@ export default function SettingsPage() {
             twitterUrl: '#',
             facebookUrl: '#',
             instagramUrl: '#',
+            freeShippingThreshold: 4000,
+            flatRate: 150,
+            allowCod: true,
+            stripeApiKey: '',
+            razorpayApiKey: '',
+            metaTitle: 'VSTRADERS - Your One-Stop Shop',
+            metaDescription: 'Discover the best products at VSTRADERS. Quality and affordability in one place.',
+            metaKeywords: 'ecommerce, online shopping, products, deals',
         },
     });
 
@@ -162,7 +180,34 @@ export default function SettingsPage() {
                     </CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-4">
-                    <p className="text-muted-foreground">Shipping configuration options will be available here.</p>
+                         <FormField
+                            control={form.control}
+                            name="freeShippingThreshold"
+                            render={({ field }) => (
+                                <FormItem>
+                                <FormLabel>Free Shipping Threshold (₹)</FormLabel>
+                                <FormControl>
+                                    <Input type="number" {...field} />
+                                </FormControl>
+                                <FormDescription>Set the order amount above which shipping is free.</FormDescription>
+                                <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                         <FormField
+                            control={form.control}
+                            name="flatRate"
+                            render={({ field }) => (
+                                <FormItem>
+                                <FormLabel>Flat Shipping Rate (₹)</FormLabel>
+                                <FormControl>
+                                    <Input type="number" {...field} />
+                                </FormControl>
+                                <FormDescription>The standard shipping cost for orders below the threshold.</FormDescription>
+                                <FormMessage />
+                                </FormItem>
+                            )}
+                        />
                     </CardContent>
                 </Card>
                 </TabsContent>
@@ -175,20 +220,101 @@ export default function SettingsPage() {
                     </CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-4">
-                    <p className="text-muted-foreground">Payment gateway integrations will be available here.</p>
+                         <FormField
+                            control={form.control}
+                            name="allowCod"
+                            render={({ field }) => (
+                                <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
+                                <div className="space-y-0.5">
+                                    <FormLabel>Allow Cash on Delivery (COD)</FormLabel>
+                                    <FormDescription>Enable or disable COD as a payment option.</FormDescription>
+                                </div>
+                                <FormControl>
+                                    <Switch checked={field.value} onCheckedChange={field.onChange} />
+                                </FormControl>
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={form.control}
+                            name="stripeApiKey"
+                            render={({ field }) => (
+                                <FormItem>
+                                <FormLabel>Stripe API Key</FormLabel>
+                                <FormControl>
+                                    <Input placeholder="pk_test_..." {...field} />
+                                </FormControl>
+                                <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={form.control}
+                            name="razorpayApiKey"
+                            render={({ field }) => (
+                                <FormItem>
+                                <FormLabel>Razorpay API Key</FormLabel>
+                                <FormControl>
+                                    <Input placeholder="rzp_test_..." {...field} />
+                                </FormControl>
+                                <FormMessage />
+                                </FormItem>
+                            )}
+                        />
                     </CardContent>
                 </Card>
                 </TabsContent>
                 <TabsContent value="seo">
                 <Card>
                     <CardHeader>
-                    <CardTitle>SEO Settings</CardTitle>
+                    <CardTitle>Global SEO Settings</CardTitle>
                     <CardDescription>
-                        Optimize your store for search engines.
+                        Optimize your store for search engines. These can be overridden on a per-product basis.
                     </CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-4">
-                    <p className="text-muted-foreground">SEO settings will be available here.</p>
+                        <FormField
+                            control={form.control}
+                            name="metaTitle"
+                            render={({ field }) => (
+                                <FormItem>
+                                <FormLabel>Meta Title</FormLabel>
+                                <FormControl>
+                                    <Input {...field} />
+                                </FormControl>
+                                <FormDescription>The title that appears in browser tabs and search engine results.</FormDescription>
+                                <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={form.control}
+                            name="metaDescription"
+                            render={({ field }) => (
+                                <FormItem>
+                                <FormLabel>Meta Description</FormLabel>
+                                <FormControl>
+                                    <Textarea {...field} />
+                                </FormControl>
+                                <FormDescription>A brief summary of your store for search engines.</FormDescription>
+                                <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={form.control}
+                            name="metaKeywords"
+                            render={({ field }) => (
+                                <FormItem>
+                                <FormLabel>Meta Keywords</FormLabel>
+                                <FormControl>
+                                    <Input {...field} />
+                                </FormControl>
+                                <FormDescription>Comma-separated keywords relevant to your store.</FormDescription>
+                                <FormMessage />
+                                </Form-Item>
+                            )}
+                        />
                     </CardContent>
                 </Card>
                 </TabsContent>
