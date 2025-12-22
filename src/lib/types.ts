@@ -74,15 +74,16 @@ export type Order = {
   paymentStatus: PaymentStatus;
 };
 
-export type Customer = {
+export type User = {
   id: string;
   name: string;
   email: string;
   avatar: string;
   totalSpent: number;
   orderCount: number;
-  registeredDate: string;
-  status: 'Active' | 'Inactive';
+  createdAt: string;
+  isActive: boolean;
+  role: 'admin' | 'manager' | 'customer';
 };
 
 export type Review = {
