@@ -9,7 +9,7 @@ import * as z from 'zod';
 import {
   signInWithEmailAndPassword,
 } from 'firebase/auth';
-import { useAuth } from '@/firebase';
+import { useAuth, useFirestore } from '@/firebase';
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -29,6 +29,7 @@ import {
 } from '@/components/ui/form';
 import { useToast } from '@/hooks/use-toast';
 import { FirebaseError } from 'firebase/app';
+import { doc, getDoc } from 'firebase/firestore';
 
 const formSchema = z.object({
   email: z.string().email({ message: 'Please enter a valid email.' }),
@@ -37,6 +38,7 @@ const formSchema = z.object({
 
 export default function LoginPage() {
   const auth = useAuth();
+  const firestore = useFirestore();
   const router = useRouter();
   const { toast } = useToast();
 
@@ -49,11 +51,27 @@ export default function LoginPage() {
   });
 
   const handleEmailLogin = async (values: z.infer<typeof formSchema>) => {
-    if (!auth) return;
+    if (!auth || !firestore) return;
     try {
-      await signInWithEmailAndPassword(auth, values.email, values.password);
+      const userCredential = await signInWithEmailAndPassword(auth, values.email, values.password);
+      const user = userCredential.user;
+      
+      // Check user role
+      const userDocRef = doc(firestore, 'users', user.uid);
+      const userDoc = await getDoc(userDocRef);
+
       toast({ title: 'Login Successful', description: "Welcome back!" });
+
+      if (userDoc.exists()) {
+        const userData = userDoc.data();
+        if (userData.role === 'admin' || userData.role === 'manager') {
+          router.push('/dashboard');
+          return;
+        }
+      }
+      
       router.push('/');
+
     } catch (error) {
       console.error('Login error:', error);
       let errorMessage = 'An unknown error occurred.';

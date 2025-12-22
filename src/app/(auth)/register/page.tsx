@@ -77,7 +77,7 @@ export default function RegisterPage() {
       uid,
       name,
       email,
-      role: 'customer',
+      role: 'customer', // Default role for new sign-ups
       isActive: true,
       createdAt: serverTimestamp(),
       totalSpent: 0,
@@ -96,7 +96,7 @@ export default function RegisterPage() {
       const user = userCredential.user;
       const name = `${values.firstName} ${values.lastName}`;
       await updateProfile(user, { displayName: name });
-      await createUserDocument(user.uid, user.email!, name);
+      await createUserDocument(user.uid, user.email!, name, true);
 
       toast({ title: 'Account Created', description: "Welcome to VSTRADERS!" });
       router.push('/');
