@@ -36,6 +36,8 @@ export default function DashboardPage() {
   const totalRevenue = orders.reduce((acc, order) => acc + order.total, 0);
   const totalSales = orders.length;
   const totalCustomers = users.length;
+  const totalProducts = products.length;
+
 
   return (
     <div className="space-y-6">
