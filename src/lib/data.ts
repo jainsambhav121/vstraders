@@ -1,3 +1,4 @@
+
 import { PlaceHolderImages } from './placeholder-images';
 import type { Product, Category, Order, Customer, Review, BlogPost, PaymentStatus, OrderStatus } from './types';
 
@@ -147,8 +148,10 @@ export const orders: Order[] = [
   { id: 'ORD-002', customerName: 'Bob Williams', customerEmail: 'bob@example.com', date: '2023-10-25', total: 249.99, status: 'Shipped', items: 1, paymentStatus: 'Paid' },
   { id: 'ORD-003', customerName: 'Charlie Brown', customerEmail: 'charlie@example.com', date: '2023-10-25', total: 899.00, status: 'Processing', items: 1, paymentStatus: 'Pending' },
   { id: 'ORD-004', customerName: 'Diana Prince', customerEmail: 'diana@example.com', date: '2023-10-24', total: 12.99, status: 'Pending', items: 1, paymentStatus: 'Paid' },
-  { id: 'ORD-005', customerName: 'Ethan Hunt', customerEmail: 'ethan@example.com', date: '2023-10-23', total: 349.00, status: 'Canceled', items: 1, paymentStatus: 'Failed' },
+  { id: 'ORD-005', customerName: 'Ethan Hunt', customerEmail: 'ethan@example.com', date: '2023-10-23', total: 349.00, status: 'Cancelled', items: 1, paymentStatus: 'Refunded' },
   { id: 'ORD-006', customerName: 'Fiona Glenanne', customerEmail: 'fiona@example.com', date: '2023-10-22', total: 479.49, status: 'Delivered', items: 2, paymentStatus: 'Paid' },
+  { id: 'ORD-007', customerName: 'George Costanza', customerEmail: 'george@example.com', date: '2023-10-21', total: 59.98, status: 'Returned', items: 2, paymentStatus: 'Refunded' },
+  { id: 'ORD-008', customerName: 'Harry Potter', customerEmail: 'harry@example.com', date: '2023-10-20', total: 199.99, status: 'Packed', items: 1, paymentStatus: 'Paid' },
 ];
 
 export const customers: Customer[] = [

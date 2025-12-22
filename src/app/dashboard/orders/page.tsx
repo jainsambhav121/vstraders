@@ -1,4 +1,5 @@
 
+
 import {
   Card,
   CardContent,
@@ -28,32 +29,40 @@ import {
   DropdownMenuSeparator,
   DropdownMenuItem,
 } from '@/components/ui/dropdown-menu';
-import { Badge } from '@/components/ui/badge';
+import { Badge, badgeVariants } from '@/components/ui/badge';
 import { orders } from '@/lib/data';
 import { Button } from '@/components/ui/button';
 import { ListFilter, File, Search, MoreHorizontal } from 'lucide-react';
 import { Input } from '@/components/ui/input';
+import type { OrderStatus, PaymentStatus } from '@/lib/types';
+import { cn } from '@/lib/utils';
 
-const getStatusVariant = (status: string) => {
+const getStatusVariant = (status: OrderStatus) => {
   switch (status) {
     case 'Delivered':
-      return 'default';
+      return 'default'; // Green
     case 'Shipped':
-      return 'secondary';
-    case 'Canceled':
-      return 'destructive';
+    case 'Packed':
+      return 'secondary'; // Gray
+    case 'Cancelled':
+    case 'Returned':
+      return 'destructive'; // Red
+    case 'Processing':
+    case 'Confirmed':
+      return 'outline'; // Blue - needs custom color
     default:
       return 'outline';
   }
 };
 
-const getPaymentStatusVariant = (status: string) => {
+const getPaymentStatusVariant = (status: PaymentStatus) => {
   switch (status) {
     case 'Paid':
       return 'default';
     case 'Pending':
       return 'secondary';
     case 'Failed':
+    case 'Refunded':
       return 'destructive';
     default:
       return 'outline';
@@ -67,10 +76,11 @@ export default function OrdersPage() {
         <TabsList>
           <TabsTrigger value="all">All</TabsTrigger>
           <TabsTrigger value="pending">Pending</TabsTrigger>
-          <TabsTrigger value="processing">Processing</TabsTrigger>
+          <TabsTrigger value="confirmed">Confirmed</TabsTrigger>
+          <TabsTrigger value="packed">Packed</TabsTrigger>
           <TabsTrigger value="shipped">Shipped</TabsTrigger>
           <TabsTrigger value="delivered">Delivered</TabsTrigger>
-          <TabsTrigger value="canceled" className="hidden sm:flex">Canceled</TabsTrigger>
+          <TabsTrigger value="cancelled" className="hidden sm:flex">Cancelled</TabsTrigger>
         </TabsList>
         <div className="ml-auto flex items-center gap-2">
           <DropdownMenu>
@@ -133,7 +143,14 @@ export default function OrdersPage() {
                     <TableCell className="font-medium">{order.id}</TableCell>
                     <TableCell>{order.customerName}</TableCell>
                     <TableCell>
-                      <Badge variant={getStatusVariant(order.status)}>{order.status}</Badge>
+                       <Badge
+                        className={cn(
+                          {'bg-blue-500 text-white hover:bg-blue-600': order.status === 'Processing' || order.status === 'Confirmed'}
+                        )}
+                        variant={getStatusVariant(order.status)}
+                      >
+                        {order.status}
+                      </Badge>
                     </TableCell>
                     <TableCell>
                       <Badge variant={getPaymentStatusVariant(order.paymentStatus)}>{order.paymentStatus}</Badge>

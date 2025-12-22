@@ -1,3 +1,4 @@
+
 export type Image = {
   id: string;
   url: string;
@@ -21,7 +22,7 @@ export type ProductVariant = {
 };
 
 export type Product = {
-  id: string;
+  id:string;
   name: string;
   description: string;
   price: number;
@@ -50,11 +51,15 @@ export type Product = {
 export type OrderStatus =
   | 'Pending'
   | 'Processing'
+  | 'Confirmed'
+  | 'Packed'
   | 'Shipped'
   | 'Delivered'
-  | 'Canceled';
+  | 'Cancelled'
+  | 'Returned'
+  | 'Refunded';
   
-export type PaymentStatus = 'Paid' | 'Pending' | 'Failed';
+export type PaymentStatus = 'Paid' | 'Pending' | 'Failed' | 'Refunded';
 
 export type Order = {
   id: string;
