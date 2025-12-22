@@ -29,6 +29,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 const contentFormSchema = z.object({
   heroTitle: z.string(),
   heroTagline: z.string(),
+  heroImageUrl: z.string().url({ message: "Please enter a valid URL." }).or(z.literal('')),
+  heroButtonLink: z.string().url({ message: "Please enter a valid URL." }).or(z.literal('')),
   aboutStory: z.string(),
   aboutMission: z.string(),
   aboutVision: z.string(),
@@ -40,6 +42,8 @@ export default function ContentPage() {
     defaultValues: {
       heroTitle: 'Discover Your Style',
       heroTagline: 'Explore our curated collection of the finest products, designed for the modern lifestyle.',
+      heroImageUrl: "https://picsum.photos/seed/hero/1800/800",
+      heroButtonLink: "/products",
       aboutStory: `Founded in 2023, VSTRADERS started with a simple idea: to make high-quality, comfortable, and stylish home essentials accessible to everyone. We noticed a gap in the market for affordable luxury in pillows, cushions, mattresses, and covers. What began as a small workshop has grown into a beloved brand, known for its dedication to quality craftsmanship and customer satisfaction.\n\nOur journey is one of passion for comfort and design. We believe that a comfortable home is a happy home, and every product we create is a testament to this philosophy. We source the finest materials and pay meticulous attention to detail to ensure that every item we sell brings lasting comfort and joy to our customers.`,
       aboutMission: `To enhance everyday living by providing superior comfort and style through our thoughtfully designed home essentials, ensuring every customer finds their perfect piece for a better night's sleep and a more beautiful home.`,
       aboutVision: `To be the leading and most trusted brand in home comfort, continuously innovating and inspiring our customers to create spaces where they can truly relax, recharge, and live their best lives.`,
@@ -101,6 +105,34 @@ export default function ContentPage() {
                                 <FormControl>
                                     <Textarea className="min-h-[100px]" {...field} />
                                 </FormControl>
+                                <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={form.control}
+                            name="heroImageUrl"
+                            render={({ field }) => (
+                                <FormItem>
+                                <FormLabel>Hero Image URL</FormLabel>
+                                <FormControl>
+                                    <Input placeholder="https://example.com/hero-image.jpg" {...field} />
+                                </FormControl>
+                                <FormDescription>Enter the full URL for the hero banner image.</FormDescription>
+                                <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={form.control}
+                            name="heroButtonLink"
+                            render={({ field }) => (
+                                <FormItem>
+                                <FormLabel>Hero Button Link</FormLabel>
+                                <FormControl>
+                                    <Input placeholder="/products" {...field} />
+                                </FormControl>
+                                <FormDescription>Enter the destination URL for the main call-to-action button (e.g., /products).</FormDescription>
                                 <FormMessage />
                                 </FormItem>
                             )}
