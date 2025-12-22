@@ -80,6 +80,7 @@ export type Customer = {
   totalSpent: number;
   orderCount: number;
   registeredDate: string;
+  status: 'Active' | 'Inactive';
 };
 
 export type Review = {

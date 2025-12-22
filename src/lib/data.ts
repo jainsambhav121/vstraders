@@ -155,10 +155,10 @@ export const orders: Order[] = [
 ];
 
 export const customers: Customer[] = [
-  { id: 'CUST-001', name: 'Alice Johnson', email: 'alice@example.com', avatar: 'https://i.pravatar.cc/150?u=a042581f4e29026024d', totalSpent: 1250.75, orderCount: 5, registeredDate: '2023-01-15' },
-  { id: 'CUST-002', name: 'Bob Williams', email: 'bob@example.com', avatar: 'https://i.pravatar.cc/150?u=a042581f4e29026704d', totalSpent: 850.50, orderCount: 3, registeredDate: '2023-03-22' },
-  { id: 'CUST-003', name: 'Charlie Brown', email: 'charlie@example.com', avatar: 'https://i.pravatar.cc/150?u=a04258114e29026702d', totalSpent: 2300.00, orderCount: 8, registeredDate: '2022-11-30' },
-  { id: 'CUST-004', name: 'Diana Prince', email: 'diana@example.com', avatar: 'https://i.pravatar.cc/150?u=a048581f4e29026701d', totalSpent: 300.20, orderCount: 2, registeredDate: '2023-05-10' },
+  { id: 'CUST-001', name: 'Alice Johnson', email: 'alice@example.com', avatar: 'https://i.pravatar.cc/150?u=a042581f4e29026024d', totalSpent: 1250.75, orderCount: 5, registeredDate: '2023-01-15', status: 'Active' },
+  { id: 'CUST-002', name: 'Bob Williams', email: 'bob@example.com', avatar: 'https://i.pravatar.cc/150?u=a042581f4e29026704d', totalSpent: 850.50, orderCount: 3, registeredDate: '2023-03-22', status: 'Active' },
+  { id: 'CUST-003', name: 'Charlie Brown', email: 'charlie@example.com', avatar: 'https://i.pravatar.cc/150?u=a04258114e29026702d', totalSpent: 2300.00, orderCount: 8, registeredDate: '2022-11-30', status: 'Inactive' },
+  { id: 'CUST-004', name: 'Diana Prince', email: 'diana@example.com', avatar: 'https://i.pravatar.cc/150?u=a048581f4e29026701d', totalSpent: 300.20, orderCount: 2, registeredDate: '2023-05-10', status: 'Active' },
 ];
 
 export const reviews: Review[] = [
