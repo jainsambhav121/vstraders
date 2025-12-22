@@ -1,8 +1,10 @@
 
+'use client';
+
 import Image from 'next/image';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { products, categories } from '@/lib/data';
+import { categories } from '@/lib/data';
 import ProductCard from '@/components/product-card';
 import { ArrowRight, Tag, Truck } from 'lucide-react';
 import {
@@ -10,10 +12,13 @@ import {
   CarouselContent,
   CarouselItem,
 } from "@/components/ui/carousel"
+import { useProducts } from '@/hooks/use-products';
+import { Skeleton } from '@/components/ui/skeleton';
 
 export default function HomePage() {
-  const featuredProducts = products.slice(0, 4);
-  const newArrivals = products.slice(4, 8);
+  const { products, loading } = useProducts();
+  const featuredProducts = products.filter(p => p.isFeatured).slice(0, 4);
+  const newArrivals = products.slice(0, 4); // Using latest products as new arrivals for now
 
   return (
     <div className="space-y-12 md:space-y-16 lg:space-y-20">
@@ -96,9 +101,20 @@ export default function HomePage() {
             Featured Products
           </h2>
           <div className="grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
-            {featuredProducts.map((product) => (
-              <ProductCard key={product.id} product={product} />
-            ))}
+            {loading ? (
+              Array.from({ length: 4 }).map((_, i) => (
+                <div key={i} className="space-y-2">
+                  <Skeleton className="aspect-square w-full" />
+                  <Skeleton className="h-4 w-3/4" />
+                  <Skeleton className="h-4 w-1/2" />
+                  <Skeleton className="h-8 w-1/4" />
+                </div>
+              ))
+            ) : (
+              featuredProducts.map((product) => (
+                <ProductCard key={product.id} product={product} />
+              ))
+            )}
           </div>
         </section>
 
@@ -124,10 +140,21 @@ export default function HomePage() {
           <h2 className="mb-6 text-center fontheadline text-3xl font-bold">
             New Arrivals
           </h2>
-          <div className="grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
-            {newArrivals.map((product) => (
-              <ProductCard key={product.id} product={product} />
-            ))}
+           <div className="grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
+             {loading ? (
+                Array.from({ length: 4 }).map((_, i) => (
+                  <div key={i} className="space-y-2">
+                    <Skeleton className="aspect-square w-full" />
+                    <Skeleton className="h-4 w-3/4" />
+                    <Skeleton className="h-4 w-1/2" />
+                    <Skeleton className="h-8 w-1/4" />
+                  </div>
+                ))
+              ) : (
+                newArrivals.map((product) => (
+                  <ProductCard key={product.id} product={product} />
+                ))
+              )}
           </div>
         </section>
 

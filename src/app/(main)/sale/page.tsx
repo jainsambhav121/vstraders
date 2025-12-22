@@ -1,4 +1,7 @@
-import { products } from '@/lib/data';
+
+'use client';
+
+import { useProducts } from '@/hooks/use-products';
 import ProductCard from '@/components/product-card';
 import {
   Breadcrumb,
@@ -8,9 +11,11 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb';
+import { Skeleton } from '@/components/ui/skeleton';
 
 export default function SalePage() {
-  const saleProducts = products.slice(0, 6);
+  const { products, loading } = useProducts();
+  const saleProducts = products.filter(p => p.discount && p.discount.value > 0);
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -31,11 +36,24 @@ export default function SalePage() {
         </h1>
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-10">
-        {saleProducts.map((product) => (
-          <ProductCard key={product.id} product={product} />
-        ))}
-      </div>
+      {loading ? (
+         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-10">
+          {Array.from({ length: 4 }).map((_, i) => (
+             <div key={i} className="space-y-2">
+                <Skeleton className="aspect-square w-full" />
+                <Skeleton className="h-4 w-3/4" />
+                <Skeleton className="h-4 w-1/2" />
+                <Skeleton className="h-8 w-1/4" />
+              </div>
+          ))}
+        </div>
+      ) : (
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-10">
+          {saleProducts.map((product) => (
+            <ProductCard key={product.id} product={product} />
+          ))}
+        </div>
+      )}
     </div>
   );
 }

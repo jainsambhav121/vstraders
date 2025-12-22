@@ -1,4 +1,8 @@
-import { products, categories } from '@/lib/data';
+
+'use client';
+
+import { useProducts } from '@/hooks/use-products';
+import { categories } from '@/lib/data';
 import ProductCard from '@/components/product-card';
 import {
   Breadcrumb,
@@ -9,8 +13,10 @@ import {
   BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb';
 import { notFound } from 'next/navigation';
+import { Skeleton } from '@/components/ui/skeleton';
 
 export default function CategoryPage({ params }: { params: { slug: string } }) {
+  const { products, loading } = useProducts();
   const category = categories.find((c) => c.slug === params.slug);
   
   if (!category) {
@@ -18,7 +24,7 @@ export default function CategoryPage({ params }: { params: { slug: string } }) {
   }
 
   const categoryProducts = products.filter(
-    (product) => product.category.slug === params.slug
+    (product) => product.category === params.slug
   );
 
   return (
@@ -40,7 +46,18 @@ export default function CategoryPage({ params }: { params: { slug: string } }) {
         </h1>
       </div>
 
-      {categoryProducts.length > 0 ? (
+      {loading ? (
+         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-10">
+          {Array.from({ length: 4 }).map((_, i) => (
+             <div key={i} className="space-y-2">
+                <Skeleton className="aspect-square w-full" />
+                <Skeleton className="h-4 w-3/4" />
+                <Skeleton className="h-4 w-1/2" />
+                <Skeleton className="h-8 w-1/4" />
+              </div>
+          ))}
+        </div>
+      ) : categoryProducts.length > 0 ? (
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-10">
           {categoryProducts.map((product) => (
             <ProductCard key={product.id} product={product} />

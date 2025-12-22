@@ -1,3 +1,4 @@
+
 import Image from 'next/image';
 import Link from 'next/link';
 import type { Product } from '@/lib/types';
@@ -16,7 +17,7 @@ export default function ProductCard({ product }: ProductCardProps) {
         <Link href={`/products/${product.id}`} className="block">
           <div className="aspect-square overflow-hidden rounded-t-lg">
             <Image
-              src={product.images[0]?.url || ''}
+              src={product.images[product.primaryImageIndex]?.url || 'https://placehold.co/600x600'}
               alt={product.name}
               width={600}
               height={600}
@@ -45,7 +46,7 @@ export default function ProductCard({ product }: ProductCardProps) {
         </div>
       </CardContent>
       <CardFooter className="flex items-center justify-between p-4 pt-0">
-        <p className="text-xl font-semibold">₹{product.price.toFixed(2)}</p>
+        <p className="text-xl font-semibold">₹{product.finalPrice.toFixed(2)}</p>
         <Button>Add to Cart</Button>
       </CardFooter>
     </Card>

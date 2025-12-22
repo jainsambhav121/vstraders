@@ -1,3 +1,4 @@
+
 import Image from 'next/image';
 import Link from 'next/link';
 import type { Product } from '@/lib/types';
@@ -16,7 +17,7 @@ export default function ProductListItem({ product }: ProductListItemProps) {
         <Link href={`/products/${product.id}`} className="block flex-shrink-0">
           <div className="aspect-square w-24 overflow-hidden rounded-md">
             <Image
-              src={product.images[0]?.url || ''}
+              src={product.images[product.primaryImageIndex]?.url || 'https://placehold.co/100x100'}
               alt={product.name}
               width={100}
               height={100}
@@ -45,7 +46,7 @@ export default function ProductListItem({ product }: ProductListItemProps) {
             </div>
           </div>
           <div className="mt-2 flex items-center justify-between">
-             <p className="text-lg font-semibold">₹{product.price.toFixed(2)}</p>
+             <p className="text-lg font-semibold">₹{product.finalPrice.toFixed(2)}</p>
              <Button size="sm">Add to Cart</Button>
           </div>
         </div>

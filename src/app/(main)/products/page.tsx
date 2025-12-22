@@ -1,7 +1,8 @@
+
 'use client';
 
 import { useState } from 'react';
-import { products } from '@/lib/data';
+import { useProducts } from '@/hooks/use-products';
 import ProductCard from '@/components/product-card';
 import {
   Breadcrumb,
@@ -13,11 +14,12 @@ import {
 } from '@/components/ui/breadcrumb';
 import { Button } from '@/components/ui/button';
 import { List, Grid } from 'lucide-react';
-import { cn } from '@/lib/utils';
 import ProductListItem from '@/components/product-list-item';
+import { Skeleton } from '@/components/ui/skeleton';
 
 export default function ProductsPage() {
   const [layout, setLayout] = useState('grid');
+  const { products, loading } = useProducts();
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -55,30 +57,45 @@ export default function ProductsPage() {
           </Button>
         </div>
       </div>
-
-      {/* Desktop grid */}
-      <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-10">
-        {products.map((product) => (
-          <ProductCard key={product.id} product={product} />
-        ))}
-      </div>
       
-      {/* Mobile layout */}
-      <div className="md:hidden">
-        {layout === 'grid' ? (
-          <div className="grid grid-cols-2 gap-x-4 gap-y-8">
+      {loading ? (
+        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-10">
+          {Array.from({ length: 8 }).map((_, i) => (
+             <div key={i} className="space-y-2">
+                <Skeleton className="aspect-square w-full" />
+                <Skeleton className="h-4 w-3/4" />
+                <Skeleton className="h-4 w-1/2" />
+                <Skeleton className="h-8 w-1/4" />
+              </div>
+          ))}
+        </div>
+      ) : (
+        <>
+          {/* Desktop grid */}
+          <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-10">
             {products.map((product) => (
               <ProductCard key={product.id} product={product} />
             ))}
           </div>
-        ) : (
-          <div className="space-y-4">
-            {products.map((product) => (
-              <ProductListItem key={product.id} product={product} />
-            ))}
+          
+          {/* Mobile layout */}
+          <div className="md:hidden">
+            {layout === 'grid' ? (
+              <div className="grid grid-cols-2 gap-x-4 gap-y-8">
+                {products.map((product) => (
+                  <ProductCard key={product.id} product={product} />
+                ))}
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {products.map((product) => (
+                  <ProductListItem key={product.id} product={product} />
+                ))}
+              </div>
+            )}
           </div>
-        )}
-      </div>
+        </>
+      )}
     </div>
   );
 }

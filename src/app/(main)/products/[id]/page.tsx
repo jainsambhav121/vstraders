@@ -1,6 +1,10 @@
+
+'use client';
+
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
-import { products, reviews } from '@/lib/data';
+import { useProducts } from '@/hooks/use-products';
+import { reviews } from '@/lib/data';
 import { Button } from '@/components/ui/button';
 import { Star, Truck, CheckCircle, ShieldCheck } from 'lucide-react';
 import {
@@ -14,10 +18,30 @@ import {
 import { Separator } from '@/components/ui/separator';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import ProductCard from '@/components/product-card';
+import { Skeleton } from '@/components/ui/skeleton';
 
 export default function ProductDetailPage({ params }: { params: { id: string } }) {
+  const { products, loading } = useProducts();
   const product = products.find((p) => p.id === params.id);
-  const relatedProducts = products.filter(p => p.category.id === product?.category.id && p.id !== product?.id).slice(0, 4);
+  const relatedProducts = products.filter(p => p.category === product?.category && p.id !== product?.id).slice(0, 4);
+
+  if (loading) {
+    return (
+        <div className="container mx-auto px-4 py-8">
+            <Skeleton className="h-6 w-1/3 mb-8" />
+            <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:gap-12">
+                <Skeleton className="aspect-square w-full" />
+                <div className="space-y-4">
+                    <Skeleton className="h-10 w-3/4" />
+                    <Skeleton className="h-6 w-1/4" />
+                    <Skeleton className="h-8 w-1/3" />
+                    <Skeleton className="h-20 w-full" />
+                    <Skeleton className="h-12 w-40" />
+                </div>
+            </div>
+        </div>
+    )
+  }
 
   if (!product) {
     notFound();
@@ -44,7 +68,7 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
       <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:gap-12">
         <div className="aspect-square">
            <Image
-              src={product.images[0]?.url || ''}
+              src={product.images[product.primaryImageIndex]?.url || ''}
               alt={product.name}
               width={800}
               height={800}
@@ -74,7 +98,7 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
               ({product.reviewCount} reviews)
             </span>
           </div>
-          <p className="mt-4 text-3xl font-bold">₹{product.price.toFixed(2)}</p>
+          <p className="mt-4 text-3xl font-bold">₹{product.finalPrice.toFixed(2)}</p>
           <p className="mt-4 text-muted-foreground">{product.description}</p>
           
           <div className="mt-8">

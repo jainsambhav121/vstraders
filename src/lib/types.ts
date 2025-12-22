@@ -1,8 +1,8 @@
 
+
 export type Image = {
-  id: string;
   url: string;
-  alt: string;
+  alt?: string;
 };
 
 export type Category = {
@@ -31,7 +31,7 @@ export type Product = {
     value: number;
   };
   finalPrice: number;
-  category: Category;
+  category: string;
   images: Image[];
   primaryImageIndex: number;
   stock: number;
@@ -43,9 +43,11 @@ export type Product = {
   seoMetaDescription: string;
   seoKeywords: string[];
   slug: string;
-  sku: string;
+  sku?: string;
   rating: number;
   reviewCount: number;
+  createdAt?: any;
+  updatedAt?: any;
 };
 
 export type OrderStatus =
