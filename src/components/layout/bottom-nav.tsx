@@ -26,7 +26,7 @@ export default function BottomNav() {
   const pathname = usePathname();
   const { user } = useUser();
 
-  const profileLink = user ? '/dashboard' : '/login';
+  const profileLink = user ? '/profile' : '/login';
 
   return (
     <div className="md:hidden fixed bottom-0 left-0 z-50 w-full h-16 bg-background border-t border-border">

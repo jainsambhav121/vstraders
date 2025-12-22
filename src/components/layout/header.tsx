@@ -36,6 +36,9 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { useFirestore } from '@/firebase';
+import { doc, getDoc } from 'firebase/firestore';
+import { useEffect, useState } from 'react';
 
 const navLinks = [
   { href: '/', label: 'Home' },
@@ -47,7 +50,27 @@ const navLinks = [
 
 export default function Header() {
   const { user } = useUser();
-  const { setTheme } = useTheme()
+  const { setTheme } = useTheme();
+  const firestore = useFirestore();
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  useEffect(() => {
+    const checkAdmin = async () => {
+      if (user && firestore) {
+        const userDoc = await getDoc(doc(firestore, 'users', user.uid));
+        if (userDoc.exists()) {
+          const userData = userDoc.data();
+          setIsAdmin(userData.role === 'admin' || userData.role === 'manager');
+        }
+      } else {
+        setIsAdmin(false);
+      }
+    };
+    checkAdmin();
+  }, [user, firestore]);
+
+  const profileLink = user ? (isAdmin ? '/dashboard' : '/profile') : '/login';
+
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -150,7 +173,7 @@ export default function Header() {
             </DropdownMenu>
 
             <Button variant="ghost" size="icon" asChild aria-label="Account">
-              <Link href={user ? "/dashboard" : "/login"}>
+              <Link href={profileLink}>
                 <User className="h-6 w-6" />
               </Link>
             </Button>

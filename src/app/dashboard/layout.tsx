@@ -42,11 +42,11 @@ export default function DashboardLayout({
           if (userData.role === 'admin' || userData.role === 'manager') {
             setIsAuthorized(true);
           } else {
-            router.push('/');
+            router.push('/profile');
           }
         } else {
            // If user doc doesn't exist, they can't be an admin.
-           router.push('/');
+           router.push('/profile');
         }
       } catch (error) {
         console.error("Error checking user role:", error);
