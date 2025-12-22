@@ -154,7 +154,7 @@ export default function AdminLoginPage() {
             errorMessage = 'Invalid email or password.';
             break;
           case 'auth/email-already-in-use':
-            errorMessage = 'This email is already in use.';
+            errorMessage = 'This email is already in use. Please use a different email or log in.';
             break;
           default:
             errorMessage = 'An authentication error occurred. Please try again.';
