@@ -5,6 +5,7 @@ import './globals.css';
 import { Toaster } from '@/components/ui/toaster';
 import { FirebaseClientProvider } from '@/firebase/client-provider';
 import { MobileExperienceProvider } from '@/components/mobile-experience-provider';
+import { ThemeProvider } from "@/components/theme-provider"
 
 const openSans = Open_Sans({
   subsets: ['latin'],
@@ -33,10 +34,17 @@ export default function RootLayout({
       <body
         className={`${openSans.variable} ${playfairDisplay.variable} font-body antialiased`}
       >
-        <FirebaseClientProvider>
-          <MobileExperienceProvider>{children}</MobileExperienceProvider>
-        </FirebaseClientProvider>
-        <Toaster />
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <FirebaseClientProvider>
+            <MobileExperienceProvider>{children}</MobileExperienceProvider>
+          </FirebaseClientProvider>
+          <Toaster />
+        </ThemeProvider>
       </body>
     </html>
   );
