@@ -1,5 +1,7 @@
 
+'use client';
 
+import { useState } from 'react';
 import {
   Card,
   CardContent,
@@ -29,13 +31,14 @@ import {
   DropdownMenuSeparator,
   DropdownMenuItem,
 } from '@/components/ui/dropdown-menu';
-import { Badge, badgeVariants } from '@/components/ui/badge';
-import { orders } from '@/lib/data';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { ListFilter, File, Search, MoreHorizontal } from 'lucide-react';
 import { Input } from '@/components/ui/input';
-import type { OrderStatus, PaymentStatus } from '@/lib/types';
+import type { Order, OrderStatus, PaymentStatus } from '@/lib/types';
 import { cn } from '@/lib/utils';
+import { useOrders } from '@/hooks/use-orders';
+import { Skeleton } from '@/components/ui/skeleton';
 
 const getStatusVariant = (status: OrderStatus) => {
   switch (status) {
@@ -69,18 +72,33 @@ const getPaymentStatusVariant = (status: PaymentStatus) => {
   }
 };
 
+const TABS: { value: OrderStatus | 'all', label: string }[] = [
+    { value: 'all', label: 'All' },
+    { value: 'Pending', label: 'Pending' },
+    { value: 'Confirmed', label: 'Confirmed' },
+    { value: 'Packed', label: 'Packed' },
+    { value: 'Shipped', label: 'Shipped' },
+    { value: 'Delivered', label: 'Delivered' },
+    { value: 'Cancelled', label: 'Cancelled' },
+];
+
 export default function OrdersPage() {
+    const { orders, loading, error } = useOrders();
+    const [activeTab, setActiveTab] = useState<OrderStatus | 'all'>('all');
+
+    const filteredOrders = activeTab === 'all'
+        ? orders
+        : orders.filter((order) => order.status === activeTab);
+
   return (
-    <Tabs defaultValue="all">
+    <Tabs defaultValue="all" onValueChange={(value) => setActiveTab(value as OrderStatus | 'all')}>
       <div className="flex items-center">
         <TabsList>
-          <TabsTrigger value="all">All</TabsTrigger>
-          <TabsTrigger value="pending">Pending</TabsTrigger>
-          <TabsTrigger value="confirmed">Confirmed</TabsTrigger>
-          <TabsTrigger value="packed">Packed</TabsTrigger>
-          <TabsTrigger value="shipped">Shipped</TabsTrigger>
-          <TabsTrigger value="delivered">Delivered</TabsTrigger>
-          <TabsTrigger value="cancelled" className="hidden sm:flex">Cancelled</TabsTrigger>
+            {TABS.map(tab => (
+                <TabsTrigger key={tab.value} value={tab.value} className={cn(tab.value === 'Cancelled' && 'hidden sm:flex')}>
+                    {tab.label}
+                </TabsTrigger>
+            ))}
         </TabsList>
         <div className="ml-auto flex items-center gap-2">
           <DropdownMenu>
@@ -107,7 +125,7 @@ export default function OrdersPage() {
           </Button>
         </div>
       </div>
-      <TabsContent value="all">
+      <TabsContent value={activeTab}>
         <Card>
           <CardHeader>
             <CardTitle>Orders</CardTitle>
@@ -138,45 +156,72 @@ export default function OrdersPage() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {orders.map((order) => (
-                  <TableRow key={order.id}>
-                    <TableCell className="font-medium">{order.id}</TableCell>
-                    <TableCell>{order.customerName}</TableCell>
-                    <TableCell>
-                       <Badge
-                        className={cn(
-                          {'bg-blue-500 text-white hover:bg-blue-600': order.status === 'Processing' || order.status === 'Confirmed'}
-                        )}
-                        variant={getStatusVariant(order.status)}
-                      >
-                        {order.status}
-                      </Badge>
-                    </TableCell>
-                    <TableCell>
-                      <Badge variant={getPaymentStatusVariant(order.paymentStatus)}>{order.paymentStatus}</Badge>
-                    </TableCell>
-                    <TableCell>{order.items}</TableCell>
-                    <TableCell>{order.date}</TableCell>
-                    <TableCell className="text-right">₹{order.total.toFixed(2)}</TableCell>
-                    <TableCell>
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button aria-haspopup="true" size="icon" variant="ghost">
-                            <MoreHorizontal className="h-4 w-4" />
-                            <span className="sr-only">Toggle menu</span>
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                          <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                          <DropdownMenuItem>View Order</DropdownMenuItem>
-                          <DropdownMenuItem>Customer Details</DropdownMenuItem>
-                          <DropdownMenuSeparator />
-                          <DropdownMenuItem>Cancel Order</DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </TableCell>
-                  </TableRow>
-                ))}
+                {loading ? (
+                  Array.from({ length: 8 }).map((_, i) => (
+                    <TableRow key={i}>
+                        <TableCell><Skeleton className="h-4 w-20" /></TableCell>
+                        <TableCell><Skeleton className="h-4 w-24" /></TableCell>
+                        <TableCell><Skeleton className="h-6 w-20 rounded-full" /></TableCell>
+                        <TableCell><Skeleton className="h-6 w-16 rounded-full" /></TableCell>
+                        <TableCell><Skeleton className="h-4 w-8" /></TableCell>
+                        <TableCell><Skeleton className="h-4 w-24" /></TableCell>
+                        <TableCell className="text-right"><Skeleton className="h-4 w-12 ml-auto" /></TableCell>
+                        <TableCell><Skeleton className="h-8 w-8 ml-auto" /></TableCell>
+                    </TableRow>
+                  ))
+                ) : error ? (
+                    <TableRow>
+                        <TableCell colSpan={8} className="text-center text-red-500 py-8">
+                            Error loading orders: {error.message}
+                        </TableCell>
+                    </TableRow>
+                ) : filteredOrders.length === 0 ? (
+                    <TableRow>
+                        <TableCell colSpan={8} className="text-center text-muted-foreground py-8">
+                            No orders found for this status.
+                        </TableCell>
+                    </TableRow>
+                ) : (
+                  filteredOrders.map((order) => (
+                    <TableRow key={order.id}>
+                      <TableCell className="font-medium">{order.id}</TableCell>
+                      <TableCell>{order.customerName}</TableCell>
+                      <TableCell>
+                        <Badge
+                          className={cn(
+                            { 'bg-blue-500 text-white hover:bg-blue-600': order.status === 'Processing' || order.status === 'Confirmed' }
+                          )}
+                          variant={getStatusVariant(order.status)}
+                        >
+                          {order.status}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>
+                        <Badge variant={getPaymentStatusVariant(order.paymentStatus)}>{order.paymentStatus}</Badge>
+                      </TableCell>
+                      <TableCell>{order.items}</TableCell>
+                      <TableCell>{order.date}</TableCell>
+                      <TableCell className="text-right">₹{order.total.toFixed(2)}</TableCell>
+                      <TableCell>
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button aria-haspopup="true" size="icon" variant="ghost">
+                              <MoreHorizontal className="h-4 w-4" />
+                              <span className="sr-only">Toggle menu</span>
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
+                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                            <DropdownMenuItem>View Order</DropdownMenuItem>
+                            <DropdownMenuItem>Customer Details</DropdownMenuItem>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem>Cancel Order</DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </TableCell>
+                    </TableRow>
+                  ))
+                )}
               </TableBody>
             </Table>
           </CardContent>
