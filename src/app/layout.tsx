@@ -4,6 +4,7 @@ import { Open_Sans, Playfair_Display } from 'next/font/google';
 import './globals.css';
 import { Toaster } from '@/components/ui/toaster';
 import { FirebaseClientProvider } from '@/firebase/client-provider';
+import { MobileExperienceProvider } from '@/components/mobile-experience-provider';
 
 const openSans = Open_Sans({
   subsets: ['latin'],
@@ -32,7 +33,9 @@ export default function RootLayout({
       <body
         className={`${openSans.variable} ${playfairDisplay.variable} font-body antialiased`}
       >
-        <FirebaseClientProvider>{children}</FirebaseClientProvider>
+        <FirebaseClientProvider>
+          <MobileExperienceProvider>{children}</MobileExperienceProvider>
+        </FirebaseClientProvider>
         <Toaster />
       </body>
     </html>
