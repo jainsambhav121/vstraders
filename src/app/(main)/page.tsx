@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/carousel"
 import { useProducts } from '@/hooks/use-products';
 import { Skeleton } from '@/components/ui/skeleton';
+import React from 'react';
 
 export default function HomePage() {
   const { products, loading } = useProducts();
@@ -58,7 +59,9 @@ export default function HomePage() {
               className="w-full"
             >
               <CarouselContent>
-                {categories.map((category) => (
+                {categories.map((category) => {
+                  const Icon = category.icon;
+                  return (
                   <CarouselItem key={category.id} className="basis-1/2">
                      <Link
                         href={`/category/${category.slug}`}
@@ -66,19 +69,22 @@ export default function HomePage() {
                         style={{ borderRadius: '30px' }}
                       >
                         <div className="rounded-full bg-accent p-3 group-hover:bg-primary group-hover:text-primary-foreground">
-                          <Tag className="h-6 w-6 text-accent-foreground group-hover:text-primary-foreground" />
+                          <Icon className="h-6 w-6 text-accent-foreground group-hover:text-primary-foreground" />
                         </div>
                         <span className="font-semibold text-card-foreground text-sm">
                           {category.name}
                         </span>
                       </Link>
                   </CarouselItem>
-                ))}
+                  )
+                })}
               </CarouselContent>
             </Carousel>
           </div>
           <div className="hidden grid-cols-2 gap-4 md:grid md:grid-cols-4 md:gap-6">
-            {categories.map((category) => (
+            {categories.map((category) => {
+              const Icon = category.icon;
+              return (
               <Link
                 href={`/category/${category.slug}`}
                 key={category.id}
@@ -86,13 +92,13 @@ export default function HomePage() {
                 style={{ borderRadius: '30px' }}
               >
                 <div className="rounded-full bg-accent p-4 group-hover:bg-primary group-hover:text-primary-foreground">
-                  <Tag className="h-8 w-8 text-accent-foreground group-hover:text-primary-foreground" />
+                  <Icon className="h-8 w-8 text-accent-foreground group-hover:text-primary-foreground" />
                 </div>
                 <span className="font-semibold text-card-foreground">
                   {category.name}
                 </span>
               </Link>
-            ))}
+            )})}
           </div>
         </section>
 

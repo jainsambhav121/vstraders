@@ -1,11 +1,12 @@
 
 import { PlaceHolderImages } from './placeholder-images';
 import type { Category, Review, BlogPost } from './types';
+import { Pill, BedDouble, Sofa } from 'lucide-react';
 
 export const categories: Category[] = [
-  { id: 'cat-1', name: 'Pillow', slug: 'pillow' },
-  { id: 'cat-2', name: 'Mattress', slug: 'mattress' },
-  { id: 'cat-3', name: 'Covers', slug: 'covers' },
+  { id: 'cat-1', name: 'Pillow', slug: 'pillow', icon: Pill },
+  { id: 'cat-2', name: 'Mattress', slug: 'mattress', icon: BedDouble },
+  { id: 'cat-3', name: 'Covers', slug: 'covers', icon: Sofa },
 ];
 
 export const reviews: Review[] = [

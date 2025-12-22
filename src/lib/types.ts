@@ -1,6 +1,7 @@
 
 
 import type { User as FirebaseUser } from 'firebase/auth';
+import type { LucideIcon } from 'lucide-react';
 
 export type Image = {
   url: string;
@@ -11,6 +12,7 @@ export type Category = {
   id: string;
   name: string;
   slug: string;
+  icon: LucideIcon;
 };
 
 export type ProductVariant = {
