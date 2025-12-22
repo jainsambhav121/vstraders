@@ -10,14 +10,38 @@ export type Category = {
   slug: string;
 };
 
+export type ProductVariant = {
+  id: string;
+  size?: string;
+  thickness?: string;
+  material?: string;
+  color?: string;
+  price?: number;
+  stock: number;
+};
+
 export type Product = {
   id: string;
   name: string;
   description: string;
   price: number;
+  discount?: {
+    type: 'percentage' | 'flat';
+    value: number;
+  };
+  finalPrice: number;
   category: Category;
   images: Image[];
+  primaryImageIndex: number;
   stock: number;
+  variants: ProductVariant[];
+  isFeatured: boolean;
+  isBestSeller: boolean;
+  isEnabled: boolean;
+  seoTitle: string;
+  seoMetaDescription: string;
+  seoKeywords: string[];
+  slug: string;
   sku: string;
   rating: number;
   reviewCount: number;

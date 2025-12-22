@@ -7,40 +7,22 @@
       "imageHint": "microfiber pillow"
     },
     {
+      "id": "prod-1b",
+      "description": "A person sleeping on a soft microfiber pillow.",
+      "imageUrl": "https://images.unsplash.com/photo-1590480393223-3b107b634863?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxtaWNyb2ZpYmVyJTIwcGlsbG93fGVufDB8fHx8MTc2NjMyNTM2MHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "pillow sleeping"
+    },
+    {
+      "id": "prod-1c",
+      "description": "Close up of microfiber pillow texture.",
+      "imageUrl": "https://images.unsplash.com/photo-1616627561839-074385245ff6?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxwaWxsb3clMjB0ZXh0dXJlfGVufDB8fHx8MTc2NjMyNTM2MHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "pillow texture"
+    },
+    {
       "id": "prod-2",
       "description": "A quilted pillow with a textured pattern.",
       "imageUrl": "https://images.unsplash.com/photo-1646348207787-27876c97b1ff?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxxdWlsdGVkJTIwcGlsbG93fGVufDB8fHx8MTc2NjMyNTM2MHww&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "quilted pillow"
-    },
-    {
-      "id": "prod-3",
-      "description": "A contour memory foam pillow for neck support.",
-      "imageUrl": "https://images.unsplash.com/photo-1629949008195-c15c25c5e9e9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxtZW1vcnktZm9hbSUyMHBpbGxvd3xlbnwwfHx8fDE3NjYzMjUzNjB8MA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "memory-foam pillow"
-    },
-    {
-      "id": "prod-4",
-      "description": "A large king size hotel pillow.",
-      "imageUrl": "https://images.unsplash.com/photo-1559841644-08984562005a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxob3RlbCUyMHBpbGxvd3xlbnwwfHx8fDE3NjYzMjUzNjB8MA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "hotel pillow"
-    },
-    {
-      "id": "prod-5",
-      "description": "A long microfiber bolster pillow.",
-      "imageUrl": "https://images.unsplash.com/photo-1570786240066-c0d753711cfe?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxib2xzdGVyJTIwcGlsbG93fGVufDB8fHx8MTc2NjMyNTM2MHww&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "bolster pillow"
-    },
-    {
-      "id": "prod-6",
-      "description": "A plush microfiber cushion pillow.",
-      "imageUrl": "https://images.unsplash.com/photo-1654325633344-337ce2bac195?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxjdXNoaW9uJTIwcGlsbG93fGVufDB8fHx8MTc2NjMyNTM2MHww&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "cushion pillow"
-    },
-    {
-      "id": "prod-7",
-      "description": "A large king size cushion pillow.",
-      "imageUrl": "https://images.unsplash.com/photo-1761330439252-325f2091e88d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxsYXJnZSUyMGN1c2hpb258ZW58MHx8fHwxNzY2MzI1MzYwfDA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "large cushion"
     },
     {
       "id": "prod-8",
@@ -49,34 +31,22 @@
       "imageHint": "king-size mattress"
     },
     {
+      "id": "prod-8b",
+      "description": "Side view of a polyurethane king size mattress.",
+      "imageUrl": "https://images.unsplash.com/photo-1613994336149-a7a724b9b71a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxtYXR0cmVzc3xlbnwwfHx8fDE3NjYzMjUzNjB8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "mattress side"
+    },
+    {
       "id": "prod-9",
       "description": "A three-foldable EPE mattress.",
       "imageUrl": "https://images.unsplash.com/photo-1759176171789-0aa3f84d15ca?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxmb2xkYWJsZSUyMG1hdHRyZXNzfGVufDB8fHx8MTc2NjMyNTM2MHww&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "foldable mattress"
     },
     {
-      "id": "prod-10",
-      "description": "A sofa cum bed mattress.",
-      "imageUrl": "https://images.unsplash.com/photo-1484101403633-562f891dc89a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxzb2ZhJTIwYmVkfGVufDB8fHx8MTc2NjMyNTM2MHww&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "sofa bed"
-    },
-    {
       "id": "prod-11",
       "description": "A king size mattress zipper cover.",
       "imageUrl": "https://images.unsplash.com/photo-1691703011149-5fc5a062319d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxtYXR0cmVzcyUyMGNvdmVyfGVufDB8fHx8MTc2NjMyNTM2MHww&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "mattress cover"
-    },
-    {
-      "id": "prod-12",
-      "description": "A king size waterproof mattress zipper cover.",
-      "imageUrl": "https://images.unsplash.com/photo-1603433828270-600fc33d0d68?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHx3YXRlcnByb29mJTIwY292ZXJ8ZW58MHx8fHwxNzY2MzI1MzYwfDA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "waterproof cover"
-    },
-    {
-      "id": "prod-13",
-      "description": "An elastic mattress protector.",
-      "imageUrl": "https://images.unsplash.com/photo-1759176171789-0aa3f84d15ca?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8bWF0dHJlc3MlMjBwcm90ZWN0b3J8ZW58MHx8fHwxNzY2MzI1MzYwfDA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "mattress protector"
     },
     {
       "id": "blog-1",
@@ -101,18 +71,6 @@
       "description": "Close-up of a person typing on a keyboard.",
       "imageUrl": "https://images.unsplash.com/photo-1646839083586-cf7747c1e9bb?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHx0eXBpbmclMjBrZXlib2FyZHxlbnwwfHx8fDE3NjYyNDE0Nzh8MA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "typing keyboard"
-    },
-    {
-      "id": "blog-5",
-      "description": "A modern desk setup.",
-      "imageUrl": "https://images.unsplash.com/photo-1669490893500-97456444f578?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxkZXNrJTIwc2V0dXB8ZW58MHx8fHwxNzY2MjI5OTY5fDA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "desk setup"
-    },
-    {
-      "id": "blog-6",
-      "description": "A person holding a smartphone.",
-      "imageUrl": "https://images.unsplash.com/photo-1731616103660-eb50daa4696d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxob2xkaW5nJTIwc21hcnRwaG9uZXxlbnwwfHx8fDE3NjYzMjY3NjF8MA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "holding smartphone"
     }
   ]
 }

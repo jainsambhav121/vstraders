@@ -57,10 +57,9 @@ export default function ProductsPage() {
                 <span className="sr-only">Image</span>
               </TableHead>
               <TableHead>Name</TableHead>
-              <TableHead>Category</TableHead>
+              <TableHead>Status</TableHead>
               <TableHead>Price</TableHead>
               <TableHead>Stock</TableHead>
-              <TableHead>SKU</TableHead>
               <TableHead>
                 <span className="sr-only">Actions</span>
               </TableHead>
@@ -74,18 +73,19 @@ export default function ProductsPage() {
                     alt={product.name}
                     className="aspect-square rounded-md object-cover"
                     height="64"
-                    src={product.images[0]?.url || ''}
+                    src={product.images[product.primaryImageIndex]?.url || ''}
                     width="64"
                     data-ai-hint="product image"
                   />
                 </TableCell>
                 <TableCell className="font-medium">{product.name}</TableCell>
                 <TableCell>
-                  <Badge variant="outline">{product.category.name}</Badge>
+                  <Badge variant={product.isEnabled ? 'default' : 'secondary'}>
+                    {product.isEnabled ? 'Active' : 'Draft'}
+                  </Badge>
                 </TableCell>
-                <TableCell>₹{product.price.toFixed(2)}</TableCell>
+                <TableCell>₹{product.finalPrice.toFixed(2)}</TableCell>
                 <TableCell>{product.stock}</TableCell>
-                <TableCell>{product.sku}</TableCell>
                 <TableCell>
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
