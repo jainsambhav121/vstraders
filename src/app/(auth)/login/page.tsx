@@ -89,6 +89,10 @@ export default function LoginPage() {
       toast({ title: 'Login Successful', description: "Welcome!" });
       router.push('/dashboard');
     } catch (error) {
+      if (error instanceof FirebaseError && error.code === 'auth/cancelled-popup-request') {
+        // User closed the popup, do nothing
+        return;
+      }
       console.error('Google login error:', error);
       toast({
         variant: 'destructive',

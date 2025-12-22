@@ -131,6 +131,10 @@ export default function RegisterPage() {
       toast({ title: 'Account Created', description: "Welcome!" });
       router.push('/dashboard');
     } catch (error) {
+      if (error instanceof FirebaseError && error.code === 'auth/cancelled-popup-request') {
+        // User closed the popup, do nothing
+        return;
+      }
       console.error('Google sign up error:', error);
        toast({
         variant: 'destructive',
