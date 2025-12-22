@@ -8,8 +8,6 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import {
   signInWithEmailAndPassword,
-  signInWithPopup,
-  GoogleAuthProvider,
 } from 'firebase/auth';
 import { useAuth } from '@/firebase';
 import { Button } from '@/components/ui/button';
@@ -21,7 +19,6 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import {
   Form,
   FormControl,
@@ -78,27 +75,6 @@ export default function LoginPage() {
         variant: 'destructive',
         title: 'Login Failed',
         description: errorMessage,
-      });
-    }
-  };
-
-  const handleGoogleLogin = async () => {
-    if (!auth) return;
-    const provider = new GoogleAuthProvider();
-    try {
-      await signInWithPopup(auth, provider);
-      toast({ title: 'Login Successful', description: "Welcome!" });
-      router.push('/');
-    } catch (error) {
-      if (error instanceof FirebaseError && error.code === 'auth/cancelled-popup-request') {
-        // User closed the popup, do nothing
-        return;
-      }
-      console.error('Google login error:', error);
-      toast({
-        variant: 'destructive',
-        title: 'Login Failed',
-        description: 'Could not log in with Google. Please try again.',
       });
     }
   };
@@ -160,9 +136,6 @@ export default function LoginPage() {
             </Button>
           </form>
         </Form>
-        <Button variant="outline" className="w-full mt-4" onClick={handleGoogleLogin}>
-          Login with Google
-        </Button>
         <div className="mt-4 text-center text-sm">
           Don&apos;t have an account?{' '}
           <Link href="/register" className="underline">

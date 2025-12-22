@@ -8,8 +8,6 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import {
   createUserWithEmailAndPassword,
-  signInWithPopup,
-  GoogleAuthProvider,
   updateProfile,
 } from 'firebase/auth';
 import { doc, setDoc, serverTimestamp, getDoc } from 'firebase/firestore';
@@ -128,31 +126,6 @@ export default function RegisterPage() {
     }
   };
 
-  const handleGoogleSignUp = async () => {
-    if (!auth) return;
-    const provider = new GoogleAuthProvider();
-    try {
-      const result = await signInWithPopup(auth, provider);
-      const user = result.user;
-
-      await createUserDocument(user.uid, user.email!, user.displayName || 'Google User', true);
-
-      toast({ title: 'Account Created', description: "Welcome!" });
-      router.push('/');
-    } catch (error) {
-      if (error instanceof FirebaseError && error.code === 'auth/cancelled-popup-request') {
-        // User closed the popup, do nothing
-        return;
-      }
-      console.error('Google sign up error:', error);
-       toast({
-        variant: 'destructive',
-        title: 'Sign Up Failed',
-        description: 'Could not sign up with Google. Please try again.',
-      });
-    }
-  };
-
   return (
     <Card className="mx-auto max-w-sm">
       <CardHeader>
@@ -230,9 +203,6 @@ export default function RegisterPage() {
             </Button>
           </form>
         </Form>
-        <Button variant="outline" className="w-full mt-4" onClick={handleGoogleSignUp}>
-          Sign up with Google
-        </Button>
         <div className="mt-4 text-center text-sm">
           Already have an account?{' '}
           <Link href="/login" className="underline">
