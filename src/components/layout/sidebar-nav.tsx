@@ -18,6 +18,7 @@ import {
   Settings,
   Store,
   LogOut,
+  FileText,
 } from 'lucide-react';
 
 const links = [
@@ -25,6 +26,7 @@ const links = [
   { href: '/dashboard/orders', label: 'Orders', icon: ShoppingBag },
   { href: '/dashboard/products', label: 'Products', icon: Package },
   { href: '/dashboard/customers', label: 'Customers', icon: Users },
+  { href: '/dashboard/content', label: 'Content', icon: FileText },
 ];
 
 const bottomLinks = [
