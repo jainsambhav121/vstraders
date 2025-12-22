@@ -83,263 +83,261 @@ export default function ContentPage() {
   }
 
   return (
-    <div className="space-y-6">
-        <div className="flex items-center justify-between">
-            <h1 className="text-3xl font-bold tracking-tight">Content Management</h1>
-             <Button onClick={form.handleSubmit(onSubmit)}>Save Changes</Button>
-        </div>
-      
-      <Tabs defaultValue="homepage" className="w-full">
-        <TabsList>
-          <TabsTrigger value="homepage">Homepage</TabsTrigger>
-          <TabsTrigger value="about">About Us</TabsTrigger>
-          <TabsTrigger value="policies">Policies</TabsTrigger>
-          <TabsTrigger value="faq">FAQ</TabsTrigger>
-        </TabsList>
-        <Form {...form}>
-            <form>
-                <TabsContent value="homepage">
-                <Card>
-                    <CardHeader>
-                    <CardTitle>Homepage Content</CardTitle>
-                    <CardDescription>
-                        Manage the content displayed on your homepage.
-                    </CardDescription>
-                    </CardHeader>
-                    <CardContent className="space-y-6">
-                         <FormField
-                            control={form.control}
-                            name="heroTitle"
-                            render={({ field }) => (
-                                <FormItem>
-                                <FormLabel>Hero Title</FormLabel>
-                                <FormControl>
-                                    <Input {...field} />
-                                </FormControl>
-                                <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                         <FormField
-                            control={form.control}
-                            name="heroTagline"
-                            render={({ field }) => (
-                                <FormItem>
-                                <FormLabel>Hero Tagline</FormLabel>
-                                <FormControl>
-                                    <Textarea className="min-h-[100px]" {...field} />
-                                </FormControl>
-                                <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                        <FormField
-                            control={form.control}
-                            name="heroImageUrl"
-                            render={({ field }) => (
-                                <FormItem>
-                                <FormLabel>Hero Image URL</FormLabel>
-                                <FormControl>
-                                    <Input placeholder="https://example.com/hero-image.jpg" {...field} />
-                                </FormControl>
-                                <FormDescription>Enter the full URL for the hero banner image.</FormDescription>
-                                <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                        <FormField
-                            control={form.control}
-                            name="heroButtonLink"
-                            render={({ field }) => (
-                                <FormItem>
-                                <FormLabel>Hero Button Link</FormLabel>
-                                <FormControl>
-                                    <Input placeholder="/products" {...field} />
-                                </FormControl>
-                                <FormDescription>Enter the destination URL for the main call-to-action button (e.g., /products).</FormDescription>
-                                <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                    </CardContent>
-                </Card>
-                </TabsContent>
-                <TabsContent value="about">
-                 <Card>
-                    <CardHeader>
-                    <CardTitle>About Us Page</CardTitle>
-                    <CardDescription>
-                        Manage the content for your "About Us" page.
-                    </CardDescription>
-                    </CardHeader>
-                    <CardContent className="space-y-6">
-                        <FormField
-                            control={form.control}
-                            name="aboutBannerUrl"
-                            render={({ field }) => (
-                                <FormItem>
-                                <FormLabel>About Page Banner Image URL</FormLabel>
-                                <FormControl>
-                                    <Input placeholder="https://example.com/about-banner.jpg" {...field} />
-                                </FormControl>
-                                <FormDescription>Enter the full URL for the banner image on the About Us page.</FormDescription>
-                                <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                        <FormField
-                            control={form.control}
-                            name="aboutStory"
-                            render={({ field }) => (
-                                <FormItem>
-                                <FormLabel>Our Story</FormLabel>
-                                <FormControl>
-                                    <Textarea className="min-h-[200px]" {...field} />
-                                </FormControl>
-                                <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                        <FormField
-                            control={form.control}
-                            name="aboutMission"
-                            render={({ field }) => (
-                                <FormItem>
-                                <FormLabel>Our Mission</FormLabel>
-                                <FormControl>
-                                    <Textarea className="min-h-[120px]" {...field} />
-                                </FormControl>
-                                <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                        <FormField
-                            control={form.control}
-                            name="aboutVision"
-                            render={({ field }) => (
-                                <FormItem>
-                                <FormLabel>Our Vision</FormLabel>
-                                <FormControl>
-                                    <Textarea className="min-h-[120px]" {...field} />
-                                </FormControl>
-                                <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                    </CardContent>
-                </Card>
-                </TabsContent>
-                <TabsContent value="policies">
-                <Card>
-                    <CardHeader>
-                    <CardTitle>Policies</CardTitle>
-                    <CardDescription>
-                        Manage content for Privacy Policy and Terms &amp; Conditions.
-                    </CardDescription>
-                    </CardHeader>
-                    <CardContent className="space-y-6">
-                        <FormField
-                            control={form.control}
-                            name="privacyPolicy"
-                            render={({ field }) => (
-                                <FormItem>
-                                <FormLabel>Privacy Policy</FormLabel>
-                                <FormControl>
-                                    <Textarea className="min-h-[250px]" {...field} />
-                                </FormControl>
-                                <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                        <FormField
-                            control={form.control}
-                            name="termsAndConditions"
-                            render={({ field }) => (
-                                <FormItem>
-                                <FormLabel>Terms &amp; Conditions</FormLabel>
-                                <FormControl>
-                                    <Textarea className="min-h-[250px]" {...field} />
-                                </FormControl>
-                                <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                    </CardContent>
-                </Card>
-                </TabsContent>
-                <TabsContent value="faq">
-                <Card>
-                    <CardHeader>
-                        <CardTitle>Frequently Asked Questions</CardTitle>
-                        <CardDescription>Manage the questions and answers displayed on your site.</CardDescription>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                        <Accordion type="single" collapsible className="w-full">
-                            {faqFields.map((field, index) => (
-                                <AccordionItem value={`item-${index}`} key={field.id}>
-                                    <div className="flex items-center gap-2">
-                                        <AccordionTrigger className="flex-1">
-                                            <span className="truncate">
-                                                {form.watch(`faqs.${index}.question`) || `Question ${index + 1}`}
-                                            </span>
-                                        </AccordionTrigger>
-                                        <Button
-                                            type="button"
-                                            variant="ghost"
-                                            size="icon"
-                                            onClick={() => removeFaq(index)}
-                                        >
-                                            <Trash2 className="h-4 w-4 text-destructive" />
-                                        </Button>
-                                    </div>
-                                    <AccordionContent className="space-y-4">
-                                        <FormField
-                                            control={form.control}
-                                            name={`faqs.${index}.question`}
-                                            render={({ field }) => (
-                                                <FormItem>
-                                                    <FormLabel>Question</FormLabel>
-                                                    <FormControl>
-                                                        <Input {...field} />
-                                                    </FormControl>
-                                                    <FormMessage />
-                                                </FormItem>
-                                            )}
-                                        />
-                                        <FormField
-                                            control={form.control}
-                                            name={`faqs.${index}.answer`}
-                                            render={({ field }) => (
-                                                <FormItem>
-                                                    <FormLabel>Answer</FormLabel>
-                                                    <FormControl>
-                                                        <Textarea className="min-h-[100px]" {...field} />
-                                                    </FormControl>
-                                                    <FormMessage />
-                                                </FormItem>
-                                            )}
-                                        />
-                                    </AccordionContent>
-                                </AccordionItem>
-                            ))}
-                        </Accordion>
-                         <Button
-                            type="button"
-                            variant="outline"
-                            size="sm"
-                            className="mt-4"
-                            onClick={() => appendFaq({ question: '', answer: '' })}
-                        >
-                            <PlusCircle className="mr-2 h-4 w-4" />
-                            Add FAQ
-                        </Button>
-                    </CardContent>
-                </Card>
-                </TabsContent>
-            </form>
-        </Form>
-      </Tabs>
-    </div>
+     <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            <div className="flex items-center justify-between">
+                <h1 className="text-3xl font-bold tracking-tight">Content Management</h1>
+                <Button type="submit">Save Changes</Button>
+            </div>
+          
+          <Tabs defaultValue="homepage" className="w-full">
+            <TabsList>
+              <TabsTrigger value="homepage">Homepage</TabsTrigger>
+              <TabsTrigger value="about">About Us</TabsTrigger>
+              <TabsTrigger value="policies">Policies</TabsTrigger>
+              <TabsTrigger value="faq">FAQ</TabsTrigger>
+            </TabsList>
+            <TabsContent value="homepage">
+            <Card>
+                <CardHeader>
+                <CardTitle>Homepage Content</CardTitle>
+                <CardDescription>
+                    Manage the content displayed on your homepage.
+                </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                     <FormField
+                        control={form.control}
+                        name="heroTitle"
+                        render={({ field }) => (
+                            <FormItem>
+                            <FormLabel>Hero Title</FormLabel>
+                            <FormControl>
+                                <Input {...field} />
+                            </FormControl>
+                            <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                     <FormField
+                        control={form.control}
+                        name="heroTagline"
+                        render={({ field }) => (
+                            <FormItem>
+                            <FormLabel>Hero Tagline</FormLabel>
+                            <FormControl>
+                                <Textarea className="min-h-[100px]" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                    <FormField
+                        control={form.control}
+                        name="heroImageUrl"
+                        render={({ field }) => (
+                            <FormItem>
+                            <FormLabel>Hero Image URL</FormLabel>
+                            <FormControl>
+                                <Input placeholder="https://example.com/hero-image.jpg" {...field} />
+                            </FormControl>
+                            <FormDescription>Enter the full URL for the hero banner image.</FormDescription>
+                            <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                    <FormField
+                        control={form.control}
+                        name="heroButtonLink"
+                        render={({ field }) => (
+                            <FormItem>
+                            <FormLabel>Hero Button Link</FormLabel>
+                            <FormControl>
+                                <Input placeholder="/products" {...field} />
+                            </FormControl>
+                            <FormDescription>Enter the destination URL for the main call-to-action button (e.g., /products).</FormDescription>
+                            <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                </CardContent>
+            </Card>
+            </TabsContent>
+            <TabsContent value="about">
+             <Card>
+                <CardHeader>
+                <CardTitle>About Us Page</CardTitle>
+                <CardDescription>
+                    Manage the content for your "About Us" page.
+                </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                    <FormField
+                        control={form.control}
+                        name="aboutBannerUrl"
+                        render={({ field }) => (
+                            <FormItem>
+                            <FormLabel>About Page Banner Image URL</FormLabel>
+                            <FormControl>
+                                <Input placeholder="https://example.com/about-banner.jpg" {...field} />
+                            </FormControl>
+                            <FormDescription>Enter the full URL for the banner image on the About Us page.</FormDescription>
+                            <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                    <FormField
+                        control={form.control}
+                        name="aboutStory"
+                        render={({ field }) => (
+                            <FormItem>
+                            <FormLabel>Our Story</FormLabel>
+                            <FormControl>
+                                <Textarea className="min-h-[200px]" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                    <FormField
+                        control={form.control}
+                        name="aboutMission"
+                        render={({ field }) => (
+                            <FormItem>
+                            <FormLabel>Our Mission</FormLabel>
+                            <FormControl>
+                                <Textarea className="min-h-[120px]" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                    <FormField
+                        control={form.control}
+                        name="aboutVision"
+                        render={({ field }) => (
+                            <FormItem>
+                            <FormLabel>Our Vision</FormLabel>
+                            <FormControl>
+                                <Textarea className="min-h-[120px]" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                </CardContent>
+            </Card>
+            </TabsContent>
+            <TabsContent value="policies">
+            <Card>
+                <CardHeader>
+                <CardTitle>Policies</CardTitle>
+                <CardDescription>
+                    Manage content for Privacy Policy and Terms &amp; Conditions.
+                </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                    <FormField
+                        control={form.control}
+                        name="privacyPolicy"
+                        render={({ field }) => (
+                            <FormItem>
+                            <FormLabel>Privacy Policy</FormLabel>
+                            <FormControl>
+                                <Textarea className="min-h-[250px]" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                    <FormField
+                        control={form.control}
+                        name="termsAndConditions"
+                        render={({ field }) => (
+                            <FormItem>
+                            <FormLabel>Terms &amp; Conditions</FormLabel>
+                            <FormControl>
+                                <Textarea className="min-h-[250px]" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                </CardContent>
+            </Card>
+            </TabsContent>
+            <TabsContent value="faq">
+            <Card>
+                <CardHeader>
+                    <CardTitle>Frequently Asked Questions</CardTitle>
+                    <CardDescription>Manage the questions and answers displayed on your site.</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                    <Accordion type="single" collapsible className="w-full">
+                        {faqFields.map((field, index) => (
+                            <AccordionItem value={`item-${index}`} key={field.id}>
+                                <div className="flex items-center gap-2">
+                                    <AccordionTrigger className="flex-1">
+                                        <span className="truncate">
+                                            {form.watch(`faqs.${index}.question`) || `Question ${index + 1}`}
+                                        </span>
+                                    </AccordionTrigger>
+                                    <Button
+                                        type="button"
+                                        variant="ghost"
+                                        size="icon"
+                                        onClick={() => removeFaq(index)}
+                                    >
+                                        <Trash2 className="h-4 w-4 text-destructive" />
+                                    </Button>
+                                </div>
+                                <AccordionContent className="space-y-4">
+                                    <FormField
+                                        control={form.control}
+                                        name={`faqs.${index}.question`}
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>Question</FormLabel>
+                                                <FormControl>
+                                                    <Input {...field} />
+                                                </FormControl>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
+                                    <FormField
+                                        control={form.control}
+                                        name={`faqs.${index}.answer`}
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>Answer</FormLabel>
+                                                <FormControl>
+                                                    <Textarea className="min-h-[100px]" {...field} />
+                                                </FormControl>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
+                                </AccordionContent>
+                            </AccordionItem>
+                        ))}
+                    </Accordion>
+                     <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        className="mt-4"
+                        onClick={() => appendFaq({ question: '', answer: '' })}
+                    >
+                        <PlusCircle className="mr-2 h-4 w-4" />
+                        Add FAQ
+                    </Button>
+                </CardContent>
+            </Card>
+            </TabsContent>
+          </Tabs>
+        </form>
+      </Form>
   );
 }
 
