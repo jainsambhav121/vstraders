@@ -17,6 +17,7 @@ import { Loader2, LogOut } from 'lucide-react';
 import { useAuth } from '@/firebase';
 import { signOut } from 'firebase/auth';
 import { useToast } from '@/hooks/use-toast';
+import Link from 'next/link';
 
 export default function ProfilePage() {
   const { user, loading } = useUser();
@@ -63,11 +64,11 @@ export default function ProfilePage() {
         </CardHeader>
         <CardContent className="flex flex-col items-center space-y-6">
           <div className="w-full space-y-4">
-             <Button variant="outline" className="w-full">
-                Order History
+             <Button variant="outline" className="w-full" asChild>
+                <Link href="/profile/orders">Order History</Link>
              </Button>
-             <Button variant="outline" className="w-full">
-                Account Settings
+             <Button variant="outline" className="w-full" asChild>
+                <Link href="/profile/settings">Account Settings</Link>
              </Button>
           </div>
           <Button variant="destructive" onClick={handleLogout} className="w-full max-w-xs">
