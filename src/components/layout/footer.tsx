@@ -1,3 +1,4 @@
+
 import Link from 'next/link';
 import { Store, Twitter, Facebook, Instagram } from 'lucide-react';
 import { Input } from '@/components/ui/input';
@@ -44,6 +45,7 @@ export default function Footer() {
             <li><Link href="/faq" className="hover:text-primary">FAQ</Link></li>
             <li><Link href="/shipping" className="hover:text-primary">Shipping & Returns</Link></li>
             <li><Link href="/terms" className="hover:text-primary">Terms of Service</Link></li>
+            <li><Link href="/privacy" className="hover:text-primary">Privacy Policy</Link></li>
           </ul>
         </div>
 

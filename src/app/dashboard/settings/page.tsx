@@ -33,6 +33,9 @@ const settingsFormSchema = z.object({
     metaTitle: z.string().optional(),
     metaDescription: z.string().optional(),
     metaKeywords: z.string().optional(),
+    shippingPolicy: z.string().min(1, "Shipping Policy cannot be empty."),
+    privacyPolicy: z.string().min(1, "Privacy Policy cannot be empty."),
+    termsAndConditions: z.string().min(1, "Terms & Conditions cannot be empty."),
 });
 
 type SettingsFormValues = z.infer<typeof settingsFormSchema>;
@@ -55,6 +58,9 @@ export default function SettingsPage() {
             metaTitle: 'VSTRADERS - Your One-Stop Shop',
             metaDescription: 'Discover the best products at VSTRADERS. Quality and affordability in one place.',
             metaKeywords: 'ecommerce, online shopping, products, deals',
+            shippingPolicy: `Our goal is to deliver your order as quickly as possible. We offer flat-rate shipping on all orders below the free shipping threshold. Please allow 3-5 business days for processing and an additional 5-7 business days for standard delivery.`,
+            privacyPolicy: `Your privacy is important to us. It is VSTRADERS' policy to respect your privacy regarding any information we may collect from you across our website...`,
+            termsAndConditions: `By accessing the website at VSTRADERS, you are agreeing to be bound by these terms of service, all applicable laws and regulations...`,
         },
     });
 
@@ -68,18 +74,19 @@ export default function SettingsPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold tracking-tight">Settings</h1>
-        <Button onClick={form.handleSubmit(onSubmit)}>Save Changes</Button>
-      </div>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
+            <div className="flex items-center justify-between">
+                <h1 className="text-3xl font-bold tracking-tight">Settings</h1>
+                <Button type="submit">Save Changes</Button>
+            </div>
             <Tabs defaultValue="general" className="w-full">
                 <TabsList>
                 <TabsTrigger value="general">General</TabsTrigger>
                 <TabsTrigger value="social">Social Links</TabsTrigger>
                 <TabsTrigger value="shipping">Shipping</TabsTrigger>
                 <TabsTrigger value="payments">Payments</TabsTrigger>
+                <TabsTrigger value="policies">Policies</TabsTrigger>
                 <TabsTrigger value="seo">SEO</TabsTrigger>
                 </TabsList>
                 <TabsContent value="general">
@@ -263,6 +270,57 @@ export default function SettingsPage() {
                         />
                     </CardContent>
                 </Card>
+                </TabsContent>
+                 <TabsContent value="policies">
+                    <Card>
+                        <CardHeader>
+                        <CardTitle>Policies</CardTitle>
+                        <CardDescription>
+                            Manage content for shipping, privacy, and terms.
+                        </CardDescription>
+                        </CardHeader>
+                        <CardContent className="space-y-6">
+                            <FormField
+                                control={form.control}
+                                name="shippingPolicy"
+                                render={({ field }) => (
+                                    <FormItem>
+                                    <FormLabel>Shipping & Returns Policy</FormLabel>
+                                    <FormControl>
+                                        <Textarea className="min-h-[200px]" {...field} />
+                                    </FormControl>
+                                    <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                            <FormField
+                                control={form.control}
+                                name="privacyPolicy"
+                                render={({ field }) => (
+                                    <FormItem>
+                                    <FormLabel>Privacy Policy</FormLabel>
+                                    <FormControl>
+                                        <Textarea className="min-h-[200px]" {...field} />
+                                    </FormControl>
+                                    <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                            <FormField
+                                control={form.control}
+                                name="termsAndConditions"
+                                render={({ field }) => (
+                                    <FormItem>
+                                    <FormLabel>Terms & Conditions</FormLabel>
+                                    <FormControl>
+                                        <Textarea className="min-h-[200px]" {...field} />
+                                    </FormControl>
+                                    <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                        </CardContent>
+                    </Card>
                 </TabsContent>
                 <TabsContent value="seo">
                 <Card>
