@@ -1,7 +1,8 @@
+
 'use client';
 
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import {
   SidebarHeader,
   SidebarMenu,
@@ -20,6 +21,9 @@ import {
   LogOut,
   FileText,
 } from 'lucide-react';
+import { useAuth } from '@/firebase';
+import { signOut } from 'firebase/auth';
+import { useToast } from '@/hooks/use-toast';
 
 const links = [
   { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
@@ -32,11 +36,26 @@ const links = [
 const bottomLinks = [
   { href: '/dashboard/settings', label: 'Settings', icon: Settings },
   { href: '/', label: 'Back to Store', icon: Store },
-  { href: '/login', label: 'Logout', icon: LogOut },
 ];
 
 export function SidebarNav() {
   const pathname = usePathname();
+  const auth = useAuth();
+  const router = useRouter();
+  const { toast } = useToast();
+
+  const handleLogout = async () => {
+    if (auth) {
+      try {
+        await signOut(auth);
+        toast({ title: 'Logged Out', description: 'You have been successfully logged out.' });
+        router.push('/login');
+      } catch (error) {
+        console.error('Logout error:', error);
+        toast({ variant: 'destructive', title: 'Logout Failed', description: 'Could not log you out. Please try again.' });
+      }
+    }
+  };
 
   const isActive = (href: string) => {
     return pathname === href;
@@ -82,6 +101,15 @@ export function SidebarNav() {
               </Link>
             </SidebarMenuItem>
           ))}
+          <SidebarMenuItem>
+             <SidebarMenuButton
+                onClick={handleLogout}
+                tooltip="Logout"
+              >
+                <LogOut />
+                <span>Logout</span>
+              </SidebarMenuButton>
+          </SidebarMenuItem>
         </SidebarMenu>
       </SidebarFooter>
     </>

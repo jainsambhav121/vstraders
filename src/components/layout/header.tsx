@@ -1,3 +1,6 @@
+
+'use client';
+
 import Link from 'next/link';
 import {
   Sheet,
@@ -23,6 +26,7 @@ import {
 } from "@/components/ui/dialog"
 import { Badge } from '@/components/ui/badge';
 import { MobileLink } from './mobile-link';
+import { useUser } from '@/hooks/use-user';
 
 const navLinks = [
   { href: '/', label: 'Home' },
@@ -33,6 +37,8 @@ const navLinks = [
 ];
 
 export default function Header() {
+  const { user } = useUser();
+
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container mx-auto flex h-16 items-center px-4">
@@ -112,7 +118,7 @@ export default function Header() {
               </DialogContent>
             </Dialog>
             <Button variant="ghost" size="icon" asChild aria-label="Account">
-              <Link href="/login">
+              <Link href={user ? "/dashboard" : "/login"}>
                 <User className="h-6 w-6" />
               </Link>
             </Button>

@@ -1,5 +1,7 @@
 
 
+import type { User as FirebaseUser } from 'firebase/auth';
+
 export type Image = {
   url: string;
   alt?: string;
@@ -111,3 +113,5 @@ export type FaqItem = {
     question: string;
     answer: string;
 };
+
+export type AuthenticatedUser = FirebaseUser;

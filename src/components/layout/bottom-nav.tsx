@@ -1,3 +1,4 @@
+
 'use client';
 
 import Link from 'next/link';
@@ -13,16 +14,19 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { useUser } from '@/hooks/use-user';
 
 
 const navItems = [
   { href: '/', label: 'Home', icon: Home },
   { href: '/cart', label: 'Cart', icon: ShoppingCart },
-  { href: '/login', label: 'Profile', icon: User },
 ];
 
 export default function BottomNav() {
   const pathname = usePathname();
+  const { user } = useUser();
+
+  const profileLink = user ? '/dashboard' : '/login';
 
   return (
     <div className="md:hidden fixed bottom-0 left-0 z-50 w-full h-16 bg-background border-t border-border">
@@ -80,6 +84,16 @@ export default function BottomNav() {
                 </Link>
             )
         })}
+         <Link
+            href={profileLink}
+            className={cn(
+                'inline-flex flex-col items-center justify-center px-5 hover:bg-gray-50 dark:hover:bg-gray-800 group',
+                pathname === profileLink ? 'text-primary' : 'text-muted-foreground'
+            )}
+        >
+            <User className="w-5 h-5 mb-1" />
+            <span className="text-sm">Profile</span>
+        </Link>
       </div>
     </div>
   );
