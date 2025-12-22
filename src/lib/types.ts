@@ -106,3 +106,8 @@ export type BlogPost = {
   imageAlt: string;
   featured: boolean;
 };
+
+export type FaqItem = {
+    question: string;
+    answer: string;
+};
