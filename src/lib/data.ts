@@ -1,5 +1,5 @@
 import { PlaceHolderImages } from './placeholder-images';
-import type { Product, Category, Order, Customer, Review, BlogPost } from './types';
+import type { Product, Category, Order, Customer, Review, BlogPost, PaymentStatus, OrderStatus } from './types';
 
 const findImage = (id: string) => {
   const image = PlaceHolderImages.find((img) => img.id === id);
@@ -143,12 +143,12 @@ export const products: Product[] = [
 
 
 export const orders: Order[] = [
-  { id: 'ORD-001', customerName: 'Alice Johnson', customerEmail: 'alice@example.com', date: '2023-10-26', total: 411.98, status: 'Delivered', items: 2 },
-  { id: 'ORD-002', customerName: 'Bob Williams', customerEmail: 'bob@example.com', date: '2023-10-25', total: 249.99, status: 'Shipped', items: 1 },
-  { id: 'ORD-003', customerName: 'Charlie Brown', customerEmail: 'charlie@example.com', date: '2023-10-25', total: 899.00, status: 'Processing', items: 1 },
-  { id: 'ORD-004', customerName: 'Diana Prince', customerEmail: 'diana@example.com', date: '2023-10-24', total: 12.99, status: 'Pending', items: 1 },
-  { id: 'ORD-005', customerName: 'Ethan Hunt', customerEmail: 'ethan@example.com', date: '2023-10-23', total: 349.00, status: 'Canceled', items: 1 },
-  { id: 'ORD-006', customerName: 'Fiona Glenanne', customerEmail: 'fiona@example.com', date: '2023-10-22', total: 479.49, status: 'Delivered', items: 2 },
+  { id: 'ORD-001', customerName: 'Alice Johnson', customerEmail: 'alice@example.com', date: '2023-10-26', total: 411.98, status: 'Delivered', items: 2, paymentStatus: 'Paid' },
+  { id: 'ORD-002', customerName: 'Bob Williams', customerEmail: 'bob@example.com', date: '2023-10-25', total: 249.99, status: 'Shipped', items: 1, paymentStatus: 'Paid' },
+  { id: 'ORD-003', customerName: 'Charlie Brown', customerEmail: 'charlie@example.com', date: '2023-10-25', total: 899.00, status: 'Processing', items: 1, paymentStatus: 'Pending' },
+  { id: 'ORD-004', customerName: 'Diana Prince', customerEmail: 'diana@example.com', date: '2023-10-24', total: 12.99, status: 'Pending', items: 1, paymentStatus: 'Paid' },
+  { id: 'ORD-005', customerName: 'Ethan Hunt', customerEmail: 'ethan@example.com', date: '2023-10-23', total: 349.00, status: 'Canceled', items: 1, paymentStatus: 'Failed' },
+  { id: 'ORD-006', customerName: 'Fiona Glenanne', customerEmail: 'fiona@example.com', date: '2023-10-22', total: 479.49, status: 'Delivered', items: 2, paymentStatus: 'Paid' },
 ];
 
 export const customers: Customer[] = [

@@ -53,6 +53,8 @@ export type OrderStatus =
   | 'Shipped'
   | 'Delivered'
   | 'Canceled';
+  
+export type PaymentStatus = 'Paid' | 'Pending' | 'Failed';
 
 export type Order = {
   id: string;
@@ -62,6 +64,7 @@ export type Order = {
   total: number;
   status: OrderStatus;
   items: number;
+  paymentStatus: PaymentStatus;
 };
 
 export type Customer = {
