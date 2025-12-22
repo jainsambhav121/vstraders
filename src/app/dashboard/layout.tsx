@@ -19,12 +19,11 @@ export default function DashboardLayout({
   const { user, loading: authLoading } = useUser();
   const firestore = useFirestore();
   const router = useRouter();
-  const [isAuthorized, setIsAuthorized] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const [authStatus, setAuthStatus] = useState<'loading' | 'authorized' | 'unauthorized'>('loading');
 
   useEffect(() => {
-    if (authLoading) {
-      return;
+    if (authLoading || !firestore) {
+      return; // Wait until auth state and firestore are loaded
     }
 
     if (!user) {
@@ -33,26 +32,26 @@ export default function DashboardLayout({
     }
 
     const checkAdminRole = async () => {
-      if (!firestore) return;
       const userDocRef = doc(firestore, 'users', user.uid);
       try {
         const userDoc = await getDoc(userDocRef);
         if (userDoc.exists()) {
           const userData = userDoc.data() as AppUser;
           if (userData.role === 'admin' || userData.role === 'manager') {
-            setIsAuthorized(true);
+            setAuthStatus('authorized');
           } else {
+            setAuthStatus('unauthorized');
             router.push('/profile');
           }
         } else {
            // If user doc doesn't exist, they can't be an admin.
+           setAuthStatus('unauthorized');
            router.push('/profile');
         }
       } catch (error) {
         console.error("Error checking user role:", error);
+        setAuthStatus('unauthorized');
         router.push('/');
-      } finally {
-        setLoading(false);
       }
     };
 
@@ -60,7 +59,16 @@ export default function DashboardLayout({
 
   }, [user, authLoading, router, firestore]);
 
-  if (loading || authLoading || !isAuthorized) {
+  if (authStatus === 'loading') {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <Loader2 className="h-12 w-12 animate-spin text-primary" />
+      </div>
+    );
+  }
+  
+  if (authStatus !== 'authorized') {
+    // This will show the loading spinner while redirecting
     return (
       <div className="flex min-h-screen items-center justify-center">
         <Loader2 className="h-12 w-12 animate-spin text-primary" />
