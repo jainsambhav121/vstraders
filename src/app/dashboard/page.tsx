@@ -1,3 +1,6 @@
+
+'use client';
+
 import {
   Card,
   CardContent,
@@ -17,9 +20,11 @@ import { Badge } from '@/components/ui/badge';
 import StatsCard from '@/components/dashboard/stats-card';
 import SalesChart from '@/components/dashboard/sales-chart';
 import { DollarSign, Package, Users, CreditCard } from 'lucide-react';
-import { orders } from '@/lib/data';
+import { useOrders } from '@/hooks/use-orders';
+import { Skeleton } from '@/components/ui/skeleton';
 
 export default function DashboardPage() {
+  const { orders, loading } = useOrders();
   const recentOrders = orders.slice(0, 5);
   
   return (
@@ -68,7 +73,7 @@ export default function DashboardPage() {
             <CardDescription>You made 265 sales this month.</CardDescription>
           </CardHeader>
           <CardContent>
-            <Table>
+             <Table>
               <TableHeader>
                 <TableRow>
                   <TableHead>Customer</TableHead>
@@ -77,18 +82,35 @@ export default function DashboardPage() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {recentOrders.map((order) => (
-                  <TableRow key={order.id}>
-                    <TableCell>
-                      <div className="font-medium">{order.customerName}</div>
-                      <div className="text-sm text-muted-foreground">{order.customerEmail}</div>
-                    </TableCell>
-                    <TableCell>
-                      <Badge variant={order.status === 'Delivered' ? 'default' : 'secondary'}>{order.status}</Badge>
-                    </TableCell>
-                    <TableCell className="text-right">₹{order.total.toFixed(2)}</TableCell>
-                  </TableRow>
-                ))}
+                {loading ? (
+                  Array.from({ length: 5 }).map((_, i) => (
+                    <TableRow key={i}>
+                      <TableCell>
+                        <Skeleton className="h-4 w-24 mb-1" />
+                        <Skeleton className="h-3 w-32" />
+                      </TableCell>
+                      <TableCell>
+                        <Skeleton className="h-6 w-16 rounded-full" />
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <Skeleton className="h-4 w-12 ml-auto" />
+                      </TableCell>
+                    </TableRow>
+                  ))
+                ) : (
+                  recentOrders.map((order) => (
+                    <TableRow key={order.id}>
+                      <TableCell>
+                        <div className="font-medium">{order.customerName}</div>
+                        <div className="text-sm text-muted-foreground">{order.customerEmail}</div>
+                      </TableCell>
+                      <TableCell>
+                        <Badge variant={order.status === 'Delivered' ? 'default' : 'secondary'}>{order.status}</Badge>
+                      </TableCell>
+                      <TableCell className="text-right">₹{order.total.toFixed(2)}</TableCell>
+                    </TableRow>
+                  ))
+                )}
               </TableBody>
             </Table>
           </CardContent>
