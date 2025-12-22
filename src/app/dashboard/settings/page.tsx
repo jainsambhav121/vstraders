@@ -312,7 +312,7 @@ export default function SettingsPage() {
                                 </FormControl>
                                 <FormDescription>Comma-separated keywords relevant to your store.</FormDescription>
                                 <FormMessage />
-                                </Form-Item>
+                                </FormItem>
                             )}
                         />
                     </CardContent>
