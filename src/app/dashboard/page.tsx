@@ -21,41 +21,62 @@ import StatsCard from '@/components/dashboard/stats-card';
 import SalesChart from '@/components/dashboard/sales-chart';
 import { DollarSign, Package, Users, CreditCard } from 'lucide-react';
 import { useOrders } from '@/hooks/use-orders';
+import { useUsers } from '@/hooks/use-users';
+import { useProducts } from '@/hooks/use-products';
 import { Skeleton } from '@/components/ui/skeleton';
 
 export default function DashboardPage() {
-  const { orders, loading } = useOrders();
+  const { orders, loading: ordersLoading } = useOrders();
+  const { users, loading: usersLoading } = useUsers();
+  const { products, loading: productsLoading } = useProducts();
+
   const recentOrders = orders.slice(0, 5);
+  const loading = ordersLoading || usersLoading || productsLoading;
   
+  const totalRevenue = orders.reduce((acc, order) => acc + order.total, 0);
+  const totalSales = orders.length;
+  const totalCustomers = users.length;
+
   return (
     <div className="space-y-6">
       <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
       
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <StatsCard
-          title="Total Revenue"
-          value="₹4,52,31,89"
-          change="+20.1% from last month"
-          icon={<DollarSign />}
-        />
-        <StatsCard
-          title="Sales"
-          value="+12,234"
-          change="+19% from last month"
-          icon={<Package />}
-        />
-        <StatsCard
-          title="New Customers"
-          value="+2350"
-          change="+180.1% from last month"
-          icon={<Users />}
-        />
-        <StatsCard
-          title="Active Now"
-          value="+573"
-          change="+201 since last hour"
-          icon={<CreditCard />}
-        />
+        {loading ? (
+            <>
+                <Card><CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2"><CardTitle className="text-sm font-medium">Total Revenue</CardTitle><DollarSign className="text-muted-foreground h-4 w-4" /></CardHeader><CardContent><Skeleton className="h-8 w-3/4" /><Skeleton className="h-4 w-1/2 mt-1" /></CardContent></Card>
+                <Card><CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2"><CardTitle className="text-sm font-medium">Sales</CardTitle><Package className="text-muted-foreground h-4 w-4" /></CardHeader><CardContent><Skeleton className="h-8 w-3/4" /><Skeleton className="h-4 w-1/2 mt-1" /></CardContent></Card>
+                <Card><CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2"><CardTitle className="text-sm font-medium">New Customers</CardTitle><Users className="text-muted-foreground h-4 w-4" /></CardHeader><CardContent><Skeleton className="h-8 w-3/4" /><Skeleton className="h-4 w-1/2 mt-1" /></CardContent></Card>
+                <Card><CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2"><CardTitle className="text-sm font-medium">Active Now</CardTitle><CreditCard className="text-muted-foreground h-4 w-4" /></CardHeader><CardContent><Skeleton className="h-8 w-3/4" /><Skeleton className="h-4 w-1/2 mt-1" /></CardContent></Card>
+            </>
+        ) : (
+           <>
+            <StatsCard
+              title="Total Revenue"
+              value={`₹${totalRevenue.toLocaleString('en-IN')}`}
+              change="+20.1% from last month"
+              icon={<DollarSign />}
+            />
+            <StatsCard
+              title="Sales"
+              value={`+${totalSales.toLocaleString('en-IN')}`}
+              change="+19% from last month"
+              icon={<Package />}
+            />
+            <StatsCard
+              title="New Customers"
+              value={`+${totalCustomers.toLocaleString('en-IN')}`}
+              change="+180.1% from last month"
+              icon={<Users />}
+            />
+            <StatsCard
+              title="Active Now"
+              value="+573"
+              change="+201 since last hour"
+              icon={<CreditCard />}
+            />
+          </>
+        )}
       </div>
 
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-7">
@@ -70,7 +91,7 @@ export default function DashboardPage() {
         <Card className="col-span-1 lg:col-span-3">
           <CardHeader>
             <CardTitle>Recent Sales</CardTitle>
-            <CardDescription>You made 265 sales this month.</CardDescription>
+            <CardDescription>You made {totalSales} sales this month.</CardDescription>
           </CardHeader>
           <CardContent>
              <Table>
