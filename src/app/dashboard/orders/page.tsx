@@ -30,6 +30,10 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuItem,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
+  DropdownMenuPortal,
 } from '@/components/ui/dropdown-menu';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -39,6 +43,10 @@ import type { Order, OrderStatus, PaymentStatus } from '@/lib/types';
 import { cn } from '@/lib/utils';
 import { useOrders } from '@/hooks/use-orders';
 import { Skeleton } from '@/components/ui/skeleton';
+import { doc, updateDoc } from 'firebase/firestore';
+import { useFirestore } from '@/firebase';
+import { toast } from '@/hooks/use-toast';
+
 
 const getStatusVariant = (status: OrderStatus) => {
   switch (status) {
@@ -82,9 +90,33 @@ const TABS: { value: OrderStatus | 'all', label: string }[] = [
     { value: 'Cancelled', label: 'Cancelled' },
 ];
 
+const ORDER_STATUSES: OrderStatus[] = [
+    'Pending', 'Confirmed', 'Processing', 'Packed', 'Shipped', 'Delivered', 'Cancelled', 'Returned'
+];
+
 export default function OrdersPage() {
     const { orders, loading, error } = useOrders();
     const [activeTab, setActiveTab] = useState<OrderStatus | 'all'>('all');
+    const firestore = useFirestore();
+
+    const handleStatusChange = async (orderId: string, newStatus: OrderStatus) => {
+        if (!firestore) return;
+        const orderRef = doc(firestore, 'orders', orderId);
+        try {
+            await updateDoc(orderRef, { orderStatus: newStatus });
+            toast({
+                title: 'Order Updated',
+                description: `Order ${orderId.slice(0, 8)} status changed to ${newStatus}.`
+            });
+        } catch (err) {
+            console.error(err);
+            toast({
+                variant: 'destructive',
+                title: 'Update Failed',
+                description: 'Could not update the order status.'
+            });
+        }
+    };
 
     const filteredOrders = activeTab === 'all'
         ? orders
@@ -184,7 +216,7 @@ export default function OrdersPage() {
                 ) : (
                   filteredOrders.map((order) => (
                     <TableRow key={order.id}>
-                      <TableCell className="font-medium">{order.id}</TableCell>
+                      <TableCell className="font-medium">{order.id.slice(0, 8)}...</TableCell>
                       <TableCell>{order.customerName}</TableCell>
                       <TableCell>
                         <Badge
@@ -213,9 +245,24 @@ export default function OrdersPage() {
                           <DropdownMenuContent align="end">
                             <DropdownMenuLabel>Actions</DropdownMenuLabel>
                             <DropdownMenuItem>View Order</DropdownMenuItem>
-                            <DropdownMenuItem>Customer Details</DropdownMenuItem>
+                             <DropdownMenuSub>
+                                <DropdownMenuSubTrigger>Update Status</DropdownMenuSubTrigger>
+                                <DropdownMenuPortal>
+                                <DropdownMenuSubContent>
+                                    {ORDER_STATUSES.map(status => (
+                                        <DropdownMenuItem
+                                            key={status}
+                                            onClick={() => handleStatusChange(order.id, status)}
+                                            disabled={order.status === status}
+                                        >
+                                            {status}
+                                        </DropdownMenuItem>
+                                    ))}
+                                </DropdownMenuSubContent>
+                                </DropdownMenuPortal>
+                            </DropdownMenuSub>
                             <DropdownMenuSeparator />
-                            <DropdownMenuItem>Cancel Order</DropdownMenuItem>
+                            <DropdownMenuItem className="text-destructive">Cancel Order</DropdownMenuItem>
                           </DropdownMenuContent>
                         </DropdownMenu>
                       </TableCell>

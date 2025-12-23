@@ -33,10 +33,11 @@ import {
 import { categories } from '@/lib/data';
 import { toast } from '@/hooks/use-toast';
 import Link from 'next/link';
-import { ChevronLeft, PlusCircle, Trash2 } from 'lucide-react';
+import { ChevronLeft, PlusCircle, Trash2, Loader2 } from 'lucide-react';
 import { Switch } from '@/components/ui/switch';
-import { Separator } from '@/components/ui/separator';
-import React from 'react';
+import { useFirestore } from '@/firebase';
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import { useRouter } from 'next/navigation';
 
 const formSchema = z.object({
   name: z.string().min(2, { message: 'Name must be at least 2 characters.' }),
@@ -67,6 +68,9 @@ const formSchema = z.object({
 });
 
 export default function AddProductPage() {
+  const firestore = useFirestore();
+  const router = useRouter();
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -97,13 +101,45 @@ export default function AddProductPage() {
     name: "variants",
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
-    toast({
-      title: 'Product Created',
-      description: `The product "${values.name}" has been successfully created.`,
-    });
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    if (!firestore) {
+      toast({
+        variant: 'destructive',
+        title: 'Error',
+        description: 'Firestore is not initialized.',
+      });
+      return;
+    }
+
+    try {
+      const productData = {
+        ...values,
+        seoKeywords: values.seoKeywords?.split(',').map(k => k.trim()) || [],
+        discount: (values.discountType && values.discountValue) ? { type: values.discountType, value: values.discountValue } : null,
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp(),
+        rating: 0,
+        reviewCount: 0,
+      };
+
+      await addDoc(collection(firestore, 'products'), productData);
+
+      toast({
+        title: 'Product Created',
+        description: `The product "${values.name}" has been successfully created.`,
+      });
+      router.push('/dashboard/products');
+    } catch (error) {
+      console.error('Error adding document: ', error);
+      toast({
+        variant: 'destructive',
+        title: 'Error creating product',
+        description: 'There was an issue saving the product to Firestore.',
+      });
+    }
   }
+
+  const { isSubmitting } = form.formState;
 
   return (
     <Form {...form}>
@@ -119,10 +155,13 @@ export default function AddProductPage() {
             Add New Product
           </h1>
           <div className="hidden items-center gap-2 md:ml-auto md:flex">
-            <Button variant="outline" size="sm">
+            <Button variant="outline" size="sm" type="button" onClick={() => router.push('/dashboard/products')}>
               Discard
             </Button>
-            <Button size="sm" type="submit">Save Product</Button>
+            <Button size="sm" type="submit" disabled={isSubmitting}>
+              {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              Save Product
+            </Button>
           </div>
         </div>
         <div className="grid gap-4 md:grid-cols-[1fr_250px] lg:grid-cols-3 lg:gap-8">
@@ -362,8 +401,11 @@ export default function AddProductPage() {
           </div>
         </div>
         <div className="flex items-center justify-center gap-2 md:hidden">
-          <Button variant="outline" size="sm">Discard</Button>
-          <Button size="sm" type="submit">Save Product</Button>
+           <Button variant="outline" size="sm" type="button" onClick={() => router.push('/dashboard/products')}>Discard</Button>
+          <Button size="sm" type="submit" disabled={isSubmitting}>
+             {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            Save Product
+          </Button>
         </div>
       </form>
     </Form>

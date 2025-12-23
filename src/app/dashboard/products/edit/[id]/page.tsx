@@ -33,13 +33,16 @@ import {
 import { categories } from '@/lib/data';
 import { toast } from '@/hooks/use-toast';
 import Link from 'next/link';
-import { ChevronLeft, PlusCircle, Trash2 } from 'lucide-react';
-import { notFound, useParams } from 'next/navigation';
+import { ChevronLeft, PlusCircle, Trash2, Loader2 } from 'lucide-react';
+import { notFound, useParams, useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { Switch } from '@/components/ui/switch';
 import React, { useEffect } from 'react';
 import { useProducts } from '@/hooks/use-products';
 import { Skeleton } from '@/components/ui/skeleton';
+import { useFirestore } from '@/firebase';
+import { doc, updateDoc, serverTimestamp } from 'firebase/firestore';
+
 
 const formSchema = z.object({
   name: z.string().min(2, { message: 'Name must be at least 2 characters.' }),
@@ -73,6 +76,8 @@ const formSchema = z.object({
 export default function EditProductPage() {
   const params = useParams();
   const { id } = params;
+  const router = useRouter();
+  const firestore = useFirestore();
 
   const { products, loading } = useProducts();
   const product = products.find((p) => p.id === id);
@@ -115,7 +120,7 @@ export default function EditProductPage() {
         isEnabled: product.isEnabled,
         seoTitle: product.seoTitle,
         seoMetaDescription: product.seoMetaDescription,
-        seoKeywords: product.seoKeywords.join(', '),
+        seoKeywords: product.seoKeywords?.join(', '),
         slug: product.slug,
       });
     }
@@ -131,13 +136,42 @@ export default function EditProductPage() {
     name: "variants",
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
-    toast({
-      title: 'Product Updated',
-      description: `The product "${values.name}" has been successfully updated.`,
-    });
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    if (!firestore || !id) {
+      toast({
+        variant: 'destructive',
+        title: 'Error',
+        description: 'Firestore is not initialized or Product ID is missing.',
+      });
+      return;
+    }
+    
+    try {
+      const productRef = doc(firestore, 'products', id as string);
+      const productData = {
+        ...values,
+        seoKeywords: values.seoKeywords?.split(',').map(k => k.trim()) || [],
+        discount: (values.discountType && values.discountValue) ? { type: values.discountType, value: values.discountValue } : null,
+        updatedAt: serverTimestamp(),
+      };
+      await updateDoc(productRef, productData);
+      toast({
+        title: 'Product Updated',
+        description: `The product "${values.name}" has been successfully updated.`,
+      });
+      router.push('/dashboard/products');
+    } catch (error) {
+      console.error('Error updating document: ', error);
+      toast({
+        variant: 'destructive',
+        title: 'Error updating product',
+        description: 'There was an issue saving the product to Firestore.',
+      });
+    }
   }
+  
+  const { isSubmitting } = form.formState;
+
 
   if (loading) {
     return (
@@ -177,10 +211,11 @@ export default function EditProductPage() {
             Edit Product
           </h1>
           <div className="hidden items-center gap-2 md:ml-auto md:flex">
-            <Button variant="outline" size="sm">
-              Discard Changes
+            <Button variant="outline" size="sm" type="button" onClick={() => router.push('/dashboard/products')}>Discard Changes</Button>
+            <Button size="sm" type="submit" disabled={isSubmitting}>
+              {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              Save Changes
             </Button>
-            <Button size="sm" type="submit">Save Changes</Button>
           </div>
         </div>
         <div className="grid gap-4 md:grid-cols-[1fr_250px] lg:grid-cols-3 lg:gap-8">
@@ -352,7 +387,7 @@ export default function EditProductPage() {
                   <FormField control={form.control} name="discountType" render={({ field }) => (
                     <FormItem>
                       <FormLabel>Discount Type</FormLabel>
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <Select onValueChange={field.onChange} value={field.value}>
                         <FormControl><SelectTrigger><SelectValue placeholder="None" /></SelectTrigger></FormControl>
                         <SelectContent>
                           <SelectItem value="percentage">Percentage (%)</SelectItem>
@@ -379,7 +414,7 @@ export default function EditProductPage() {
                 <FormField control={form.control} name="category" render={({ field }) => (
                   <FormItem>
                     <FormLabel>Category</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <Select onValueChange={field.onChange} value={field.value}>
                       <FormControl><SelectTrigger><SelectValue placeholder="Select a category" /></SelectTrigger></FormControl>
                       <SelectContent>
                         {categories.map((cat) => (<SelectItem key={cat.id} value={cat.slug}>{cat.name}</SelectItem>))}
@@ -427,12 +462,13 @@ export default function EditProductPage() {
           </div>
         </div>
         <div className="flex items-center justify-center gap-2 md:hidden">
-          <Button variant="outline" size="sm">Discard Changes</Button>
-          <Button size="sm" type="submit">Save Changes</Button>
+          <Button variant="outline" size="sm" type="button" onClick={() => router.push('/dashboard/products')}>Discard Changes</Button>
+          <Button size="sm" type="submit" disabled={isSubmitting}>
+             {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            Save Changes
+          </Button>
         </div>
       </form>
     </Form>
   );
 }
-
-    

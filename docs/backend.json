@@ -93,7 +93,7 @@
           "format": "date-time"
         }
       },
-      "required": ["name", "price", "category", "stock", "slug"]
+      "required": ["name", "price", "category", "stock", "slug", "createdAt", "updatedAt"]
     },
     "Order": {
       "title": "Order",

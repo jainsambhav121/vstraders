@@ -2,6 +2,7 @@
 
 'use client';
 
+import { useEffect } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, useFieldArray } from 'react-hook-form';
 import * as z from 'zod';
@@ -27,7 +28,9 @@ import {
 import { toast } from '@/hooks/use-toast';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
-import { PlusCircle, Trash2 } from 'lucide-react';
+import { PlusCircle, Trash2, Loader2 } from 'lucide-react';
+import { useFirestore } from '@/firebase';
+import { doc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore';
 
 const faqItemSchema = z.object({
   question: z.string().min(1, 'Question cannot be empty.'),
@@ -38,48 +41,93 @@ const contentFormSchema = z.object({
   heroTitle: z.string(),
   heroTagline: z.string(),
   heroImageUrl: z.string().url({ message: "Please enter a valid URL." }).or(z.literal('')),
-  heroButtonLink: z.string().url({ message: "Please enter a valid URL." }).or(z.literal('')),
+  heroButtonLink: z.string().or(z.literal('')),
   aboutStory: z.string(),
   aboutMission: z.string(),
   aboutVision: z.string(),
   aboutBannerUrl: z.string().url({ message: "Please enter a valid URL." }).or(z.literal('')),
-  privacyPolicy: z.string().min(1, "Privacy Policy cannot be empty."),
-  termsAndConditions: z.string().min(1, "Terms & Conditions cannot be empty."),
   faqs: z.array(faqItemSchema),
 });
 
 export default function ContentPage() {
+  const firestore = useFirestore();
+  
   const form = useForm<z.infer<typeof contentFormSchema>>({
     resolver: zodResolver(contentFormSchema),
     defaultValues: {
-      heroTitle: 'Discover Your Style',
-      heroTagline: 'Explore our curated collection of the finest products, designed for the modern lifestyle.',
-      heroImageUrl: "https://picsum.photos/seed/hero/1800/800",
-      heroButtonLink: "/products",
-      aboutStory: `Founded in 2023, VSTRADERS started with a simple idea: to make high-quality, comfortable, and stylish home essentials accessible to everyone. We noticed a gap in the market for affordable luxury in pillows, cushions, mattresses, and covers. What began as a small workshop has grown into a beloved brand, known for its dedication to quality craftsmanship and customer satisfaction.\n\nOur journey is one of passion for comfort and design. We believe that a comfortable home is a happy home, and every product we create is a testament to this philosophy. We source the finest materials and pay meticulous attention to detail to ensure that every item we sell brings lasting comfort and joy to our customers.`,
-      aboutMission: `To enhance everyday living by providing superior comfort and style through our thoughtfully designed home essentials, ensuring every customer finds their perfect piece for a better night's sleep and a more beautiful home.`,
-      aboutVision: `To be the leading and most trusted brand in home comfort, continuously innovating and inspiring our customers to create spaces where they can truly relax, recharge, and live their best lives.`,
-      aboutBannerUrl: 'https://picsum.photos/seed/about-hero/1800/400',
-      privacyPolicy: `Your privacy is important to us. It is VSTRADERS' policy to respect your privacy regarding any information we may collect from you across our website...`,
-      termsAndConditions: `By accessing the website at VSTRADERS, you are agreeing to be bound by these terms of service, all applicable laws and regulations...`,
-      faqs: [
-        { question: 'What is your return policy?', answer: 'We offer a 30-day return policy on all our products. If you are not satisfied with your purchase, you can return it for a full refund.' },
-        { question: 'How long does shipping take?', answer: 'Shipping usually takes 5-7 business days within the country. International shipping times may vary.' },
-      ],
+      heroTitle: '',
+      heroTagline: '',
+      heroImageUrl: "",
+      heroButtonLink: "",
+      aboutStory: ``,
+      aboutMission: ``,
+      aboutVision: ``,
+      aboutBannerUrl: '',
+      faqs: [],
     },
   });
 
-  const { fields: faqFields, append: appendFaq, remove: removeFaq } = useFieldArray({
+  const { fields: faqFields, append: appendFaq, remove: removeFaq, replace: replaceFaqs } = useFieldArray({
     control: form.control,
     name: "faqs",
   });
 
-  function onSubmit(values: z.infer<typeof contentFormSchema>) {
-    console.log(values);
-    toast({
-      title: 'Content Updated',
-      description: 'Your website content has been successfully updated.',
-    });
+  useEffect(() => {
+    const fetchContent = async () => {
+        if (!firestore) return;
+        const docRef = doc(firestore, 'homepageContent', 'main');
+        const docSnap = await getDoc(docRef);
+
+        if (docSnap.exists()) {
+            const data = docSnap.data();
+            form.reset({
+                heroTitle: data.heroTitle || '',
+                heroTagline: data.heroTagline || '',
+                heroImageUrl: data.heroImageUrl || '',
+                heroButtonLink: data.heroButtonLink || '',
+                aboutStory: data.aboutStory || '',
+                aboutMission: data.aboutMission || '',
+                aboutVision: data.aboutVision || '',
+                aboutBannerUrl: data.aboutBannerUrl || '',
+                faqs: data.faqs || [],
+            });
+            replaceFaqs(data.faqs || []);
+        }
+    };
+    fetchContent();
+  }, [firestore, form, replaceFaqs]);
+
+
+  async function onSubmit(values: z.infer<typeof contentFormSchema>) {
+    if (!firestore) {
+        toast({
+            variant: "destructive",
+            title: 'Error',
+            description: 'Firestore not available. Could not save content.',
+        });
+        return;
+    }
+    try {
+        const docRef = doc(firestore, 'homepageContent', 'main');
+        await setDoc(docRef, { ...values, updatedAt: serverTimestamp() }, { merge: true });
+        toast({
+            title: 'Content Updated',
+            description: 'Your website content has been successfully updated.',
+        });
+    } catch (error) {
+        console.error("Error updating content: ", error);
+        toast({
+            variant: "destructive",
+            title: 'Update Failed',
+            description: 'An error occurred while saving the content.',
+        });
+    }
+  }
+  
+  const { isSubmitting, isDirty, isLoading } = form.formState;
+
+  if (isLoading && !isDirty) {
+      return <div className="flex items-center justify-center h-full"><Loader2 className="h-8 w-8 animate-spin" /></div>
   }
 
   return (
@@ -87,14 +135,16 @@ export default function ContentPage() {
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             <div className="flex items-center justify-between">
                 <h1 className="text-3xl font-bold tracking-tight">Content Management</h1>
-                <Button type="submit">Save Changes</Button>
+                <Button type="submit" disabled={isSubmitting}>
+                  {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                  Save Changes
+                </Button>
             </div>
           
           <Tabs defaultValue="homepage" className="w-full">
             <TabsList>
               <TabsTrigger value="homepage">Homepage</TabsTrigger>
               <TabsTrigger value="about">About Us</TabsTrigger>
-              <TabsTrigger value="policies">Policies</TabsTrigger>
               <TabsTrigger value="faq">FAQ</TabsTrigger>
             </TabsList>
             <TabsContent value="homepage">
@@ -228,44 +278,6 @@ export default function ContentPage() {
                 </CardContent>
             </Card>
             </TabsContent>
-            <TabsContent value="policies">
-            <Card>
-                <CardHeader>
-                <CardTitle>Policies</CardTitle>
-                <CardDescription>
-                    Manage content for Privacy Policy and Terms &amp; Conditions.
-                </CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-6">
-                    <FormField
-                        control={form.control}
-                        name="privacyPolicy"
-                        render={({ field }) => (
-                            <FormItem>
-                            <FormLabel>Privacy Policy</FormLabel>
-                            <FormControl>
-                                <Textarea className="min-h-[250px]" {...field} />
-                            </FormControl>
-                            <FormMessage />
-                            </FormItem>
-                        )}
-                    />
-                    <FormField
-                        control={form.control}
-                        name="termsAndConditions"
-                        render={({ field }) => (
-                            <FormItem>
-                            <FormLabel>Terms &amp; Conditions</FormLabel>
-                            <FormControl>
-                                <Textarea className="min-h-[250px]" {...field} />
-                            </FormControl>
-                            <FormMessage />
-                            </FormItem>
-                        )}
-                    />
-                </CardContent>
-            </Card>
-            </TabsContent>
             <TabsContent value="faq">
             <Card>
                 <CardHeader>
@@ -340,4 +352,3 @@ export default function ContentPage() {
       </Form>
   );
 }
-

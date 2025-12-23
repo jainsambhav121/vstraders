@@ -48,7 +48,7 @@ export default function PrivacyPolicyPage() {
           ) : (
             <div
               className="prose max-w-none text-muted-foreground"
-              dangerouslySetInnerHTML={{ __html: settings?.privacyPolicy.replace(/\n/g, '<br />') || '' }}
+              dangerouslySetInnerHTML={{ __html: settings?.privacyPolicy?.replace(/\n/g, '<br />') || '' }}
             />
           )}
         </CardContent>

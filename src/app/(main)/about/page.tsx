@@ -1,4 +1,6 @@
 
+'use client';
+
 import Image from 'next/image';
 import {
   Breadcrumb,
@@ -10,28 +12,43 @@ import {
 } from '@/components/ui/breadcrumb';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Users, Target, Eye, Building } from 'lucide-react';
+import { useDoc } from '@/hooks/use-doc';
+import { Skeleton } from '@/components/ui/skeleton';
 
 export default function AboutPage() {
+  const { data: content, loading } = useDoc<any>('homepageContent/main');
+  
+  const companyInfo = {
+      address: 'Ashok Kutir, J-3/48, Arvind Nagar, Yamuna Vihar, Shahdara, New Delhi, Delhi, 110053',
+      email: 'vstrader418@gmail.com',
+      phone: '+91 7217619150'
+  }
+
   return (
     <div className="flex-1 animate-in fade-in duration-500">
-      <div className="relative h-64 w-full bg-primary/10">
-        <Image
-          src="https://picsum.photos/seed/about-hero/1800/400"
-          alt="About VSTRADERS"
-          fill
-          className="object-cover"
-          data-ai-hint="team working"
-        />
-        <div className="absolute inset-0 bg-black/40" />
-        <div className="relative z-10 flex h-full flex-col items-center justify-center text-center text-white">
-          <h1 className="font-headline text-4xl font-bold md:text-5xl animate-in fade-in slide-in-from-bottom-4 duration-1000">
-            About VSTRADERS
-          </h1>
-          <p className="mt-2 text-lg text-primary-foreground/90 animate-in fade-in slide-in-from-bottom-2 duration-1000 delay-200">
-            Crafting comfort for your home.
-          </p>
+      {loading ? (
+         <Skeleton className="relative h-64 w-full" />
+      ) : (
+        <div className="relative h-64 w-full bg-primary/10">
+            <Image
+              src={content?.aboutBannerUrl || "https://picsum.photos/seed/about-hero/1800/400"}
+              alt="About VSTRADERS"
+              fill
+              className="object-cover"
+              data-ai-hint="team working"
+            />
+            <div className="absolute inset-0 bg-black/40" />
+            <div className="relative z-10 flex h-full flex-col items-center justify-center text-center text-white">
+              <h1 className="font-headline text-4xl font-bold md:text-5xl animate-in fade-in slide-in-from-bottom-4 duration-1000">
+                About VSTRADERS
+              </h1>
+              <p className="mt-2 text-lg text-primary-foreground/90 animate-in fade-in slide-in-from-bottom-2 duration-1000 delay-200">
+                Crafting comfort for your home.
+              </p>
+            </div>
         </div>
-      </div>
+      )}
+
 
       <div className="container mx-auto px-4 py-8 md:py-12">
         <Breadcrumb className="mb-8">
@@ -56,12 +73,15 @@ export default function AboutPage() {
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4 text-muted-foreground">
-                <p>
-                  Founded in 2023, VSTRADERS started with a simple idea: to make high-quality, comfortable, and stylish home essentials accessible to everyone. We noticed a gap in the market for affordable luxury in pillows, cushions, mattresses, and covers. What began as a small workshop has grown into a beloved brand, known for its dedication to quality craftsmanship and customer satisfaction.
-                </p>
-                <p>
-                  Our journey is one of passion for comfort and design. We believe that a comfortable home is a happy home, and every product we create is a testament to this philosophy. We source the finest materials and pay meticulous attention to detail to ensure that every item we sell brings lasting comfort and joy to our customers.
-                </p>
+                {loading ? (
+                    <div className="space-y-2">
+                        <Skeleton className="h-4 w-full" />
+                        <Skeleton className="h-4 w-full" />
+                        <Skeleton className="h-4 w-5/6" />
+                    </div>
+                ) : (
+                    <p dangerouslySetInnerHTML={{ __html: content?.aboutStory?.replace(/\n/g, '<br />') || '' }} />
+                )}
               </CardContent>
             </Card>
 
@@ -74,7 +94,7 @@ export default function AboutPage() {
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="text-muted-foreground">
-                  To enhance everyday living by providing superior comfort and style through our thoughtfully designed home essentials, ensuring every customer finds their perfect piece for a better night's sleep and a more beautiful home.
+                    {loading ? <Skeleton className="h-16 w-full" /> : content?.aboutMission}
                 </CardContent>
               </Card>
               <Card className="animate-in fade-in slide-in-from-bottom-4 duration-500 delay-200">
@@ -85,7 +105,7 @@ export default function AboutPage() {
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="text-muted-foreground">
-                  To be the leading and most trusted brand in home comfort, continuously innovating and inspiring our customers to create spaces where they can truly relax, recharge, and live their best lives.
+                     {loading ? <Skeleton className="h-16 w-full" /> : content?.aboutVision}
                 </CardContent>
               </Card>
             </div>
@@ -102,15 +122,15 @@ export default function AboutPage() {
               <CardContent className="space-y-4 text-sm text-muted-foreground">
                 <div className="space-y-1">
                     <h4 className="font-semibold text-foreground">Address</h4>
-                    <p>Ashok Kutir, J-3/48, Arvind Nagar, Yamuna Vihar, Shahdara, New Delhi, Delhi, 110053</p>
+                    <p>{companyInfo.address}</p>
                 </div>
                  <div className="space-y-1">
                     <h4 className="font-semibold text-foreground">Email</h4>
-                    <p>vstrader418@gmail.com</p>
+                    <p>{companyInfo.email}</p>
                 </div>
                  <div className="space-y-1">
                     <h4 className="font-semibold text-foreground">Phone</h4>
-                    <p>+91 7217619150</p>
+                    <p>{companyInfo.phone}</p>
                 </div>
               </CardContent>
             </Card>
