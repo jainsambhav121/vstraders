@@ -157,7 +157,7 @@ export default function Header() {
             </nav>
         </div>
 
-        <div className="flex flex-1 items-center justify-end gap-4">
+        <div className="flex flex-1 items-center justify-center md:justify-end gap-4">
           <div className="relative hidden w-full max-w-sm md:block">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
@@ -166,6 +166,14 @@ export default function Header() {
               className="w-full rounded-full bg-muted pl-10"
             />
           </div>
+           {/* Mobile-only: App name in the center */}
+          <div className="flex items-center md:hidden">
+             <Link href="/" className="flex items-center gap-2 text-lg font-bold">
+                <Store className="h-6 w-6 text-primary" />
+                <span>VSTRADERS</span>
+            </Link>
+          </div>
+
           <div className="flex items-center gap-2">
             <Dialog>
               <DialogTrigger asChild>
@@ -188,37 +196,40 @@ export default function Header() {
               </DialogContent>
             </Dialog>
 
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon">
-                  <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-                  <Moon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-                  <span className="sr-only">Toggle theme</span>
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuItem onClick={() => setTheme("light")}>
-                  Light
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setTheme("dark")}>
-                  Dark
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setTheme("system")}>
-                  System
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+            <div className="hidden md:flex items-center gap-2">
+                <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" size="icon">
+                    <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+                    <Moon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+                    <span className="sr-only">Toggle theme</span>
+                    </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                    <DropdownMenuItem onClick={() => setTheme("light")}>
+                    Light
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => setTheme("dark")}>
+                    Dark
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => setTheme("system")}>
+                    System
+                    </DropdownMenuItem>
+                </DropdownMenuContent>
+                </DropdownMenu>
 
-            <Button variant="ghost" size="icon" asChild aria-label="Account">
-              <Link href={profileLink}>
-                <User className="h-6 w-6" />
-              </Link>
-            </Button>
-            <Button variant="ghost" size="icon" asChild aria-label="Wishlist">
-                <Link href="/wishlist">
-                    <Heart className="h-6 w-6" />
+                <Button variant="ghost" size="icon" asChild aria-label="Account">
+                <Link href={profileLink}>
+                    <User className="h-6 w-6" />
                 </Link>
-            </Button>
+                </Button>
+                <Button variant="ghost" size="icon" asChild aria-label="Wishlist">
+                    <Link href="/wishlist">
+                        <Heart className="h-6 w-6" />
+                    </Link>
+                </Button>
+            </div>
+
             <Button variant="ghost" size="icon" className="relative" asChild aria-label="Cart">
               <Link href="/cart">
                 <ShoppingCart className="h-6 w-6" />
