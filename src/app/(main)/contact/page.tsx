@@ -60,18 +60,18 @@ export default function ContactPage() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8 md:py-12">
+    <div className="container mx-auto px-4 py-8 md:py-12 animate-in fade-in duration-500">
       <header className="mb-12 text-center">
-        <h1 className="font-headline text-4xl font-bold md:text-5xl">
+        <h1 className="font-headline text-4xl font-bold md:text-5xl animate-in fade-in slide-in-from-bottom-4 duration-700">
           Contact Us
         </h1>
-        <p className="mt-2 text-lg text-muted-foreground">
+        <p className="mt-2 text-lg text-muted-foreground animate-in fade-in slide-in-from-bottom-2 duration-700 delay-200">
           We&apos;d love to hear from you. Get in touch with us.
         </p>
       </header>
 
       <div className="grid grid-cols-1 gap-12 md:grid-cols-2">
-        <Card>
+        <Card className="animate-in fade-in slide-in-from-left-8 duration-700 delay-300">
           <CardHeader>
             <CardTitle>Send us a Message</CardTitle>
             <CardDescription>
@@ -135,7 +135,7 @@ export default function ContactPage() {
           </CardContent>
         </Card>
 
-        <div className="space-y-8">
+        <div className="space-y-8 animate-in fade-in slide-in-from-right-8 duration-700 delay-400">
           <Card>
             <CardHeader>
               <CardTitle>Contact Information</CardTitle>

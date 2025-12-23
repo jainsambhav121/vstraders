@@ -13,7 +13,7 @@ import { Users, Target, Eye, Building } from 'lucide-react';
 
 export default function AboutPage() {
   return (
-    <div className="flex-1">
+    <div className="flex-1 animate-in fade-in duration-500">
       <div className="relative h-64 w-full bg-primary/10">
         <Image
           src="https://picsum.photos/seed/about-hero/1800/400"
@@ -24,10 +24,10 @@ export default function AboutPage() {
         />
         <div className="absolute inset-0 bg-black/40" />
         <div className="relative z-10 flex h-full flex-col items-center justify-center text-center text-white">
-          <h1 className="font-headline text-4xl font-bold md:text-5xl">
+          <h1 className="font-headline text-4xl font-bold md:text-5xl animate-in fade-in slide-in-from-bottom-4 duration-1000">
             About VSTRADERS
           </h1>
-          <p className="mt-2 text-lg text-primary-foreground/90">
+          <p className="mt-2 text-lg text-primary-foreground/90 animate-in fade-in slide-in-from-bottom-2 duration-1000 delay-200">
             Crafting comfort for your home.
           </p>
         </div>
@@ -48,7 +48,7 @@ export default function AboutPage() {
 
         <div className="grid grid-cols-1 gap-12 lg:grid-cols-3">
           <div className="space-y-8 lg:col-span-2">
-            <Card>
+            <Card className="animate-in fade-in slide-in-from-bottom-4 duration-500">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Users className="h-6 w-6 text-primary" />
@@ -66,7 +66,7 @@ export default function AboutPage() {
             </Card>
 
             <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
-              <Card>
+              <Card className="animate-in fade-in slide-in-from-bottom-4 duration-500 delay-100">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <Target className="h-6 w-6 text-primary" />
@@ -77,7 +77,7 @@ export default function AboutPage() {
                   To enhance everyday living by providing superior comfort and style through our thoughtfully designed home essentials, ensuring every customer finds their perfect piece for a better night's sleep and a more beautiful home.
                 </CardContent>
               </Card>
-              <Card>
+              <Card className="animate-in fade-in slide-in-from-bottom-4 duration-500 delay-200">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <Eye className="h-6 w-6 text-primary" />
@@ -92,7 +92,7 @@ export default function AboutPage() {
           </div>
 
           <div className="space-y-8 lg:col-span-1">
-            <Card>
+            <Card className="animate-in fade-in slide-in-from-bottom-4 duration-500 delay-300">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                    <Building className="h-6 w-6 text-primary" />

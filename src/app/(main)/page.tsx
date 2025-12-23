@@ -34,13 +34,13 @@ export default function HomePage() {
         />
         <div className="absolute inset-0 bg-black/30" />
         <div className="relative z-10 flex h-full flex-col items-center justify-center text-center text-white">
-          <h1 className="font-headline text-4xl font-bold md:text-5xl lg:text-6xl">
+          <h1 className="font-headline text-4xl font-bold md:text-5xl lg:text-6xl animate-in fade-in slide-in-from-bottom-4 duration-1000">
             Discover Your Style
           </h1>
-          <p className="mt-4 max-w-2xl text-lg text-primary-foreground/90">
+          <p className="mt-4 max-w-2xl text-lg text-primary-foreground/90 animate-in fade-in slide-in-from-bottom-2 duration-1000 delay-200">
             Explore our curated collection of the finest products, designed for the modern lifestyle.
           </p>
-          <Button asChild size="lg" className="mt-8">
+          <Button asChild size="lg" className="mt-8 animate-in fade-in zoom-in-90 duration-1000 delay-400">
             <Link href="/products">Shop Now</Link>
           </Button>
         </div>
