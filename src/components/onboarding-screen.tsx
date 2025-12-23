@@ -83,7 +83,7 @@ export default function OnboardingScreen({ onComplete }: OnboardingScreenProps) 
         <CarouselPrevious className="left-4" />
         <CarouselNext className="right-4" />
       </Carousel>
-      <Button onClick={onComplete} className="absolute bottom-8 z-20">
+      <Button onClick={onComplete} className="absolute bottom-20 z-20">
         Get Started
       </Button>
     </div>
