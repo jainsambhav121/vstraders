@@ -41,6 +41,7 @@ import { useFirestore } from '@/firebase';
 import { doc, getDoc } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
 import { Separator } from '../ui/separator';
+import { useCart } from '@/context/cart-context';
 
 const navLinks = [
   { href: '/', label: 'Home' },
@@ -53,6 +54,7 @@ const navLinks = [
 export default function Header() {
   const { user } = useUser();
   const { setTheme } = useTheme();
+  const { cartCount } = useCart();
   const firestore = useFirestore();
   const [isAdmin, setIsAdmin] = useState(false);
 
@@ -233,7 +235,11 @@ export default function Header() {
             <Button variant="ghost" size="icon" className="relative" asChild aria-label="Cart">
               <Link href="/cart">
                 <ShoppingCart className="h-6 w-6" />
-                <Badge className="absolute -right-2 -top-2 h-5 w-5 justify-center rounded-full p-0">3</Badge>
+                {cartCount > 0 && (
+                  <Badge className="absolute -right-2 -top-2 h-5 w-5 justify-center rounded-full p-0">
+                    {cartCount}
+                  </Badge>
+                )}
               </Link>
             </Button>
           </div>

@@ -19,9 +19,13 @@ import { Separator } from '@/components/ui/separator';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import ProductCard from '@/components/product-card';
 import { Skeleton } from '@/components/ui/skeleton';
+import { useCart } from '@/context/cart-context';
+import { useToast } from '@/hooks/use-toast';
 
 export default function ProductDetailPage({ params }: { params: { id: string } }) {
   const { products, loading } = useProducts();
+  const { addToCart } = useCart();
+  const { toast } = useToast();
   const product = products.find((p) => p.id === params.id);
   const relatedProducts = products.filter(p => p.category === product?.category && p.id !== product?.id).slice(0, 4);
 
@@ -46,6 +50,14 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
   if (!product) {
     notFound();
   }
+
+  const handleAddToCart = () => {
+    addToCart(product);
+    toast({
+      title: "Added to cart",
+      description: `${product.name} has been added to your cart.`,
+    });
+  };
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -102,7 +114,7 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
           <p className="mt-4 text-muted-foreground">{product.description}</p>
           
           <div className="mt-8">
-            <Button size="lg" className="w-full sm:w-auto">Add to Cart</Button>
+            <Button size="lg" className="w-full sm:w-auto" onClick={handleAddToCart}>Add to Cart</Button>
           </div>
 
           <div className="mt-8 space-y-4 rounded-lg border p-4">

@@ -1,5 +1,4 @@
 
-
 import type { User as FirebaseUser } from 'firebase/auth';
 import type { LucideIcon } from 'lucide-react';
 
@@ -53,6 +52,11 @@ export type Product = {
   createdAt?: any;
   updatedAt?: any;
 };
+
+export type CartItem = Product & {
+  quantity: number;
+};
+
 
 export type OrderStatus =
   | 'Pending'

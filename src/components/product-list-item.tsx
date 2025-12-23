@@ -1,16 +1,32 @@
 
+'use client';
+
 import Image from 'next/image';
 import Link from 'next/link';
 import type { Product } from '@/lib/types';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Star } from 'lucide-react';
+import { useCart } from '@/context/cart-context';
+import { useToast } from '@/hooks/use-toast';
 
 type ProductListItemProps = {
   product: Product;
 };
 
 export default function ProductListItem({ product }: ProductListItemProps) {
+  const { addToCart } = useCart();
+  const { toast } = useToast();
+
+  const handleAddToCart = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    addToCart(product);
+    toast({
+      title: "Added to cart",
+      description: `${product.name} has been added to your cart.`,
+    });
+  };
+
   return (
     <Card>
       <CardContent className="flex gap-4 p-4">
@@ -47,7 +63,7 @@ export default function ProductListItem({ product }: ProductListItemProps) {
           </div>
           <div className="mt-2 flex items-center justify-between">
              <p className="text-lg font-semibold">₹{product.finalPrice.toFixed(2)}</p>
-             <Button size="sm">Add to Cart</Button>
+             <Button size="sm" onClick={handleAddToCart}>Add to Cart</Button>
           </div>
         </div>
       </CardContent>

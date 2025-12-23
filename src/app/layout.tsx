@@ -6,6 +6,7 @@ import { Toaster } from '@/components/ui/toaster';
 import { FirebaseClientProvider } from '@/firebase/client-provider';
 import { MobileExperienceProvider } from '@/components/mobile-experience-provider';
 import { ThemeProvider } from "@/components/theme-provider"
+import { CartProvider } from '@/context/cart-context';
 
 const openSans = Open_Sans({
   subsets: ['latin'],
@@ -41,7 +42,9 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <FirebaseClientProvider>
-            <MobileExperienceProvider>{children}</MobileExperienceProvider>
+            <CartProvider>
+              <MobileExperienceProvider>{children}</MobileExperienceProvider>
+            </CartProvider>
           </FirebaseClientProvider>
           <Toaster />
         </ThemeProvider>
