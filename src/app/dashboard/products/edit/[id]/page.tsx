@@ -148,24 +148,47 @@ export default function EditProductPage() {
     
     try {
       const productRef = doc(firestore, 'products', id as string);
-      const productData = {
+       const productData = {
         ...values,
-        seoKeywords: values.seoKeywords?.split(',').map(k => k.trim()) || [],
-        discount: (values.discountType && values.discountValue) ? { type: values.discountType, value: values.discountValue } : null,
+        price: Number(values.price),
+        stock: Number(values.stock),
+        primaryImageIndex: Number(values.primaryImageIndex),
+        seoKeywords: values.seoKeywords?.split(',').map(k => k.trim()).filter(Boolean) || [],
+        discount: (values.discountType && values.discountValue != null && values.discountValue > 0)
+            ? { type: values.discountType, value: Number(values.discountValue) }
+            : null,
+        variants: values.variants.map(v => ({
+            ...v,
+            stock: Number(v.stock),
+            price: v.price != null ? Number(v.price) : undefined,
+        })),
         updatedAt: serverTimestamp(),
       };
+
+      // Remove optional fields if they are empty to keep Firestore document clean
+      if (!productData.discount) {
+        // @ts-ignore
+        productData.discount = null;
+      }
+      if (!values.seoTitle) { // @ts-ignore
+          delete productData.seoTitle;
+      }
+      if (!values.seoMetaDescription) { // @ts-ignore
+          delete productData.seoMetaDescription;
+      }
+
       await updateDoc(productRef, productData);
       toast({
         title: 'Product Updated',
         description: `The product "${values.name}" has been successfully updated.`,
       });
       router.push('/dashboard/products');
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error updating document: ', error);
       toast({
         variant: 'destructive',
         title: 'Error updating product',
-        description: 'There was an issue saving the product to Firestore.',
+        description: error.message || 'There was an issue saving the product to Firestore.',
       });
     }
   }

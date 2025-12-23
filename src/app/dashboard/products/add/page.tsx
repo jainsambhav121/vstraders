@@ -114,13 +114,29 @@ export default function AddProductPage() {
     try {
       const productData = {
         ...values,
-        seoKeywords: values.seoKeywords?.split(',').map(k => k.trim()) || [],
-        discount: (values.discountType && values.discountValue) ? { type: values.discountType, value: values.discountValue } : null,
+        price: Number(values.price),
+        stock: Number(values.stock),
+        primaryImageIndex: Number(values.primaryImageIndex),
+        seoKeywords: values.seoKeywords?.split(',').map(k => k.trim()).filter(Boolean) || [],
+        discount: (values.discountType && values.discountValue != null && values.discountValue > 0) 
+            ? { type: values.discountType, value: Number(values.discountValue) } 
+            : null,
+        variants: values.variants.map(v => ({
+            ...v,
+            stock: Number(v.stock),
+            price: v.price != null ? Number(v.price) : undefined,
+        })),
         createdAt: serverTimestamp(),
         updatedAt: serverTimestamp(),
         rating: 0,
         reviewCount: 0,
       };
+
+      // Remove optional fields if they are empty to keep Firestore document clean
+      if (!productData.discount) delete productData.discount;
+      if (!values.seoTitle) delete productData.seoTitle;
+      if (!values.seoMetaDescription) delete productData.seoMetaDescription;
+
 
       await addDoc(collection(firestore, 'products'), productData);
 
@@ -129,12 +145,12 @@ export default function AddProductPage() {
         description: `The product "${values.name}" has been successfully created.`,
       });
       router.push('/dashboard/products');
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error adding document: ', error);
       toast({
         variant: 'destructive',
-        title: 'Error creating product',
-        description: 'There was an issue saving the product to Firestore.',
+        title: 'Error Creating Product',
+        description: error.message || 'There was an issue saving the product to Firestore.',
       });
     }
   }
