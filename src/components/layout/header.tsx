@@ -6,6 +6,7 @@ import {
   Sheet,
   SheetContent,
   SheetTrigger,
+  SheetClose
 } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -39,6 +40,7 @@ import {
 import { useFirestore } from '@/firebase';
 import { doc, getDoc } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
+import { Separator } from '../ui/separator';
 
 const navLinks = [
   { href: '/', label: 'Home' },
@@ -90,12 +92,14 @@ export default function Header() {
                 <span className="sr-only">Toggle navigation menu</span>
               </Button>
             </SheetTrigger>
-            <SheetContent side="left">
-              <div className="grid gap-4 py-6">
+            <SheetContent side="left" className="flex flex-col">
+              <div className="border-b pb-4">
                 <Link href="/" className="flex items-center gap-2 text-lg font-bold">
                   <Store className="h-6 w-6 text-primary" />
                   <span>VSTRADERS</span>
                 </Link>
+              </div>
+              <div className="flex-1 space-y-2 py-6">
                 {navLinks.map((link) => (
                     <MobileLink
                     key={link.href}
@@ -105,7 +109,40 @@ export default function Header() {
                     {link.label}
                   </MobileLink>
                 ))}
+                 <MobileLink
+                    href="/wishlist"
+                    className="flex w-full items-center py-2 text-lg font-semibold"
+                  >
+                    Wishlist
+                  </MobileLink>
               </div>
+               <Separator />
+               <div className="py-4 space-y-4">
+                 <MobileLink href={profileLink} className="flex items-center gap-2 text-md font-medium">
+                    <User className="h-5 w-5" />
+                    My Account
+                 </MobileLink>
+                 <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="ghost" className="w-full justify-start gap-2 px-0 text-md font-medium">
+                        <Sun className="h-5 w-5 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+                        <Moon className="absolute h-5 w-5 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+                        <span>Toggle theme</span>
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="start">
+                      <DropdownMenuItem onClick={() => setTheme("light")}>
+                        Light
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => setTheme("dark")}>
+                        Dark
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => setTheme("system")}>
+                        System
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+               </div>
             </SheetContent>
           </Sheet>
         </div>
