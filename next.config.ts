@@ -42,6 +42,12 @@ const nextConfig: NextConfig = {
         port: '',
         pathname: '/**',
       },
+      {
+        protocol: 'https' as const,
+        hostname: 'rb.gy',
+        port: '',
+        pathname: '/**',
+      },
     ],
   },
 };
