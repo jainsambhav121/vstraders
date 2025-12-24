@@ -299,7 +299,7 @@ export default function EditProductPage() {
                         render={({ field }) => (
                           <FormItem>
                              <FormLabel className={index !== 0 ? 'sr-only' : ''}>Label</FormLabel>
-                            <FormControl><Input placeholder="e.g. Size" {...field} /></FormControl>
+                            <FormControl><Input placeholder="e.g. Size" {...field} value={field.value || ''} /></FormControl>
                             <FormMessage />
                           </FormItem>
                         )}
@@ -311,7 +311,7 @@ export default function EditProductPage() {
                             render={({ field }) => (
                             <FormItem className="flex-grow">
                                 <FormLabel className={index !== 0 ? 'sr-only' : ''}>Value</FormLabel>
-                                <FormControl><Input placeholder="e.g. 16 x 24 inch" {...field} /></FormControl>
+                                <FormControl><Input placeholder="e.g. 16 x 24 inch" {...field} value={field.value || ''} /></FormControl>
                                 <FormMessage />
                             </FormItem>
                             )}
@@ -494,7 +494,7 @@ export default function EditProductPage() {
 
             <Card>
               <CardHeader>
-                <CardTitle>Category & Stock</CardTitle>
+                <CardTitle>Category &amp; Stock</CardTitle>
               </CardHeader>
               <CardContent className="space-y-6">
                 <FormField control={form.control} name="category" render={({ field }) => (
