@@ -2,7 +2,7 @@
 'use client';
 
 import Image from 'next/image';
-import { notFound } from 'next/navigation';
+import { notFound, useParams } from 'next/navigation';
 import { useProducts } from '@/hooks/use-products';
 import { reviews } from '@/lib/data';
 import { Button } from '@/components/ui/button';
@@ -22,11 +22,13 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { useCart } from '@/context/cart-context';
 import { useToast } from '@/hooks/use-toast';
 
-export default function ProductDetailPage({ params }: { params: { id: string } }) {
+export default function ProductDetailPage() {
+  const params = useParams();
+  const { id } = params;
   const { products, loading } = useProducts();
   const { addToCart } = useCart();
   const { toast } = useToast();
-  const product = products.find((p) => p.id === params.id);
+  const product = products.find((p) => p.id === id);
   const relatedProducts = products.filter(p => p.category === product?.category && p.id !== product?.id).slice(0, 4);
 
   if (loading) {
