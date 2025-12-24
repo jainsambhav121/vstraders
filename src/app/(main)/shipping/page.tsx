@@ -45,11 +45,13 @@ export default function ShippingPage() {
               <Skeleton className="h-4 w-full mt-4" />
               <Skeleton className="h-4 w-5/6" />
             </div>
-          ) : (
+          ) : settings?.shippingPolicy ? (
             <div
               className="prose max-w-none text-muted-foreground"
-              dangerouslySetInnerHTML={{ __html: settings?.shippingPolicy.replace(/\n/g, '<br />') || '' }}
+              dangerouslySetInnerHTML={{ __html: settings?.shippingPolicy.replace(/\n/g, '<br />') }}
             />
+          ) : (
+             <p className="text-muted-foreground">Shipping & Returns policy has not been set yet.</p>
           )}
         </CardContent>
       </Card>

@@ -1,6 +1,7 @@
 
 'use client';
 
+import { useEffect } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
@@ -18,6 +19,10 @@ import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, For
 import { toast } from '@/hooks/use-toast';
 import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
+import { useFirestore } from '@/firebase';
+import { doc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore';
+import { useSettings } from '@/hooks/use-settings';
+import { Loader2 } from 'lucide-react';
 
 const settingsFormSchema = z.object({
     storeName: z.string().min(1, 'Store name is required.'),
@@ -41,15 +46,17 @@ const settingsFormSchema = z.object({
 type SettingsFormValues = z.infer<typeof settingsFormSchema>;
 
 export default function SettingsPage() {
+    const firestore = useFirestore();
+    const { settings, loading } = useSettings();
 
     const form = useForm<SettingsFormValues>({
         resolver: zodResolver(settingsFormSchema),
         defaultValues: {
             storeName: 'VSTRADERS',
             supportEmail: 'support@vstraders.com',
-            twitterUrl: '#',
-            facebookUrl: '#',
-            instagramUrl: '#',
+            twitterUrl: '',
+            facebookUrl: '',
+            instagramUrl: '',
             freeShippingThreshold: 4000,
             flatRate: 150,
             allowCod: true,
@@ -64,13 +71,35 @@ export default function SettingsPage() {
         },
     });
 
-    function onSubmit(data: SettingsFormValues) {
-        toast({
-            title: 'Settings Saved',
-            description: 'Your settings have been updated successfully.',
-        });
-        console.log(data);
+    useEffect(() => {
+        if (settings) {
+            form.reset(settings);
+        }
+    }, [settings, form]);
+
+
+    async function onSubmit(data: SettingsFormValues) {
+        if (!firestore) {
+            toast({ variant: 'destructive', title: 'Error', description: 'Firestore is not initialized.' });
+            return;
+        }
+        try {
+            const settingsRef = doc(firestore, 'settings', 'main');
+            await setDoc(settingsRef, { ...data, updatedAt: serverTimestamp() }, { merge: true });
+            toast({
+                title: 'Settings Saved',
+                description: 'Your settings have been updated successfully.',
+            });
+        } catch (error) {
+            console.error(error);
+            toast({ variant: 'destructive', title: 'Error', description: 'Failed to save settings.' });
+        }
     }
+
+    if (loading) {
+        return <div className="flex h-full items-center justify-center"><Loader2 className="h-8 w-8 animate-spin" /></div>;
+    }
+
 
   return (
     <div className="space-y-6">
@@ -78,7 +107,10 @@ export default function SettingsPage() {
         <form onSubmit={form.handleSubmit(onSubmit)}>
             <div className="flex items-center justify-between">
                 <h1 className="text-3xl font-bold tracking-tight">Settings</h1>
-                <Button type="submit">Save Changes</Button>
+                <Button type="submit" disabled={form.formState.isSubmitting}>
+                  {form.formState.isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                  Save Changes
+                </Button>
             </div>
             <Tabs defaultValue="general" className="w-full">
                 <TabsList>

@@ -45,11 +45,13 @@ export default function TermsPage() {
               <Skeleton className="h-4 w-full mt-4" />
               <Skeleton className="h-4 w-5/6" />
             </div>
-          ) : (
+          ) : settings?.termsAndConditions ? (
             <div
               className="prose max-w-none text-muted-foreground"
-              dangerouslySetInnerHTML={{ __html: settings?.termsAndConditions.replace(/\n/g, '<br />') || '' }}
+              dangerouslySetInnerHTML={{ __html: settings?.termsAndConditions.replace(/\n/g, '<br />') }}
             />
+          ) : (
+            <p className="text-muted-foreground">Terms of Service have not been set yet.</p>
           )}
         </CardContent>
       </Card>

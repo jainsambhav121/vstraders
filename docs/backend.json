@@ -206,6 +206,29 @@
           }
         }
       }
+    },
+    "Settings": {
+      "title": "Settings",
+      "description": "Global store settings.",
+      "type": "object",
+      "properties": {
+        "storeName": { "type": "string" },
+        "supportEmail": { "type": "string", "format": "email" },
+        "twitterUrl": { "type": "string", "format": "uri" },
+        "facebookUrl": { "type": "string", "format": "uri" },
+        "instagramUrl": { "type": "string", "format": "uri" },
+        "freeShippingThreshold": { "type": "number" },
+        "flatRate": { "type": "number" },
+        "allowCod": { "type": "boolean" },
+        "stripeApiKey": { "type": "string" },
+        "razorpayApiKey": { "type": "string" },
+        "metaTitle": { "type": "string" },
+        "metaDescription": { "type": "string" },
+        "metaKeywords": { "type": "string" },
+        "shippingPolicy": { "type": "string" },
+        "privacyPolicy": { "type": "string" },
+        "termsAndConditions": { "type": "string" }
+      }
     }
   },
   "auth": {
@@ -231,6 +254,10 @@
     "/homepageContent/main": {
       "schema": { "$ref": "#/entities/HomepageContent" },
       "description": "Stores content for the homepage."
+    },
+    "/settings/main": {
+        "schema": { "$ref": "#/entities/Settings" },
+        "description": "Stores global settings for the store."
     }
   }
 }

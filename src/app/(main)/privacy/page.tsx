@@ -45,11 +45,13 @@ export default function PrivacyPolicyPage() {
               <Skeleton className="h-4 w-full mt-4" />
               <Skeleton className="h-4 w-5/6" />
             </div>
-          ) : (
+          ) : settings?.privacyPolicy ? (
             <div
               className="prose max-w-none text-muted-foreground"
-              dangerouslySetInnerHTML={{ __html: settings?.privacyPolicy?.replace(/\n/g, '<br />') || '' }}
+              dangerouslySetInnerHTML={{ __html: settings?.privacyPolicy?.replace(/\n/g, '<br />') }}
             />
+          ) : (
+            <p className="text-muted-foreground">Privacy policy has not been set yet.</p>
           )}
         </CardContent>
       </Card>
