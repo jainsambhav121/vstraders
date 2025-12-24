@@ -160,20 +160,22 @@ export default function EditProductPage() {
     
     try {
       const productRef = doc(firestore, 'products', id as string);
-       const productData = {
+       const productData: any = {
         name: values.name,
         description: values.description,
-        brand: values.brand || 'VSTRADERS',
+        brand: values.brand,
         category: values.category,
         basePrice: values.basePrice,
         stock: values.stock,
         images: values.images.map(img => img.url),
         primaryImage: values.images[values.primaryImageIndex]?.url,
-        variants: values.variants.map(v => ({
-          ...v,
-          stock: Number(v.stock),
-          ...(v.price != null && { price: Number(v.price) }),
-        })),
+        variants: values.variants.map(v => {
+          const variant: any = { ...v, stock: Number(v.stock) };
+          if (v.price != null) {
+            variant.price = Number(v.price);
+          }
+          return variant;
+        }),
         details: values.details,
         discount: (values.discountType && values.discountValue && values.discountValue > 0)
           ? { type: values.discountType, value: values.discountValue }
@@ -185,12 +187,27 @@ export default function EditProductPage() {
         },
         seo: {
           slug: values.slug,
-          title: values.seoTitle || values.name,
-          metaDescription: values.seoMetaDescription || values.description,
+          title: values.seoTitle,
+          metaDescription: values.seoMetaDescription,
           keywords: values.seoKeywords?.split(',').map(k => k.trim()).filter(Boolean) || [],
         },
         updatedAt: serverTimestamp(),
       };
+
+      // Clean undefined fields
+      Object.keys(productData).forEach(key => {
+        if (productData[key] === undefined) {
+          delete productData[key];
+        }
+      });
+      if(productData.seo) {
+        Object.keys(productData.seo).forEach(key => {
+          if (productData.seo[key] === undefined) {
+            delete productData.seo[key];
+          }
+        });
+      }
+
 
       await updateDoc(productRef, productData);
       toast({
@@ -562,3 +579,5 @@ export default function EditProductPage() {
     </Form>
   );
 }
+
+    
