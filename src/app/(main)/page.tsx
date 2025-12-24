@@ -62,14 +62,13 @@ export default function HomePage() {
                 {categories.map((category) => {
                   const Icon = category.icon;
                   return (
-                  <CarouselItem key={category.id} className="basis-1/2">
+                  <CarouselItem key={category.id} className="basis-1/3">
                      <Link
                         href={`/category/${category.slug}`}
-                        className="group flex h-full flex-col items-center justify-center gap-2 border bg-card p-2 text-center transition-all hover:shadow-lg aspect-square"
-                        style={{ borderRadius: '30px' }}
+                        className="group flex flex-col items-center justify-center gap-2 text-center"
                       >
-                        <div className="rounded-full bg-accent p-3 group-hover:bg-primary group-hover:text-primary-foreground">
-                          <Icon className="h-6 w-6 text-accent-foreground group-hover:text-primary-foreground" />
+                        <div className="flex h-20 w-20 items-center justify-center rounded-full border bg-card transition-all group-hover:bg-primary group-hover:text-primary-foreground">
+                          <Icon className="h-8 w-8 text-accent-foreground group-hover:text-primary-foreground" />
                         </div>
                         <span className="font-semibold text-card-foreground text-sm">
                           {category.name}
@@ -81,18 +80,17 @@ export default function HomePage() {
               </CarouselContent>
             </Carousel>
           </div>
-          <div className="hidden grid-cols-2 gap-4 md:grid md:grid-cols-3 lg:grid-cols-4 md:gap-6">
+          <div className="hidden grid-cols-2 gap-4 md:grid md:grid-cols-4 lg:grid-cols-4 md:gap-6 justify-center">
             {categories.map((category) => {
               const Icon = category.icon;
               return (
               <Link
                 href={`/category/${category.slug}`}
                 key={category.id}
-                className="group flex flex-col items-center justify-center gap-2 border bg-card p-4 text-center transition-all hover:shadow-lg aspect-square"
-                style={{ borderRadius: '30px' }}
+                className="group flex flex-col items-center justify-center gap-2 text-center"
               >
-                <div className="rounded-full bg-accent p-4 group-hover:bg-primary group-hover:text-primary-foreground">
-                  <Icon className="h-8 w-8 text-accent-foreground group-hover:text-primary-foreground" />
+                <div className="flex h-24 w-24 items-center justify-center rounded-full border bg-card transition-all group-hover:bg-primary group-hover:text-primary-foreground">
+                  <Icon className="h-10 w-10 text-accent-foreground group-hover:text-primary-foreground" />
                 </div>
                 <span className="font-semibold text-card-foreground">
                   {category.name}
