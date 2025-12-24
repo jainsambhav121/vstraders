@@ -81,7 +81,7 @@ export default function HomePage() {
               </CarouselContent>
             </Carousel>
           </div>
-          <div className="hidden grid-cols-2 gap-4 md:grid md:grid-cols-4 md:gap-6">
+          <div className="hidden grid-cols-2 gap-4 md:grid md:grid-cols-3 lg:grid-cols-4 md:gap-6">
             {categories.map((category) => {
               const Icon = category.icon;
               return (
