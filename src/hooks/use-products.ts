@@ -27,11 +27,15 @@ export function useProducts() {
       (snapshot) => {
         const productsData: Product[] = snapshot.docs.map((doc) => {
           const data = doc.data();
-          const finalPrice = data.discount 
-            ? data.discount.type === 'percentage' 
-              ? data.basePrice * (1 - data.discount.value / 100) 
-              : data.basePrice - data.discount.value 
-            : data.basePrice;
+          
+          let finalPrice = data.basePrice;
+          if (data.discount && data.discount.value > 0) {
+            if (data.discount.type === 'percentage') {
+              finalPrice = data.basePrice * (1 - data.discount.value / 100);
+            } else if (data.discount.type === 'flat') {
+              finalPrice = data.basePrice - data.discount.value;
+            }
+          }
             
           return {
             id: doc.id,
@@ -39,7 +43,7 @@ export function useProducts() {
             description: data.description,
             brand: data.brand,
             basePrice: data.basePrice,
-            finalPrice,
+            finalPrice: finalPrice || data.basePrice,
             discount: data.discount,
             category: data.category,
             stock: data.stock,
@@ -71,3 +75,4 @@ export function useProducts() {
 
   return { products, loading, error };
 }
+
