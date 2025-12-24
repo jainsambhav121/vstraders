@@ -9,6 +9,16 @@ export type Category = {
   icon: LucideIcon;
 };
 
+export type ProductImage = {
+  url: string;
+  isPrimary: boolean;
+};
+
+export type ProductSpecification = {
+  label: string;
+  value: string;
+};
+
 export type ProductVariant = {
   id: string;
   size?: string;
@@ -19,14 +29,9 @@ export type ProductVariant = {
   stock: number;
 };
 
-export type ProductDetail = {
-    label: string;
-    value: string;
-};
-
 export type Product = {
   id: string;
-  name: string;
+  productName: string;
   description: string;
   brand?: string;
   basePrice: number;
@@ -37,10 +42,10 @@ export type Product = {
   finalPrice: number;
   category: string;
   stock: number;
-  images: string[];
+  images: ProductImage[];
   primaryImage: string;
+  specifications: ProductSpecification[];
   variants: ProductVariant[];
-  details: ProductDetail[];
   status: {
     isEnabled: boolean;
     isFeatured: boolean;
@@ -56,6 +61,7 @@ export type Product = {
   reviewCount: number;
   createdAt?: any;
   updatedAt?: any;
+  name: string;
 };
 
 export type CartItem = Product & {

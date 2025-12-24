@@ -6,7 +6,7 @@
       "description": "Represents a product in the store.",
       "type": "object",
       "properties": {
-        "name": {
+        "productName": {
           "type": "string",
           "description": "The name of the product."
         },
@@ -18,43 +18,38 @@
           "type": "string",
           "description": "The brand of the product."
         },
-        "basePrice": {
-          "type": "number",
-          "description": "The base price of the product before discounts."
-        },
-        "discount": {
-          "type": "object",
-          "properties": {
-            "type": {
-              "type": "string",
-              "enum": ["percentage", "flat"]
+        "specifications": {
+          "type": "array",
+          "description": "An array of product specifications.",
+          "items": {
+            "type": "object",
+            "properties": {
+              "label": {
+                "type": "string"
+              },
+              "value": {
+                "type": "string"
+              }
             },
-            "value": {
-              "type": "number"
-            }
+            "required": ["label", "value"]
           }
-        },
-        "category": {
-          "type": "string",
-          "description": "The category slug of the product.",
-          "enum": ["mattress", "pillow", "covers"]
-        },
-        "stock": {
-          "type": "number",
-          "description": "The total stock quantity of the product."
         },
         "images": {
           "type": "array",
-          "description": "A list of image URLs for the product.",
+          "description": "A list of images for the product.",
           "items": {
-            "type": "string",
-            "format": "uri"
+            "type": "object",
+            "properties": {
+              "url": {
+                "type": "string",
+                "format": "uri"
+              },
+              "isPrimary": {
+                "type": "boolean"
+              }
+            },
+            "required": ["url", "isPrimary"]
           }
-        },
-        "primaryImage": {
-          "type": "string",
-          "format": "uri",
-          "description": "The URL of the primary image."
         },
         "variants": {
           "type": "array",
@@ -62,49 +57,25 @@
           "items": {
             "type": "object",
             "properties": {
-              "id": { "type": "string" },
               "size": { "type": "string" },
-              "thickness": { "type": "string" },
-              "material": { "type": "string" },
               "color": { "type": "string" },
+              "material": { "type": "string" },
+              "thickness": { "type": "string" },
               "price": { "type": "number" },
               "stock": { "type": "number" }
-            }
+            },
+            "required": ["stock"]
           }
         },
-        "details": {
-          "type": "array",
-          "description": "A list of key-value pairs for product specifications.",
-          "items": {
+        "seoSettings": {
             "type": "object",
+            "description": "SEO settings for the product page.",
             "properties": {
-              "label": { "type": "string" },
-              "value": { "type": "string" }
-            }
-          }
-        },
-        "status": {
-          "type": "object",
-          "properties": {
-            "isEnabled": { "type": "boolean" },
-            "isFeatured": { "type": "boolean" },
-            "isBestSeller": { "type": "boolean" }
-          }
-        },
-        "seo": {
-          "type": "object",
-          "properties": {
-            "slug": { "type": "string" },
-            "title": { "type": "string" },
-            "metaDescription": { "type": "string" },
-            "keywords": { "type": "array", "items": { "type": "string" } }
-          }
-        },
-        "rating": {
-          "type": "number"
-        },
-        "reviewCount": {
-          "type": "number"
+                "slug": { "type": "string" },
+                "seoTitle": { "type": "string" },
+                "metaDescription": { "type": "string" }
+            },
+            "required": ["slug", "seoTitle", "metaDescription"]
         },
         "createdAt": {
           "type": "string",
@@ -115,7 +86,7 @@
           "format": "date-time"
         }
       },
-      "required": ["name", "basePrice", "category", "stock", "images", "primaryImage", "createdAt", "updatedAt"]
+      "required": ["productName", "description", "images", "seoSettings", "createdAt", "updatedAt"]
     },
     "Order": {
       "title": "Order",
