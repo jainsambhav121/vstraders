@@ -20,6 +20,7 @@ import {
   Store,
   LogOut,
   FileText,
+  Mail,
 } from 'lucide-react';
 import { useAuth } from '@/firebase';
 import { signOut } from 'firebase/auth';
@@ -30,6 +31,7 @@ const links = [
   { href: '/dashboard/orders', label: 'Orders', icon: ShoppingBag },
   { href: '/dashboard/products', label: 'Products', icon: Package },
   { href: '/dashboard/customers', label: 'Customers', icon: Users },
+  { href: '/dashboard/subscriptions', label: 'Subscriptions', icon: Mail },
   { href: '/dashboard/content', label: 'Content', icon: FileText },
 ];
 

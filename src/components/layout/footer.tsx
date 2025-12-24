@@ -1,10 +1,58 @@
 
+'use client';
+
 import Link from 'next/link';
 import { Store, Twitter, Facebook, Instagram } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import * as z from 'zod';
+import { useFirestore } from '@/firebase';
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import { toast } from '@/hooks/use-toast';
+import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
+
+const newsletterSchema = z.object({
+  email: z.string().email({ message: 'Please enter a valid email.' }),
+});
 
 export default function Footer() {
+  const firestore = useFirestore();
+  const form = useForm<z.infer<typeof newsletterSchema>>({
+    resolver: zodResolver(newsletterSchema),
+    defaultValues: { email: '' },
+  });
+
+  const onSubmit = async (values: z.infer<typeof newsletterSchema>) => {
+    if (!firestore) {
+      toast({
+        variant: 'destructive',
+        title: 'Error',
+        description: 'Could not connect to the database.',
+      });
+      return;
+    }
+    try {
+      await addDoc(collection(firestore, 'subscriptions'), {
+        email: values.email,
+        subscribedAt: serverTimestamp(),
+      });
+      toast({
+        title: 'Subscribed!',
+        description: 'Thank you for subscribing to our newsletter.',
+      });
+      form.reset();
+    } catch (error) {
+      console.error(error);
+      toast({
+        variant: 'destructive',
+        title: 'Subscription Failed',
+        description: 'An error occurred. Please try again later.',
+      });
+    }
+  };
+
   return (
     <footer className="bg-muted text-muted-foreground hidden md:block">
       <div className="container mx-auto grid grid-cols-1 gap-8 px-4 py-12 md:grid-cols-4">
@@ -46,16 +94,32 @@ export default function Footer() {
             <li><Link href="/shipping" className="hover:text-primary">Shipping & Returns</Link></li>
             <li><Link href="/terms" className="hover:text-primary">Terms of Service</Link></li>
             <li><Link href="/privacy" className="hover:text-primary">Privacy Policy</Link></li>
+             <li><Link href="/about" className="hover:text-primary">About Us</Link></li>
           </ul>
         </div>
 
         <div>
           <h3 className="mb-4 font-semibold text-foreground">Newsletter</h3>
           <p className="mb-4">Subscribe to our newsletter for weekly updates and promotions.</p>
-          <div className="flex w-full max-w-sm items-center space-x-2">
-            <Input type="email" placeholder="Email" />
-            <Button type="submit">Subscribe</Button>
-          </div>
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="flex w-full max-w-sm items-start space-x-2">
+              <FormField
+                control={form.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem className="flex-1">
+                    <FormControl>
+                      <Input type="email" placeholder="Email" {...field} />
+                    </FormControl>
+                    <FormMessage className="text-xs" />
+                  </FormItem>
+                )}
+              />
+              <Button type="submit" disabled={form.formState.isSubmitting}>
+                {form.formState.isSubmitting ? 'Subscribing...' : 'Subscribe'}
+              </Button>
+            </form>
+          </Form>
         </div>
       </div>
       <div className="border-t">

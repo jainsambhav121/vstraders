@@ -200,6 +200,24 @@
         "privacyPolicy": { "type": "string" },
         "termsAndConditions": { "type": "string" }
       }
+    },
+    "Subscription": {
+      "title": "Subscription",
+      "description": "Represents a newsletter subscription.",
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string",
+          "format": "email",
+          "description": "The email address of the subscriber."
+        },
+        "subscribedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The date and time when the user subscribed."
+        }
+      },
+      "required": ["email", "subscribedAt"]
     }
   },
   "auth": {
@@ -229,6 +247,10 @@
     "/settings/main": {
         "schema": { "$ref": "#/entities/Settings" },
         "description": "Stores global settings for the store."
+    },
+    "/subscriptions/{subscriptionId}": {
+      "schema": { "$ref": "#/entities/Subscription" },
+      "description": "Stores newsletter subscriber emails."
     }
   }
 }
