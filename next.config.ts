@@ -3,6 +3,7 @@ import type {NextConfig} from 'next';
 
 const nextConfig: NextConfig = {
   /* config options here */
+  transpilePackages: ['embla-carousel-react'],
   typescript: {
     ignoreBuildErrors: true,
   },
@@ -30,13 +31,13 @@ const nextConfig: NextConfig = {
         pathname: '/**',
       },
       {
-        protocol: 'https',
+        protocol: 'https' as const,
         hostname: 'h7.cl',
         port: '',
         pathname: '/**',
       },
       {
-        protocol: 'https',
+        protocol: 'https' as const,
         hostname: 'ik.imagekit.io',
         port: '',
         pathname: '/**',
