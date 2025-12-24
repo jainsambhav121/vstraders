@@ -169,7 +169,11 @@ export default function EditProductPage() {
         stock: values.stock,
         images: values.images.map(img => img.url),
         primaryImage: values.images[values.primaryImageIndex]?.url,
-        variants: values.variants.map(v => ({...v, stock: Number(v.stock), price: v.price != null ? Number(v.price) : undefined })),
+        variants: values.variants.map(v => ({
+          ...v,
+          stock: Number(v.stock),
+          ...(v.price != null && { price: Number(v.price) }),
+        })),
         details: values.details,
         discount: (values.discountType && values.discountValue && values.discountValue > 0)
           ? { type: values.discountType, value: values.discountValue }
@@ -403,7 +407,7 @@ export default function EditProductPage() {
                           <FormItem><FormLabel>Thickness</FormLabel><FormControl><Input placeholder="e.g. 6 inch" {...field} value={field.value || ''}/></FormControl></FormItem>
                        )}/>
                        <FormField control={form.control} name={`variants.${index}.price`} render={({ field }) => (
-                          <FormItem><FormLabel>Variant Price (Optional)</FormLabel><FormControl><Input type="number" placeholder="Overrides base price" {...field} value={field.value || ''}/></FormControl></FormItem>
+                          <FormItem><FormLabel>Variant Price (Optional)</FormLabel><FormControl><Input type="number" placeholder="Overrides base price" {...field} value={field.value ?? ''}/></FormControl></FormItem>
                        )}/>
                        <FormField control={form.control} name={`variants.${index}.stock`} render={({ field }) => (
                           <FormItem><FormLabel>Variant Stock</FormLabel><FormControl><Input type="number" {...field} /></FormControl><FormMessage /></FormItem>
@@ -485,7 +489,7 @@ export default function EditProductPage() {
                   <FormField control={form.control} name="discountValue" render={({ field }) => (
                     <FormItem>
                       <FormLabel>Discount Value</FormLabel>
-                      <FormControl><Input type="number" {...field} value={field.value || ''} /></FormControl>
+                      <FormControl><Input type="number" {...field} value={field.value ?? ''} /></FormControl>
                     </FormItem>
                   )} />
                 </div>
@@ -558,5 +562,3 @@ export default function EditProductPage() {
     </Form>
   );
 }
-
-    
