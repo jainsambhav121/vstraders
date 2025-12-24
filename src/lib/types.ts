@@ -19,6 +19,11 @@ export type ProductVariant = {
   stock: number;
 };
 
+export type ProductDetail = {
+    label: string;
+    value: string;
+};
+
 export type Product = {
   id: string;
   name: string;
@@ -35,6 +40,7 @@ export type Product = {
   images: string[];
   primaryImage: string;
   variants: ProductVariant[];
+  details: ProductDetail[];
   status: {
     isEnabled: boolean;
     isFeatured: boolean;

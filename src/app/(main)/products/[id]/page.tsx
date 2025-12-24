@@ -21,6 +21,8 @@ import ProductCard from '@/components/product-card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useCart } from '@/context/cart-context';
 import { useToast } from '@/hooks/use-toast';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Table, TableBody, TableCell, TableRow } from '@/components/ui/table';
 
 export default function ProductDetailPage() {
   const params = useParams();
@@ -135,6 +137,28 @@ export default function ProductDetailPage() {
           </div>
         </div>
       </div>
+
+       {product.details && product.details.length > 0 && (
+        <div className="my-12">
+            <Card>
+                <CardHeader>
+                    <CardTitle>Product Details</CardTitle>
+                </CardHeader>
+                <CardContent>
+                    <Table>
+                        <TableBody>
+                            {product.details.map((detail, index) => (
+                                <TableRow key={index}>
+                                    <TableCell className="font-semibold">{detail.label}</TableCell>
+                                    <TableCell>{detail.value}</TableCell>
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                </CardContent>
+            </Card>
+        </div>
+       )}
 
       <Separator className="my-12" />
 

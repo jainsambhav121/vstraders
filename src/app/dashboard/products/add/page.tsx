@@ -59,6 +59,10 @@ const formSchema = z.object({
     price: z.coerce.number().optional(),
     stock: z.coerce.number().int().min(0),
   })),
+  details: z.array(z.object({
+    label: z.string().min(1, 'Label cannot be empty'),
+    value: z.string().min(1, 'Value cannot be empty'),
+  })),
   isEnabled: z.boolean().default(true),
   isFeatured: z.boolean().default(false),
   isBestSeller: z.boolean().default(false),
@@ -83,6 +87,7 @@ export default function AddProductPage() {
       images: [{ url: '' }],
       primaryImageIndex: 0,
       variants: [],
+      details: [],
       isEnabled: true,
       isFeatured: false,
       isBestSeller: false,
@@ -103,6 +108,12 @@ export default function AddProductPage() {
     name: "variants",
   });
 
+  const { fields: detailFields, append: appendDetail, remove: removeDetail } = useFieldArray({
+    control: form.control,
+    name: "details",
+  });
+
+
   async function onSubmit(values: z.infer<typeof formSchema>) {
     if (!firestore) {
       toast({ variant: 'destructive', title: 'Error', description: 'Firestore is not initialized.' });
@@ -120,6 +131,7 @@ export default function AddProductPage() {
         images: values.images.map(img => img.url),
         primaryImage: values.images[values.primaryImageIndex]?.url,
         variants: values.variants.map(v => ({...v, stock: Number(v.stock), price: v.price != null ? Number(v.price) : undefined })),
+        details: values.details,
         discount: (values.discountType && values.discountValue && values.discountValue > 0)
           ? { type: values.discountType, value: values.discountValue }
           : null,
@@ -211,6 +223,51 @@ export default function AddProductPage() {
                     <FormMessage />
                   </FormItem>
                 )} />
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Product Specifications</CardTitle>
+                <CardDescription>Add key-value details for the product.</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {detailFields.map((field, index) => (
+                    <div key={field.id} className="grid grid-cols-2 gap-4 items-center">
+                       <FormField
+                        control={form.control}
+                        name={`details.${index}.label`}
+                        render={({ field }) => (
+                          <FormItem>
+                             <FormLabel className={index !== 0 ? 'sr-only' : ''}>Label</FormLabel>
+                            <FormControl><Input placeholder="e.g. Size" {...field} /></FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                       <div className="flex items-center gap-2">
+                        <FormField
+                            control={form.control}
+                            name={`details.${index}.value`}
+                            render={({ field }) => (
+                            <FormItem className="flex-grow">
+                                <FormLabel className={index !== 0 ? 'sr-only' : ''}>Value</FormLabel>
+                                <FormControl><Input placeholder="e.g. 16 x 24 inch" {...field} /></FormControl>
+                                <FormMessage />
+                            </FormItem>
+                            )}
+                        />
+                         <Button type="button" variant="ghost" size="icon" className="mt-8" onClick={() => removeDetail(index)}>
+                            <Trash2 className="h-4 w-4 text-destructive" />
+                         </Button>
+                       </div>
+                    </div>
+                  ))}
+                  <Button type="button" variant="outline" size="sm" onClick={() => appendDetail({ label: '', value: '' })}>
+                    <PlusCircle className="mr-2 h-4 w-4" /> Add Specification
+                  </Button>
+                </div>
               </CardContent>
             </Card>
 

@@ -28,8 +28,8 @@ export function useProducts() {
         const productsData: Product[] = snapshot.docs.map((doc) => {
           const data = doc.data();
           
-          let finalPrice = data.basePrice;
-          if (data.discount && data.discount.value > 0) {
+          let finalPrice = data.basePrice || 0;
+          if (data.discount && data.discount.value > 0 && data.basePrice) {
             if (data.discount.type === 'percentage') {
               finalPrice = data.basePrice * (1 - data.discount.value / 100);
             } else if (data.discount.type === 'flat') {
@@ -43,13 +43,14 @@ export function useProducts() {
             description: data.description,
             brand: data.brand,
             basePrice: data.basePrice,
-            finalPrice: finalPrice || data.basePrice,
+            finalPrice: finalPrice,
             discount: data.discount,
             category: data.category,
             stock: data.stock,
             images: data.images || [],
             primaryImage: data.primaryImage,
             variants: data.variants || [],
+            details: data.details || [],
             status: data.status || { isEnabled: true, isFeatured: false, isBestSeller: false },
             seo: data.seo || {},
             rating: data.rating || 0,
@@ -75,4 +76,3 @@ export function useProducts() {
 
   return { products, loading, error };
 }
-
