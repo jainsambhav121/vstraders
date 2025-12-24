@@ -6,7 +6,7 @@ import { notFound, useParams } from 'next/navigation';
 import { useProducts } from '@/hooks/use-products';
 import { reviews } from '@/lib/data';
 import { Button } from '@/components/ui/button';
-import { Star, Truck, CheckCircle, ShieldCheck } from 'lucide-react';
+import { Star, Truck, CheckCircle, ShieldCheck, Plus, Minus } from 'lucide-react';
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -27,6 +27,7 @@ import React, { useState, useMemo, useEffect } from 'react';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
 import type { ProductVariant } from '@/lib/types';
+import { cn } from '@/lib/utils';
 
 export default function ProductDetailPage() {
   const params = useParams();
@@ -36,15 +37,21 @@ export default function ProductDetailPage() {
   const { toast } = useToast();
 
   const [selectedVariant, setSelectedVariant] = useState<ProductVariant | null>(null);
+  const [quantity, setQuantity] = useState(1);
+  const [activeImage, setActiveImage] = useState<string | undefined>(undefined);
+
 
   const product = products.find((p) => p.id === id);
   const relatedProducts = products.filter(p => p.category === product?.category && p.id !== product?.id).slice(0, 4);
 
   useEffect(() => {
-    if (product && product.variants && product.variants.length > 0) {
-      setSelectedVariant(product.variants[0]);
-    } else {
-      setSelectedVariant(null);
+    if (product) {
+        if (product.variants && product.variants.length > 0) {
+            setSelectedVariant(product.variants[0]);
+        } else {
+            setSelectedVariant(null);
+        }
+        setActiveImage(product.primaryImage || (product.images.length > 0 ? product.images[0] : 'https://placehold.co/800x800'));
     }
   }, [product]);
 
@@ -112,17 +119,23 @@ export default function ProductDetailPage() {
   }
 
   const handleAddToCart = () => {
-    // We can create a temporary product object representing the variant
+    const variantInfo = selectedVariant ? Object.entries(variantOptions)
+        .map(([key, values]) => selectedVariant[key as keyof ProductVariant])
+        .filter(Boolean)
+        .join(', ')
+      : '';
+
     const productToAdd = {
         ...product,
         id: selectedVariant ? `${product.id}-${selectedVariant.id}` : product.id,
-        name: selectedVariant ? `${product.name} (${Object.values(variantOptions).map(v => v[0]).join(', ')})` : product.name,
+        name: selectedVariant ? `${product.name} (${variantInfo})` : product.name,
         finalPrice: displayPrice || product.finalPrice,
+        quantity: quantity,
     };
     addToCart(productToAdd);
     toast({
       title: "Added to cart",
-      description: `${productToAdd.name} has been added to your cart.`,
+      description: `${productToAdd.name} (x${quantity}) has been added to your cart.`,
     });
   };
 
@@ -145,15 +158,37 @@ export default function ProductDetailPage() {
       </Breadcrumb>
 
       <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:gap-12">
-        <div className="aspect-square">
-           <Image
-              src={product.primaryImage || 'https://placehold.co/800x800'}
-              alt={product.name}
-              width={800}
-              height={800}
-              className="h-full w-full rounded-lg object-cover"
-              data-ai-hint="product image"
-            />
+        <div>
+           <div className="aspect-square w-full overflow-hidden rounded-lg border">
+               <Image
+                  src={activeImage || 'https://placehold.co/800x800'}
+                  alt={product.name}
+                  width={800}
+                  height={800}
+                  className="h-full w-full object-cover"
+                  data-ai-hint="product image"
+                />
+           </div>
+           <div className="mt-4 grid grid-cols-5 gap-4">
+                {product.images.map((image, index) => (
+                    <button
+                        key={index}
+                        onClick={() => setActiveImage(image)}
+                        className={cn(
+                            "overflow-hidden rounded-lg border-2 aspect-square",
+                            activeImage === image ? 'border-primary' : 'border-transparent'
+                        )}
+                    >
+                        <Image
+                            src={image}
+                            alt={`${product.name} thumbnail ${index + 1}`}
+                            width={150}
+                            height={150}
+                            className="h-full w-full object-cover"
+                        />
+                    </button>
+                ))}
+            </div>
         </div>
 
         <div>
@@ -208,8 +243,13 @@ export default function ProductDetailPage() {
           )}
 
 
-          <div className="mt-8">
-            <Button size="lg" className="w-full sm:w-auto" onClick={handleAddToCart}>Add to Cart</Button>
+          <div className="mt-8 flex items-center gap-4">
+            <div className="flex items-center rounded-md border">
+                <Button variant="ghost" size="icon" onClick={() => setQuantity(q => Math.max(1, q - 1))}><Minus className="h-4 w-4" /></Button>
+                <span className="w-12 text-center">{quantity}</span>
+                <Button variant="ghost" size="icon" onClick={() => setQuantity(q => q + 1)}><Plus className="h-4 w-4" /></Button>
+            </div>
+            <Button size="lg" className="flex-1" onClick={handleAddToCart}>Add to Cart</Button>
           </div>
 
           <div className="mt-8 space-y-4 rounded-lg border p-4">
@@ -293,3 +333,5 @@ export default function ProductDetailPage() {
     </div>
   );
 }
+
+    
