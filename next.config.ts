@@ -48,6 +48,12 @@ const nextConfig: NextConfig = {
         port: '',
         pathname: '/**',
       },
+       {
+        protocol: 'https' as const,
+        hostname: 'rb.g',
+        port: '',
+        pathname: '/**',
+      },
     ],
   },
 };
