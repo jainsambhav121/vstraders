@@ -216,7 +216,7 @@ export default function ProductDetailPage() {
           <p className="mt-4 text-muted-foreground">{product.description}</p>
           
           {product.variants && product.variants.length > 0 && (
-            <div className="mt-8 space-y-6">
+            <div className="mt-8 flex flex-wrap gap-x-8 gap-y-6">
                 {Object.entries(variantOptions).map(([key, values]) => (
                     <div key={key}>
                         <h3 className="text-sm font-semibold capitalize mb-2">{key}</h3>
@@ -333,5 +333,3 @@ export default function ProductDetailPage() {
     </div>
   );
 }
-
-    
