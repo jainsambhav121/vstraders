@@ -12,19 +12,21 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb';
-import { notFound } from 'next/navigation';
+import { notFound, useParams } from 'next/navigation';
 import { Skeleton } from '@/components/ui/skeleton';
 
-export default function CategoryPage({ params }: { params: { slug: string } }) {
+export default function CategoryPage() {
+  const params = useParams();
+  const { slug } = params;
   const { products, loading } = useProducts();
-  const category = categories.find((c) => c.slug === params.slug);
+  const category = categories.find((c) => c.slug === slug);
   
   if (!category) {
     notFound();
   }
 
   const categoryProducts = products.filter(
-    (product) => product.category === params.slug
+    (product) => product.category === slug
   );
 
   return (
