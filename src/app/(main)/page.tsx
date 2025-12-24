@@ -128,7 +128,7 @@ export default function HomePage() {
 
         {loading ? (
             <Skeleton className="mt-12 md:mt-16 lg:mt-20 h-48 w-full rounded-lg" />
-        ) : content?.saleBannerIsActive && (
+        ) : content?.saleBannerIsActive ? (
             <section className="mt-12 md:mt-16 lg:mt-20">
               <div className="rounded-lg bg-accent p-8 md:p-12">
                 <div className="flex flex-col items-center justify-between gap-6 md:flex-row">
@@ -148,7 +148,7 @@ export default function HomePage() {
                 </div>
               </div>
             </section>
-        )}
+        ) : null}
         
         <section className="mt-12 md:mt-16 lg:mt-20">
           <h2 className="mb-6 text-center fontheadline text-3xl font-bold">
