@@ -125,7 +125,7 @@ export default function EditProductPage() {
         slug: product.seo.slug,
         seoTitle: product.seo.title,
         seoMetaDescription: product.seo.metaDescription,
-        seoKeywords: product.seo.keywords?.join(', '),
+        seoKeywords: Array.isArray(product.seo.keywords) ? product.seo.keywords.join(', ') : '',
       });
     }
   }, [product, form]);
