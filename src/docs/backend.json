@@ -1,0 +1,260 @@
+
+{
+  "entities": {
+    "Product": {
+      "title": "Product",
+      "description": "Represents a product in the store.",
+      "type": "object",
+      "properties": {
+        "productName": {
+          "type": "string",
+          "description": "The name of the product."
+        },
+        "description": {
+          "type": "string",
+          "description": "A detailed description of the product."
+        },
+        "brand": {
+          "type": "string",
+          "description": "The brand of the product."
+        },
+        "specifications": {
+          "type": "array",
+          "description": "An array of product specifications.",
+          "items": {
+            "type": "object",
+            "properties": {
+              "label": {
+                "type": "string"
+              },
+              "value": {
+                "type": "string"
+              }
+            },
+            "required": ["label", "value"]
+          }
+        },
+        "images": {
+          "type": "array",
+          "description": "A list of images for the product.",
+          "items": {
+            "type": "object",
+            "properties": {
+              "url": {
+                "type": "string",
+                "format": "uri"
+              },
+              "isPrimary": {
+                "type": "boolean"
+              }
+            },
+            "required": ["url", "isPrimary"]
+          }
+        },
+        "variants": {
+          "type": "array",
+          "description": "Different versions of the product (e.g., by size, color).",
+          "items": {
+            "type": "object",
+            "properties": {
+              "size": { "type": "string" },
+              "color": { "type": "string" },
+              "material": { "type": "string" },
+              "thickness": { "type": "string" },
+              "price": { "type": "number" },
+              "stock": { "type": "number" }
+            },
+            "required": ["stock"]
+          }
+        },
+        "seoSettings": {
+            "type": "object",
+            "description": "SEO settings for the product page.",
+            "properties": {
+                "slug": { "type": "string" },
+                "seoTitle": { "type": "string" },
+                "metaDescription": { "type": "string" }
+            },
+            "required": ["slug", "seoTitle", "metaDescription"]
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": ["productName", "description", "images", "seoSettings", "createdAt", "updatedAt"]
+    },
+    "Order": {
+      "title": "Order",
+      "description": "Represents a customer order.",
+      "type": "object",
+      "properties": {
+        "orderId": { "type": "string" },
+        "customerDetails": {
+          "type": "object",
+          "properties": {
+            "name": { "type": "string" },
+            "phone": { "type": "string" },
+            "address": { "type": "string" }
+          }
+        },
+        "products": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "productId": { "type": "string" },
+              "name": { "type": "string" },
+              "quantity": { "type": "number" },
+              "price": { "type": "number" }
+            }
+          }
+        },
+        "totalAmount": { "type": "number" },
+        "paymentStatus": { "type": "string" },
+        "orderStatus": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      }
+    },
+    "User": {
+      "title": "User",
+      "description": "Represents a user account.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "name": { "type": "string" },
+        "email": { "type": "string", "format": "email" },
+        "role": { "type": "string", "enum": ["admin", "manager"] },
+        "isActive": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      }
+    },
+    "Banner": {
+      "title": "Banner",
+      "description": "Represents a homepage banner.",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "subtitle": { "type": "string" },
+        "imageUrl": { "type": "string", "format": "uri" },
+        "isActive": { "type": "boolean" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      }
+    },
+    "FaqItem": {
+      "title": "FAQ Item",
+      "description": "A single frequently asked question and its answer.",
+      "type": "object",
+      "properties": {
+        "question": {
+          "type": "string",
+          "description": "The question."
+        },
+        "answer": {
+          "type": "string",
+          "description": "The answer to the question."
+        }
+      },
+      "required": ["question", "answer"]
+    },
+    "HomepageContent": {
+      "title": "Homepage Content",
+      "description": "Content for the homepage sections.",
+      "type": "object",
+      "properties": {
+        "heroText": { "type": "string" },
+        "brandTagline": { "type": "string" },
+        "saleBannerTitle": { "type": "string" },
+        "saleBannerSubtitle": { "type": "string" },
+        "saleBannerLink": { "type": "string" },
+        "saleBannerIsActive": { "type": "boolean" },
+        "updatedAt": { "type": "string", "format": "date-time" },
+        "faqs": {
+          "type": "array",
+          "description": "A list of frequently asked questions.",
+          "items": {
+            "$ref": "#/entities/FaqItem"
+          }
+        }
+      }
+    },
+    "Settings": {
+      "title": "Settings",
+      "description": "Global store settings.",
+      "type": "object",
+      "properties": {
+        "storeName": { "type": "string" },
+        "supportEmail": { "type": "string", "format": "email" },
+        "twitterUrl": { "type": "string", "format": "uri" },
+        "facebookUrl": { "type": "string", "format": "uri" },
+        "instagramUrl": { "type": "string", "format": "uri" },
+        "freeShippingThreshold": { "type": "number" },
+        "flatRate": { "type": "number" },
+        "allowCod": { "type": "boolean" },
+        "stripeApiKey": { "type": "string" },
+        "razorpayApiKey": { "type": "string" },
+        "metaTitle": { "type": "string" },
+        "metaDescription": { "type": "string" },
+        "metaKeywords": { "type": "string" },
+        "shippingPolicy": { "type": "string" },
+        "privacyPolicy": { "type": "string" },
+        "termsAndConditions": { "type": "string" }
+      }
+    },
+    "Subscription": {
+      "title": "Subscription",
+      "description": "Represents a newsletter subscription.",
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string",
+          "format": "email",
+          "description": "The email address of the subscriber."
+        },
+        "subscribedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The date and time when the user subscribed."
+        }
+      },
+      "required": ["email", "subscribedAt"]
+    }
+  },
+  "auth": {
+    "providers": ["password"]
+  },
+  "firestore": {
+    "/products/{productId}": {
+      "schema": { "$ref": "#/entities/Product" },
+      "description": "Stores individual product details."
+    },
+    "/orders/{orderId}": {
+      "schema": { "$ref": "#/entities/Order" },
+      "description": "Stores customer order information."
+    },
+    "/users/{userId}": {
+      "schema": { "$ref": "#/entities/User" },
+      "description": "Stores user profile and role information."
+    },
+    "/banners/{bannerId}": {
+      "schema": { "$ref": "#/entities/Banner" },
+      "description": "Stores homepage banners."
+    },
+    "/homepageContent/main": {
+      "schema": { "$ref": "#/entities/HomepageContent" },
+      "description": "Stores content for the homepage."
+    },
+    "/settings/main": {
+        "schema": { "$ref": "#/entities/Settings" },
+        "description": "Stores global settings for the store."
+    },
+    "/subscriptions/{subscriptionId}": {
+      "schema": { "$ref": "#/entities/Subscription" },
+      "description": "Stores newsletter subscriber emails."
+    }
+  }
+}

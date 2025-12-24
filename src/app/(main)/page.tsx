@@ -15,11 +15,15 @@ import {
 import { useProducts } from '@/hooks/use-products';
 import { Skeleton } from '@/components/ui/skeleton';
 import React from 'react';
+import { useDoc } from '@/hooks/use-doc';
 
 export default function HomePage() {
-  const { products, loading } = useProducts();
+  const { products, loading: productsLoading } = useProducts();
+  const { data: content, loading: contentLoading } = useDoc<any>('homepageContent/main');
   const featuredProducts = products.filter(p => p.status.isFeatured).slice(0, 4);
   const newArrivals = products.slice(0, 4); // Using latest products as new arrivals for now
+
+  const loading = productsLoading || contentLoading;
 
   return (
     <div className="space-y-12 md:space-y-16 lg:space-y-20">
@@ -122,23 +126,29 @@ export default function HomePage() {
           </div>
         </section>
 
-        <section className="mt-12 md:mt-16 lg:mt-20">
-          <div className="rounded-lg bg-accent p-8 md:p-12">
-            <div className="flex flex-col items-center justify-between gap-6 md:flex-row">
-              <div className="text-center md:text-left">
-                <h3 className="font-headline text-2xl font-bold text-accent-foreground md:text-3xl">
-                  Summer Sale is Here!
-                </h3>
-                <p className="mt-2 text-accent-foreground/80">
-                  Get up to 40% off on selected items. Don't miss out!
-                </p>
+        {loading ? (
+            <Skeleton className="mt-12 md:mt-16 lg:mt-20 h-48 w-full rounded-lg" />
+        ) : content?.saleBannerIsActive && (
+            <section className="mt-12 md:mt-16 lg:mt-20">
+              <div className="rounded-lg bg-accent p-8 md:p-12">
+                <div className="flex flex-col items-center justify-between gap-6 md:flex-row">
+                  <div className="text-center md:text-left">
+                    <h3 className="font-headline text-2xl font-bold text-accent-foreground md:text-3xl">
+                      {content.saleBannerTitle || 'Summer Sale is Here!'}
+                    </h3>
+                    <p className="mt-2 text-accent-foreground/80">
+                      {content.saleBannerSubtitle || "Get up to 40% off on selected items. Don't miss out!"}
+                    </p>
+                  </div>
+                  <Button asChild size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90">
+                    <Link href={content.saleBannerLink || '/sale'}>
+                      View Deals <ArrowRight className="ml-2 h-4 w-4" />
+                    </Link>
+                  </Button>
+                </div>
               </div>
-              <Button asChild size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90">
-                <Link href="/sale">View Deals <ArrowRight className="ml-2 h-4 w-4" /></Link>
-              </Button>
-            </div>
-          </div>
-        </section>
+            </section>
+        )}
         
         <section className="mt-12 md:mt-16 lg:mt-20">
           <h2 className="mb-6 text-center fontheadline text-3xl font-bold">

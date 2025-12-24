@@ -31,6 +31,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/
 import { PlusCircle, Trash2, Loader2 } from 'lucide-react';
 import { useFirestore } from '@/firebase';
 import { doc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore';
+import { Switch } from '@/components/ui/switch';
 
 const faqItemSchema = z.object({
   question: z.string().min(1, 'Question cannot be empty.'),
@@ -47,6 +48,10 @@ const contentFormSchema = z.object({
   aboutVision: z.string(),
   aboutBannerUrl: z.string().url({ message: "Please enter a valid URL." }).or(z.literal('')),
   faqs: z.array(faqItemSchema),
+  saleBannerTitle: z.string().optional(),
+  saleBannerSubtitle: z.string().optional(),
+  saleBannerLink: z.string().optional(),
+  saleBannerIsActive: z.boolean().default(false),
 });
 
 export default function ContentPage() {
@@ -64,6 +69,10 @@ export default function ContentPage() {
       aboutVision: ``,
       aboutBannerUrl: '',
       faqs: [],
+      saleBannerTitle: 'Summer Sale is Here!',
+      saleBannerSubtitle: "Get up to 40% off on selected items. Don't miss out!",
+      saleBannerLink: '/sale',
+      saleBannerIsActive: true,
     },
   });
 
@@ -81,17 +90,12 @@ export default function ContentPage() {
         if (docSnap.exists()) {
             const data = docSnap.data();
             form.reset({
-                heroTitle: data.heroTitle || '',
-                heroTagline: data.heroTagline || '',
-                heroImageUrl: data.heroImageUrl || '',
-                heroButtonLink: data.heroButtonLink || '',
-                aboutStory: data.aboutStory || '',
-                aboutMission: data.aboutMission || '',
-                aboutVision: data.aboutVision || '',
-                aboutBannerUrl: data.aboutBannerUrl || '',
-                faqs: data.faqs || [],
+                ...form.formState.defaultValues,
+                ...data,
             });
-            replaceFaqs(data.faqs || []);
+            if (data.faqs) {
+                replaceFaqs(data.faqs);
+            }
         }
     };
     fetchContent();
@@ -148,70 +152,126 @@ export default function ContentPage() {
               <TabsTrigger value="faq">FAQ</TabsTrigger>
             </TabsList>
             <TabsContent value="homepage">
-            <Card>
-                <CardHeader>
-                <CardTitle>Homepage Content</CardTitle>
-                <CardDescription>
-                    Manage the content displayed on your homepage.
-                </CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-6">
-                     <FormField
-                        control={form.control}
-                        name="heroTitle"
-                        render={({ field }) => (
-                            <FormItem>
-                            <FormLabel>Hero Title</FormLabel>
-                            <FormControl>
-                                <Input {...field} />
-                            </FormControl>
-                            <FormMessage />
-                            </FormItem>
-                        )}
-                    />
-                     <FormField
-                        control={form.control}
-                        name="heroTagline"
-                        render={({ field }) => (
-                            <FormItem>
-                            <FormLabel>Hero Tagline</FormLabel>
-                            <FormControl>
-                                <Textarea className="min-h-[100px]" {...field} />
-                            </FormControl>
-                            <FormMessage />
-                            </FormItem>
-                        )}
-                    />
-                    <FormField
-                        control={form.control}
-                        name="heroImageUrl"
-                        render={({ field }) => (
-                            <FormItem>
-                            <FormLabel>Hero Image URL</FormLabel>
-                            <FormControl>
-                                <Input placeholder="https://example.com/hero-image.jpg" {...field} />
-                            </FormControl>
-                            <FormDescription>Enter the full URL for the hero banner image.</FormDescription>
-                            <FormMessage />
-                            </FormItem>
-                        )}
-                    />
-                    <FormField
-                        control={form.control}
-                        name="heroButtonLink"
-                        render={({ field }) => (
-                            <FormItem>
-                            <FormLabel>Hero Button Link</FormLabel>
-                            <FormControl>
-                                <Input placeholder="/products" {...field} />
-                            </FormControl>
-                            <FormDescription>Enter the destination URL for the main call-to-action button (e.g., /products).</FormDescription>
-                            <FormMessage />
-                            </FormItem>
-                        )}
-                    />
-                </CardContent>
-            </Card>
+            <div className="space-y-6">
+                <Card>
+                    <CardHeader>
+                    <CardTitle>Hero Section</CardTitle>
+                    <CardDescription>
+                        Manage the main banner on your homepage.
+                    </CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-6">
+                        <FormField
+                            control={form.control}
+                            name="heroTitle"
+                            render={({ field }) => (
+                                <FormItem>
+                                <FormLabel>Hero Title</FormLabel>
+                                <FormControl>
+                                    <Input {...field} />
+                                </FormControl>
+                                <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={form.control}
+                            name="heroTagline"
+                            render={({ field }) => (
+                                <FormItem>
+                                <FormLabel>Hero Tagline</FormLabel>
+                                <FormControl>
+                                    <Textarea className="min-h-[100px]" {...field} />
+                                </FormControl>
+                                <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={form.control}
+                            name="heroImageUrl"
+                            render={({ field }) => (
+                                <FormItem>
+                                <FormLabel>Hero Image URL</FormLabel>
+                                <FormControl>
+                                    <Input placeholder="https://example.com/hero-image.jpg" {...field} />
+                                </FormControl>
+                                <FormDescription>Enter the full URL for the hero banner image.</FormDescription>
+                                <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={form.control}
+                            name="heroButtonLink"
+                            render={({ field }) => (
+                                <FormItem>
+                                <FormLabel>Hero Button Link</FormLabel>
+                                <FormControl>
+                                    <Input placeholder="/products" {...field} />
+                                </FormControl>
+                                <FormDescription>Enter the destination URL for the main call-to-action button (e.g., /products).</FormDescription>
+                                <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                    </CardContent>
+                </Card>
+                <Card>
+                    <CardHeader>
+                        <CardTitle>Sale Banner</CardTitle>
+                        <CardDescription>Manage the promotional sale banner on the homepage.</CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-6">
+                        <FormField
+                            control={form.control}
+                            name="saleBannerIsActive"
+                            render={({ field }) => (
+                                <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
+                                <div className="space-y-0.5">
+                                    <FormLabel>Show Sale Banner</FormLabel>
+                                    <FormDescription>Toggle the visibility of the sale banner on the homepage.</FormDescription>
+                                </div>
+                                <FormControl>
+                                    <Switch checked={field.value} onCheckedChange={field.onChange} />
+                                </FormControl>
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={form.control}
+                            name="saleBannerTitle"
+                            render={({ field }) => (
+                                <FormItem>
+                                <FormLabel>Banner Title</FormLabel>
+                                <FormControl><Input {...field} /></FormControl>
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={form.control}
+                            name="saleBannerSubtitle"
+                            render={({ field }) => (
+                                <FormItem>
+                                <FormLabel>Banner Subtitle</FormLabel>
+                                <FormControl><Input {...field} /></FormControl>
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={form.control}
+                            name="saleBannerLink"
+                            render={({ field }) => (
+                                <FormItem>
+                                <FormLabel>Banner Button Link</FormLabel>
+                                <FormControl><Input placeholder="/sale" {...field} /></FormControl>
+                                <FormDescription>The destination for the "View Deals" button.</FormDescription>
+                                </FormItem>
+                            )}
+                        />
+                    </CardContent>
+                </Card>
+            </div>
             </TabsContent>
             <TabsContent value="about">
              <Card>
