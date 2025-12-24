@@ -21,7 +21,7 @@ export default function CategoryPage() {
   const { products, loading } = useProducts();
   const category = categories.find((c) => c.slug === slug);
   
-  if (!category) {
+  if (!category && !loading) {
     notFound();
   }
 
@@ -38,13 +38,13 @@ export default function CategoryPage() {
           </BreadcrumbItem>
           <BreadcrumbSeparator />
           <BreadcrumbItem>
-            <BreadcrumbPage>{category.name}</BreadcrumbPage>
+            <BreadcrumbPage>{category?.name}</BreadcrumbPage>
           </BreadcrumbItem>
         </BreadcrumbList>
       </Breadcrumb>
       <div className="flex items-center justify-between mb-8">
         <h1 className="font-headline text-4xl font-bold capitalize">
-          {category.name}
+          {category?.name}
         </h1>
       </div>
 

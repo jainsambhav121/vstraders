@@ -31,7 +31,7 @@ export default function Footer() {
           <h3 className="mb-4 font-semibold text-foreground">Shop</h3>
           <ul className="space-y-2">
             <li><Link href="/category/pillows" className="hover:text-primary">Pillows</Link></li>
-            <li><Link href="/category/cushion" className="hover:text-primary">Cushion</Link></li>
+            <li><Link href="/category/cushions" className="hover:text-primary">Cushions</Link></li>
             <li><Link href="/category/mattress" className="hover:text-primary">Mattress</Link></li>
             <li><Link href="/category/covers" className="hover:text-primary">Covers</Link></li>
             <li><Link href="/sale" className="hover:text-primary">Sale</Link></li>

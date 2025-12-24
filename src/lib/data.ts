@@ -4,9 +4,10 @@ import type { Category, Review, BlogPost } from './types';
 import { Pill, BedDouble, Sofa } from 'lucide-react';
 
 export const categories: Category[] = [
-  { id: 'cat-1', name: 'Pillow', slug: 'pillow', icon: Pill },
+  { id: 'cat-1', name: 'Pillows', slug: 'pillows', icon: Pill },
   { id: 'cat-2', name: 'Mattress', slug: 'mattress', icon: BedDouble },
   { id: 'cat-3', name: 'Covers', slug: 'covers', icon: Sofa },
+  { id: 'cat-4', name: 'Cushions', slug: 'cushions', icon: Sofa },
 ];
 
 export const reviews: Review[] = [
