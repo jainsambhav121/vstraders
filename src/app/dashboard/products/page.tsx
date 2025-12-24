@@ -136,15 +136,15 @@ export default function ProductsPage() {
                       alt={product.name}
                       className="aspect-square rounded-md object-cover"
                       height="64"
-                      src={product.images[product.primaryImageIndex]?.url || 'https://placehold.co/64x64'}
+                      src={product.primaryImage || 'https://placehold.co/64x64'}
                       width="64"
                       data-ai-hint="product image"
                     />
                   </TableCell>
                   <TableCell className="font-medium">{product.name}</TableCell>
                   <TableCell>
-                    <Badge variant={product.isEnabled ? 'default' : 'secondary'}>
-                      {product.isEnabled ? 'Active' : 'Draft'}
+                    <Badge variant={product.status.isEnabled ? 'default' : 'secondary'}>
+                      {product.status.isEnabled ? 'Active' : 'Draft'}
                     </Badge>
                   </TableCell>
                   <TableCell>₹{product.finalPrice.toFixed(2)}</TableCell>

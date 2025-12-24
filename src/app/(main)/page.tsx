@@ -18,7 +18,7 @@ import React from 'react';
 
 export default function HomePage() {
   const { products, loading } = useProducts();
-  const featuredProducts = products.filter(p => p.isFeatured).slice(0, 4);
+  const featuredProducts = products.filter(p => p.status.isFeatured).slice(0, 4);
   const newArrivals = products.slice(0, 4); // Using latest products as new arrivals for now
 
   return (

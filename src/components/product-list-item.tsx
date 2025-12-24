@@ -33,7 +33,7 @@ export default function ProductListItem({ product }: ProductListItemProps) {
         <Link href={`/products/${product.id}`} className="block flex-shrink-0">
           <div className="aspect-square w-24 overflow-hidden rounded-md">
             <Image
-              src={product.images[product.primaryImageIndex]?.url || 'https://placehold.co/100x100'}
+              src={product.primaryImage || 'https://placehold.co/100x100'}
               alt={product.name}
               width={100}
               height={100}

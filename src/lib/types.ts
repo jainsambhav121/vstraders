@@ -2,11 +2,6 @@
 import type { User as FirebaseUser } from 'firebase/auth';
 import type { LucideIcon } from 'lucide-react';
 
-export type Image = {
-  url: string;
-  alt?: string;
-};
-
 export type Category = {
   id: string;
   name: string;
@@ -25,28 +20,32 @@ export type ProductVariant = {
 };
 
 export type Product = {
-  id:string;
+  id: string;
   name: string;
   description: string;
-  price: number;
+  brand?: string;
+  basePrice: number;
   discount?: {
     type: 'percentage' | 'flat';
     value: number;
   };
   finalPrice: number;
   category: string;
-  images: Image[];
-  primaryImageIndex: number;
   stock: number;
+  images: string[];
+  primaryImage: string;
   variants: ProductVariant[];
-  isFeatured: boolean;
-  isBestSeller: boolean;
-  isEnabled: boolean;
-  seoTitle: string;
-  seoMetaDescription: string;
-  seoKeywords: string[];
-  slug: string;
-  sku?: string;
+  status: {
+    isEnabled: boolean;
+    isFeatured: boolean;
+    isBestSeller: boolean;
+  };
+  seo: {
+    slug: string;
+    title: string;
+    metaDescription: string;
+    keywords: string[];
+  };
   rating: number;
   reviewCount: number;
   createdAt?: any;

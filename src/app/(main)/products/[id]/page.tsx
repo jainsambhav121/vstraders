@@ -80,7 +80,7 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
       <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:gap-12">
         <div className="aspect-square">
            <Image
-              src={product.images[product.primaryImageIndex]?.url || ''}
+              src={product.primaryImage || ''}
               alt={product.name}
               width={800}
               height={800}

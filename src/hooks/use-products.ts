@@ -29,29 +29,25 @@ export function useProducts() {
           const data = doc.data();
           const finalPrice = data.discount 
             ? data.discount.type === 'percentage' 
-              ? data.price * (1 - data.discount.value / 100) 
-              : data.price - data.discount.value 
-            : data.price;
+              ? data.basePrice * (1 - data.discount.value / 100) 
+              : data.basePrice - data.discount.value 
+            : data.basePrice;
             
           return {
             id: doc.id,
             name: data.name,
             description: data.description,
-            price: data.price,
+            brand: data.brand,
+            basePrice: data.basePrice,
             finalPrice,
+            discount: data.discount,
             category: data.category,
-            images: data.images || [],
-            primaryImageIndex: data.primaryImageIndex || 0,
             stock: data.stock,
+            images: data.images || [],
+            primaryImage: data.primaryImage,
             variants: data.variants || [],
-            isFeatured: data.isFeatured,
-            isBestSeller: data.isBestSeller,
-            isEnabled: data.isEnabled,
-            seoTitle: data.seoTitle,
-            seoMetaDescription: data.seoMetaDescription,
-            seoKeywords: data.seoKeywords || [],
-            slug: data.slug,
-            sku: data.sku,
+            status: data.status || { isEnabled: true, isFeatured: false, isBestSeller: false },
+            seo: data.seo || {},
             rating: data.rating || 0,
             reviewCount: data.reviewCount || 0,
           };

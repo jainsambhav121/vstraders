@@ -33,7 +33,7 @@ export default function ProductCard({ product }: ProductCardProps) {
         <Link href={`/products/${product.id}`} className="block">
           <div className="aspect-square overflow-hidden rounded-t-lg">
             <Image
-              src={product.images[product.primaryImageIndex]?.url || 'https://placehold.co/600x600'}
+              src={product.primaryImage || 'https://placehold.co/600x600'}
               alt={product.name}
               width={600}
               height={600}

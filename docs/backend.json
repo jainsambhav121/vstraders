@@ -1,3 +1,4 @@
+
 {
   "entities": {
     "Product": {
@@ -13,34 +14,47 @@
           "type": "string",
           "description": "A detailed description of the product."
         },
-        "price": {
+        "brand": {
+          "type": "string",
+          "description": "The brand of the product."
+        },
+        "basePrice": {
           "type": "number",
-          "description": "The base price of the product."
+          "description": "The base price of the product before discounts."
+        },
+        "discount": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": ["percentage", "flat"]
+            },
+            "value": {
+              "type": "number"
+            }
+          }
         },
         "category": {
           "type": "string",
           "description": "The category slug of the product.",
           "enum": ["mattress", "pillow", "covers"]
         },
+        "stock": {
+          "type": "number",
+          "description": "The total stock quantity of the product."
+        },
         "images": {
           "type": "array",
           "description": "A list of image URLs for the product.",
           "items": {
-            "type": "object",
-            "properties": {
-              "url": { "type": "string", "format": "uri" },
-              "alt": { "type": "string" }
-            },
-            "required": ["url"]
+            "type": "string",
+            "format": "uri"
           }
         },
-        "primaryImageIndex": {
-          "type": "number",
-          "description": "The index of the primary image in the images array."
-        },
-        "stock": {
-          "type": "number",
-          "description": "The total stock quantity of the product."
+        "primaryImage": {
+          "type": "string",
+          "format": "uri",
+          "description": "The URL of the primary image."
         },
         "variants": {
           "type": "array",
@@ -58,32 +72,29 @@
             }
           }
         },
-        "discount": {
+        "status": {
           "type": "object",
           "properties": {
-            "type": { "type": "string", "enum": ["percentage", "flat"] },
-            "value": { "type": "number" }
+            "isEnabled": { "type": "boolean" },
+            "isFeatured": { "type": "boolean" },
+            "isBestSeller": { "type": "boolean" }
           }
         },
-        "isFeatured": {
-          "type": "boolean",
-          "description": "Whether the product is featured on the homepage."
+        "seo": {
+          "type": "object",
+          "properties": {
+            "slug": { "type": "string" },
+            "title": { "type": "string" },
+            "metaDescription": { "type": "string" },
+            "keywords": { "type": "array", "items": { "type": "string" } }
+          }
         },
-        "isBestSeller": {
-          "type": "boolean",
-          "description": "Whether the product is marked as a best seller."
+        "rating": {
+          "type": "number"
         },
-        "isEnabled": {
-          "type": "boolean",
-          "description": "Whether the product is visible on the website."
+        "reviewCount": {
+          "type": "number"
         },
-        "slug": {
-          "type": "string",
-          "description": "The URL-friendly slug for the product."
-        },
-        "seoTitle": { "type": "string" },
-        "seoMetaDescription": { "type": "string" },
-        "seoKeywords": { "type": "array", "items": { "type": "string" } },
         "createdAt": {
           "type": "string",
           "format": "date-time"
@@ -93,7 +104,7 @@
           "format": "date-time"
         }
       },
-      "required": ["name", "price", "category", "stock", "slug", "createdAt", "updatedAt"]
+      "required": ["name", "basePrice", "category", "stock", "images", "primaryImage", "createdAt", "updatedAt"]
     },
     "Order": {
       "title": "Order",

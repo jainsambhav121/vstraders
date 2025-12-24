@@ -42,8 +42,9 @@ import { useRouter } from 'next/navigation';
 const formSchema = z.object({
   name: z.string().min(2, { message: 'Name must be at least 2 characters.' }),
   description: z.string().min(10, { message: 'Description must be at least 10 characters.' }),
+  brand: z.string().optional(),
   category: z.string({ required_error: 'Please select a category.' }),
-  price: z.coerce.number().positive(),
+  basePrice: z.coerce.number().positive(),
   discountType: z.enum(['percentage', 'flat']).optional(),
   discountValue: z.coerce.number().min(0).optional(),
   stock: z.coerce.number().int().min(0),
@@ -58,13 +59,13 @@ const formSchema = z.object({
     price: z.coerce.number().optional(),
     stock: z.coerce.number().int().min(0),
   })),
+  isEnabled: z.boolean().default(true),
   isFeatured: z.boolean().default(false),
   isBestSeller: z.boolean().default(false),
-  isEnabled: z.boolean().default(true),
+  slug: z.string().min(2, { message: 'Slug must be at least 2 characters.' }),
   seoTitle: z.string().optional(),
   seoMetaDescription: z.string().optional(),
   seoKeywords: z.string().optional(),
-  slug: z.string().min(2, { message: 'Slug must be at least 2 characters.' }),
 });
 
 export default function AddProductPage() {
@@ -76,18 +77,19 @@ export default function AddProductPage() {
     defaultValues: {
       name: '',
       description: '',
-      price: 0,
+      brand: 'VSTRADERS',
+      basePrice: 0,
       stock: 0,
       images: [{ url: '' }],
       primaryImageIndex: 0,
       variants: [],
+      isEnabled: true,
       isFeatured: false,
       isBestSeller: false,
-      isEnabled: true,
+      slug: '',
       seoTitle: '',
       seoMetaDescription: '',
       seoKeywords: '',
-      slug: '',
     },
   });
 
@@ -103,40 +105,40 @@ export default function AddProductPage() {
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     if (!firestore) {
-      toast({
-        variant: 'destructive',
-        title: 'Error',
-        description: 'Firestore is not initialized.',
-      });
+      toast({ variant: 'destructive', title: 'Error', description: 'Firestore is not initialized.' });
       return;
     }
 
     try {
       const productData = {
-        ...values,
-        price: Number(values.price),
-        stock: Number(values.stock),
-        primaryImageIndex: Number(values.primaryImageIndex),
-        seoKeywords: values.seoKeywords?.split(',').map(k => k.trim()).filter(Boolean) || [],
-        discount: (values.discountType && values.discountValue != null && values.discountValue > 0) 
-            ? { type: values.discountType, value: Number(values.discountValue) } 
-            : null,
-        variants: values.variants.map(v => ({
-            ...v,
-            stock: Number(v.stock),
-            price: v.price != null ? Number(v.price) : undefined,
-        })),
-        createdAt: serverTimestamp(),
-        updatedAt: serverTimestamp(),
+        name: values.name,
+        description: values.description,
+        brand: values.brand || 'VSTRADERS',
+        category: values.category,
+        basePrice: values.basePrice,
+        stock: values.stock,
+        images: values.images.map(img => img.url),
+        primaryImage: values.images[values.primaryImageIndex]?.url,
+        variants: values.variants.map(v => ({...v, stock: Number(v.stock), price: v.price != null ? Number(v.price) : undefined })),
+        discount: (values.discountType && values.discountValue && values.discountValue > 0)
+          ? { type: values.discountType, value: values.discountValue }
+          : null,
+        status: {
+          isEnabled: values.isEnabled,
+          isFeatured: values.isFeatured,
+          isBestSeller: values.isBestSeller,
+        },
+        seo: {
+          slug: values.slug,
+          title: values.seoTitle || values.name,
+          metaDescription: values.seoMetaDescription || values.description,
+          keywords: values.seoKeywords?.split(',').map(k => k.trim()).filter(Boolean) || [],
+        },
         rating: 0,
         reviewCount: 0,
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp(),
       };
-
-      // Remove optional fields if they are empty to keep Firestore document clean
-      if (!productData.discount) delete productData.discount;
-      if (!values.seoTitle) delete productData.seoTitle;
-      if (!values.seoMetaDescription) delete productData.seoMetaDescription;
-
 
       await addDoc(collection(firestore, 'products'), productData);
 
@@ -199,6 +201,13 @@ export default function AddProductPage() {
                   <FormItem>
                     <FormLabel>Description</FormLabel>
                     <FormControl><Textarea placeholder="A short description about the product." className="min-h-[100px]" {...field} /></FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )} />
+                 <FormField control={form.control} name="brand" render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Brand</FormLabel>
+                    <FormControl><Input placeholder="VSTRADERS" {...field} /></FormControl>
                     <FormMessage />
                   </FormItem>
                 )} />
@@ -331,7 +340,7 @@ export default function AddProductPage() {
                 <CardTitle>Pricing</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                <FormField control={form.control} name="price" render={({ field }) => (
+                <FormField control={form.control} name="basePrice" render={({ field }) => (
                   <FormItem>
                     <FormLabel>Base Price</FormLabel>
                     <FormControl><Input type="number" placeholder="₹29.99" {...field} /></FormControl>

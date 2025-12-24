@@ -72,7 +72,7 @@ export default function CartPage() {
                         <TableRow key={item.id}>
                         <TableCell className="hidden md:table-cell">
                             <Image
-                            src={item.images[item.primaryImageIndex]?.url || 'https://placehold.co/100x100'}
+                            src={item.primaryImage || 'https://placehold.co/100x100'}
                             alt={item.name}
                             width={80}
                             height={80}

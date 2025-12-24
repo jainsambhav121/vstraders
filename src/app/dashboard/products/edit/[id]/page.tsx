@@ -47,8 +47,9 @@ import { doc, updateDoc, serverTimestamp } from 'firebase/firestore';
 const formSchema = z.object({
   name: z.string().min(2, { message: 'Name must be at least 2 characters.' }),
   description: z.string().min(10, { message: 'Description must be at least 10 characters.' }),
+  brand: z.string().optional(),
   category: z.string({ required_error: 'Please select a category.' }),
-  price: z.coerce.number().positive(),
+  basePrice: z.coerce.number().positive(),
   discountType: z.enum(['percentage', 'flat']).optional(),
   discountValue: z.coerce.number().min(0).optional(),
   stock: z.coerce.number().int().min(0),
@@ -63,13 +64,13 @@ const formSchema = z.object({
     price: z.coerce.number().optional(),
     stock: z.coerce.number().int().min(0),
   })),
+  isEnabled: z.boolean().default(true),
   isFeatured: z.boolean().default(false),
   isBestSeller: z.boolean().default(false),
-  isEnabled: z.boolean().default(true),
+  slug: z.string().min(2, { message: 'Slug must be at least 2 characters.' }),
   seoTitle: z.string().optional(),
   seoMetaDescription: z.string().optional(),
   seoKeywords: z.string().optional(),
-  slug: z.string().min(2, { message: 'Slug must be at least 2 characters.' }),
 });
 
 
@@ -87,41 +88,44 @@ export default function EditProductPage() {
     defaultValues: {
       name: '',
       description: '',
-      price: 0,
+      brand: 'VSTRADERS',
+      basePrice: 0,
       stock: 0,
       images: [{ url: '' }],
       primaryImageIndex: 0,
       variants: [],
+      isEnabled: true,
       isFeatured: false,
       isBestSeller: false,
-      isEnabled: true,
+      slug: '',
       seoTitle: '',
       seoMetaDescription: '',
       seoKeywords: '',
-      slug: '',
     },
   });
 
   useEffect(() => {
     if (product) {
+      const primaryImageIndex = product.images.findIndex(img => img === product.primaryImage);
       form.reset({
         name: product.name,
         description: product.description,
+        brand: product.brand,
         category: product.category,
-        price: product.price,
+        basePrice: product.basePrice,
         discountType: product.discount?.type,
         discountValue: product.discount?.value,
         stock: product.stock,
-        images: product.images.map(img => ({ url: img.url })),
-        primaryImageIndex: product.primaryImageIndex,
+        images: product.images.map(url => ({ url })),
+        primaryImageIndex: primaryImageIndex === -1 ? 0 : primaryImageIndex,
         variants: product.variants,
-        isFeatured: product.isFeatured,
-        isBestSeller: product.isBestSeller,
-        isEnabled: product.isEnabled,
-        seoTitle: product.seoTitle,
-        seoMetaDescription: product.seoMetaDescription,
-        seoKeywords: product.seoKeywords?.join(', '),
-        slug: product.slug,
+        isEnabled: product.status.isEnabled,
+        isFeatured: product.status.isFeatured,
+        isBestSeller: product.status.isBestSeller,
+        slug: product.seo.slug,
+        seoTitle: product.seo.title,
+        seoMetaDescription: product.seo.metaDescription,
+        seoKeywords: product.seo.keywords?.join(', '),
       });
     }
   }, [product, form]);
@@ -138,44 +142,38 @@ export default function EditProductPage() {
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     if (!firestore || !id) {
-      toast({
-        variant: 'destructive',
-        title: 'Error',
-        description: 'Firestore is not initialized or Product ID is missing.',
-      });
+      toast({ variant: 'destructive', title: 'Error', description: 'Firestore is not initialized or Product ID is missing.' });
       return;
     }
     
     try {
       const productRef = doc(firestore, 'products', id as string);
        const productData = {
-        ...values,
-        price: Number(values.price),
-        stock: Number(values.stock),
-        primaryImageIndex: Number(values.primaryImageIndex),
-        seoKeywords: values.seoKeywords?.split(',').map(k => k.trim()).filter(Boolean) || [],
-        discount: (values.discountType && values.discountValue != null && values.discountValue > 0)
-            ? { type: values.discountType, value: Number(values.discountValue) }
-            : null,
-        variants: values.variants.map(v => ({
-            ...v,
-            stock: Number(v.stock),
-            price: v.price != null ? Number(v.price) : undefined,
-        })),
+        name: values.name,
+        description: values.description,
+        brand: values.brand || 'VSTRADERS',
+        category: values.category,
+        basePrice: values.basePrice,
+        stock: values.stock,
+        images: values.images.map(img => img.url),
+        primaryImage: values.images[values.primaryImageIndex]?.url,
+        variants: values.variants.map(v => ({...v, stock: Number(v.stock), price: v.price != null ? Number(v.price) : undefined })),
+        discount: (values.discountType && values.discountValue && values.discountValue > 0)
+          ? { type: values.discountType, value: values.discountValue }
+          : null,
+        status: {
+          isEnabled: values.isEnabled,
+          isFeatured: values.isFeatured,
+          isBestSeller: values.isBestSeller,
+        },
+        seo: {
+          slug: values.slug,
+          title: values.seoTitle || values.name,
+          metaDescription: values.seoMetaDescription || values.description,
+          keywords: values.seoKeywords?.split(',').map(k => k.trim()).filter(Boolean) || [],
+        },
         updatedAt: serverTimestamp(),
       };
-
-      // Remove optional fields if they are empty to keep Firestore document clean
-      if (!productData.discount) {
-        // @ts-ignore
-        productData.discount = null;
-      }
-      if (!values.seoTitle) { // @ts-ignore
-          delete productData.seoTitle;
-      }
-      if (!values.seoMetaDescription) { // @ts-ignore
-          delete productData.seoMetaDescription;
-      }
 
       await updateDoc(productRef, productData);
       toast({
@@ -263,6 +261,13 @@ export default function EditProductPage() {
                     <FormMessage />
                   </FormItem>
                 )} />
+                 <FormField control={form.control} name="brand" render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Brand</FormLabel>
+                    <FormControl><Input {...field} /></FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )} />
               </CardContent>
             </Card>
 
@@ -298,7 +303,7 @@ export default function EditProductPage() {
                         render={({ field }) => (
                           <FormItem className="flex items-center space-x-2">
                              <FormControl>
-                                <input type="radio" {...field} value={index} checked={field.value === index} onChange={() => field.onChange(index)} className="form-radio h-4 w-4 text-primary focus:ring-primary"/>
+                                <input type="radio" {...field} value={index} checked={Number(field.value) === index} onChange={() => field.onChange(index)} className="form-radio h-4 w-4 text-primary focus:ring-primary"/>
                             </FormControl>
                             <FormLabel className="text-sm font-medium">Primary</FormLabel>
                           </FormItem>
@@ -328,19 +333,19 @@ export default function EditProductPage() {
                   {variantFields.map((field, index) => (
                      <div key={field.id} className="grid grid-cols-2 gap-4 border p-4 rounded-md relative">
                        <FormField control={form.control} name={`variants.${index}.size`} render={({ field }) => (
-                          <FormItem><FormLabel>Size</FormLabel><FormControl><Input placeholder="e.g. Small" {...field} /></FormControl></FormItem>
+                          <FormItem><FormLabel>Size</FormLabel><FormControl><Input placeholder="e.g. Small" {...field} value={field.value || ''} /></FormControl></FormItem>
                        )}/>
                        <FormField control={form.control} name={`variants.${index}.color`} render={({ field }) => (
-                          <FormItem><FormLabel>Color</FormLabel><FormControl><Input placeholder="e.g. Red" {...field} /></FormControl></FormItem>
+                          <FormItem><FormLabel>Color</FormLabel><FormControl><Input placeholder="e.g. Red" {...field} value={field.value || ''}/></FormControl></FormItem>
                        )}/>
                         <FormField control={form.control} name={`variants.${index}.material`} render={({ field }) => (
-                          <FormItem><FormLabel>Material</FormLabel><FormControl><Input placeholder="e.g. Cotton" {...field} /></FormControl></FormItem>
+                          <FormItem><FormLabel>Material</FormLabel><FormControl><Input placeholder="e.g. Cotton" {...field} value={field.value || ''}/></FormControl></FormItem>
                        )}/>
                        <FormField control={form.control} name={`variants.${index}.thickness`} render={({ field }) => (
-                          <FormItem><FormLabel>Thickness</FormLabel><FormControl><Input placeholder="e.g. 6 inch" {...field} /></FormControl></FormItem>
+                          <FormItem><FormLabel>Thickness</FormLabel><FormControl><Input placeholder="e.g. 6 inch" {...field} value={field.value || ''}/></FormControl></FormItem>
                        )}/>
                        <FormField control={form.control} name={`variants.${index}.price`} render={({ field }) => (
-                          <FormItem><FormLabel>Variant Price (Optional)</FormLabel><FormControl><Input type="number" placeholder="Overrides base price" {...field} /></FormControl></FormItem>
+                          <FormItem><FormLabel>Variant Price (Optional)</FormLabel><FormControl><Input type="number" placeholder="Overrides base price" {...field} value={field.value || ''}/></FormControl></FormItem>
                        )}/>
                        <FormField control={form.control} name={`variants.${index}.stock`} render={({ field }) => (
                           <FormItem><FormLabel>Variant Stock</FormLabel><FormControl><Input type="number" {...field} /></FormControl><FormMessage /></FormItem>
@@ -373,19 +378,19 @@ export default function EditProductPage() {
                 <FormField control={form.control} name="seoTitle" render={({ field }) => (
                   <FormItem>
                     <FormLabel>SEO Title</FormLabel>
-                    <FormControl><Input {...field} /></FormControl>
+                    <FormControl><Input {...field} value={field.value || ''} /></FormControl>
                   </FormItem>
                 )} />
                 <FormField control={form.control} name="seoMetaDescription" render={({ field }) => (
                   <FormItem>
                     <FormLabel>SEO Meta Description</FormLabel>
-                    <FormControl><Textarea {...field} /></FormControl>
+                    <FormControl><Textarea {...field} value={field.value || ''} /></FormControl>
                   </FormItem>
                 )} />
                 <FormField control={form.control} name="seoKeywords" render={({ field }) => (
                   <FormItem>
                     <FormLabel>SEO Keywords</FormLabel>
-                    <FormControl><Input {...field} /></FormControl>
+                    <FormControl><Input {...field} value={field.value || ''} /></FormControl>
                     <FormDescription>Comma-separated keywords.</FormDescription>
                   </FormItem>
                 )} />
@@ -399,7 +404,7 @@ export default function EditProductPage() {
                 <CardTitle>Pricing</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                <FormField control={form.control} name="price" render={({ field }) => (
+                <FormField control={form.control} name="basePrice" render={({ field }) => (
                   <FormItem>
                     <FormLabel>Base Price</FormLabel>
                     <FormControl><Input type="number" {...field} /></FormControl>
@@ -422,7 +427,7 @@ export default function EditProductPage() {
                   <FormField control={form.control} name="discountValue" render={({ field }) => (
                     <FormItem>
                       <FormLabel>Discount Value</FormLabel>
-                      <FormControl><Input type="number" {...field} /></FormControl>
+                      <FormControl><Input type="number" {...field} value={field.value || ''} /></FormControl>
                     </FormItem>
                   )} />
                 </div>
