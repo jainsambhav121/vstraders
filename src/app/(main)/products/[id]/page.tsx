@@ -23,6 +23,10 @@ import { useCart } from '@/context/cart-context';
 import { useToast } from '@/hooks/use-toast';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableRow } from '@/components/ui/table';
+import React, { useState, useMemo, useEffect } from 'react';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { Label } from '@/components/ui/label';
+import type { ProductVariant } from '@/lib/types';
 
 export default function ProductDetailPage() {
   const params = useParams();
@@ -30,8 +34,60 @@ export default function ProductDetailPage() {
   const { products, loading } = useProducts();
   const { addToCart } = useCart();
   const { toast } = useToast();
+
+  const [selectedVariant, setSelectedVariant] = useState<ProductVariant | null>(null);
+
   const product = products.find((p) => p.id === id);
   const relatedProducts = products.filter(p => p.category === product?.category && p.id !== product?.id).slice(0, 4);
+
+  useEffect(() => {
+    if (product && product.variants && product.variants.length > 0) {
+      setSelectedVariant(product.variants[0]);
+    } else {
+      setSelectedVariant(null);
+    }
+  }, [product]);
+
+  const displayPrice = useMemo(() => {
+    if (selectedVariant && selectedVariant.price) {
+      return selectedVariant.price;
+    }
+    return product?.finalPrice;
+  }, [selectedVariant, product]);
+
+  const variantOptions = useMemo(() => {
+    if (!product || !product.variants) return {};
+    const options: Record<string, string[]> = {};
+    product.variants.forEach(variant => {
+      if (variant.size) {
+        if (!options.size) options.size = [];
+        if (!options.size.includes(variant.size)) options.size.push(variant.size);
+      }
+      if (variant.color) {
+        if (!options.color) options.color = [];
+        if (!options.color.includes(variant.color)) options.color.push(variant.color);
+      }
+       if (variant.material) {
+        if (!options.material) options.material = [];
+        if (!options.material.includes(variant.material)) options.material.push(variant.material);
+      }
+      if (variant.thickness) {
+        if (!options.thickness) options.thickness = [];
+        if (!options.thickness.includes(variant.thickness)) options.thickness.push(variant.thickness);
+      }
+    });
+    return options;
+  }, [product]);
+
+  const handleVariantChange = (type: string, value: string) => {
+    // This is a simplified approach. For complex variant logic, you'd need
+    // to find the variant that matches all selected options.
+    const newVariant = product?.variants.find(v => v[type as keyof ProductVariant] === value);
+    if (newVariant) {
+      setSelectedVariant(newVariant);
+    }
+  };
+
 
   if (loading) {
     return (
@@ -56,10 +112,17 @@ export default function ProductDetailPage() {
   }
 
   const handleAddToCart = () => {
-    addToCart(product);
+    // We can create a temporary product object representing the variant
+    const productToAdd = {
+        ...product,
+        id: selectedVariant ? `${product.id}-${selectedVariant.id}` : product.id,
+        name: selectedVariant ? `${product.name} (${Object.values(variantOptions).map(v => v[0]).join(', ')})` : product.name,
+        finalPrice: displayPrice || product.finalPrice,
+    };
+    addToCart(productToAdd);
     toast({
       title: "Added to cart",
-      description: `${product.name} has been added to your cart.`,
+      description: `${productToAdd.name} has been added to your cart.`,
     });
   };
 
@@ -114,9 +177,37 @@ export default function ProductDetailPage() {
               ({product.reviewCount} reviews)
             </span>
           </div>
-          <p className="mt-4 text-3xl font-bold">₹{product.finalPrice.toFixed(2)}</p>
+          <p className="mt-4 text-3xl font-bold">₹{displayPrice?.toFixed(2)}</p>
           <p className="mt-4 text-muted-foreground">{product.description}</p>
           
+          {product.variants && product.variants.length > 0 && (
+            <div className="mt-8 space-y-6">
+                {Object.entries(variantOptions).map(([key, values]) => (
+                    <div key={key}>
+                        <h3 className="text-sm font-semibold capitalize mb-2">{key}</h3>
+                        <RadioGroup
+                            defaultValue={values[0]}
+                            className="flex flex-wrap gap-2"
+                            onValueChange={(value) => handleVariantChange(key, value)}
+                        >
+                            {values.map(value => (
+                                <div key={value}>
+                                    <RadioGroupItem value={value} id={`${key}-${value}`} className="sr-only" />
+                                    <Label
+                                        htmlFor={`${key}-${value}`}
+                                        className="cursor-pointer rounded-md border px-4 py-2 hover:bg-accent data-[state=checked]:border-primary data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground"
+                                    >
+                                        {value}
+                                    </Label>
+                                </div>
+                            ))}
+                        </RadioGroup>
+                    </div>
+                ))}
+            </div>
+          )}
+
+
           <div className="mt-8">
             <Button size="lg" className="w-full sm:w-auto" onClick={handleAddToCart}>Add to Cart</Button>
           </div>
