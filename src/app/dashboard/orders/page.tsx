@@ -2,6 +2,7 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 import {
   Card,
   CardContent,
@@ -244,7 +245,9 @@ export default function OrdersPage() {
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end">
                             <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                            <DropdownMenuItem>View Order</DropdownMenuItem>
+                            <DropdownMenuItem asChild>
+                                <Link href={`/dashboard/orders/${order.id}`}>View Order</Link>
+                            </DropdownMenuItem>
                              <DropdownMenuSub>
                                 <DropdownMenuSubTrigger>Update Status</DropdownMenuSubTrigger>
                                 <DropdownMenuPortal>
