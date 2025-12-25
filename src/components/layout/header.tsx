@@ -160,7 +160,7 @@ export default function Header() {
         </div>
 
         <div className="flex flex-1 items-center justify-center md:justify-end gap-4">
-          <div className="relative hidden w-full max-w-sm md:block">
+          <div className="relative hidden w-full max-w-md flex-1 md:block">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
               type="search"
