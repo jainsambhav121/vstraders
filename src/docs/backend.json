@@ -172,6 +172,7 @@
         "saleBannerSubtitle": { "type": "string" },
         "saleBannerLink": { "type": "string" },
         "saleBannerIsActive": { "type": "boolean" },
+        "saleBannerImageUrl": { "type": "string", "format": "uri" },
         "updatedAt": { "type": "string", "format": "date-time" },
         "faqs": {
           "type": "array",

@@ -52,6 +52,7 @@ const contentFormSchema = z.object({
   saleBannerSubtitle: z.string().optional(),
   saleBannerLink: z.string().optional(),
   saleBannerIsActive: z.boolean().default(false),
+  saleBannerImageUrl: z.string().url({ message: "Please enter a valid URL." }).or(z.literal('')).optional(),
 });
 
 export default function ContentPage() {
@@ -73,6 +74,7 @@ export default function ContentPage() {
       saleBannerSubtitle: "Get up to 40% off on selected items. Don't miss out!",
       saleBannerLink: '/sale',
       saleBannerIsActive: true,
+      saleBannerImageUrl: '',
     },
   });
 
@@ -235,6 +237,18 @@ export default function ContentPage() {
                                 <FormControl>
                                     <Switch checked={field.value} onCheckedChange={field.onChange} />
                                 </FormControl>
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={form.control}
+                            name="saleBannerImageUrl"
+                            render={({ field }) => (
+                                <FormItem>
+                                <FormLabel>Banner Image URL</FormLabel>
+                                <FormControl><Input placeholder="https://example.com/sale-banner.jpg" {...field} /></FormControl>
+                                <FormDescription>Optional: Add a background image to the banner.</FormDescription>
+                                <FormMessage />
                                 </FormItem>
                             )}
                         />

@@ -16,6 +16,7 @@ import { useProducts } from '@/hooks/use-products';
 import { Skeleton } from '@/components/ui/skeleton';
 import React from 'react';
 import { useDoc } from '@/hooks/use-doc';
+import { cn } from '@/lib/utils';
 
 export default function HomePage() {
   const { products, loading: productsLoading } = useProducts();
@@ -130,13 +131,37 @@ export default function HomePage() {
             <Skeleton className="mt-12 md:mt-16 lg:mt-20 h-48 w-full rounded-lg" />
         ) : content?.saleBannerIsActive ? (
             <section className="mt-12 md:mt-16 lg:mt-20">
-              <div className="rounded-lg bg-accent p-8 md:p-12">
-                <div className="flex flex-col items-center justify-between gap-6 md:flex-row">
+              <div className={cn(
+                  "rounded-lg p-8 md:p-12 relative overflow-hidden",
+                  !content.saleBannerImageUrl && "bg-accent"
+              )}>
+                {content.saleBannerImageUrl && (
+                  <>
+                    <Image
+                      src={content.saleBannerImageUrl}
+                      alt={content.saleBannerTitle || 'Sale banner'}
+                      fill
+                      className="object-cover"
+                      data-ai-hint="sale banner"
+                    />
+                    <div className="absolute inset-0 bg-black/40" />
+                  </>
+                )}
+                <div className={cn(
+                  "relative z-10 flex flex-col items-center justify-between gap-6 md:flex-row",
+                   content.saleBannerImageUrl && "text-white"
+                )}>
                   <div className="text-center md:text-left">
-                    <h3 className="font-headline text-2xl font-bold text-accent-foreground md:text-3xl">
+                    <h3 className={cn(
+                      "font-headline text-2xl font-bold md:text-3xl",
+                      content.saleBannerImageUrl ? "text-white" : "text-accent-foreground"
+                    )}>
                       {content.saleBannerTitle || 'Summer Sale is Here!'}
                     </h3>
-                    <p className="mt-2 text-accent-foreground/80">
+                    <p className={cn(
+                      "mt-2",
+                      content.saleBannerImageUrl ? "text-primary-foreground/80" : "text-accent-foreground/80"
+                    )}>
                       {content.saleBannerSubtitle || "Get up to 40% off on selected items. Don't miss out!"}
                     </p>
                   </div>
