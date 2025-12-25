@@ -29,24 +29,37 @@ export default function HomePage() {
   return (
     <div className="space-y-12 md:space-y-16 lg:space-y-20">
       <section className="relative h-[50vh] min-h-[400px] w-full bg-primary/10">
-        <Image
-          src="https://picsum.photos/seed/hero/1800/800"
-          alt="Promotional banner"
-          fill
-          className="object-cover"
-          priority
-          data-ai-hint="promotional banner"
-        />
+        {loading ? (
+           <Skeleton className="h-full w-full" />
+        ) : (
+          <Image
+            src={content?.heroImageUrl || "https://picsum.photos/seed/hero/1800/800"}
+            alt={content?.heroTitle || "Promotional banner"}
+            fill
+            className="object-cover"
+            priority
+            data-ai-hint="promotional banner"
+          />
+        )}
         <div className="absolute inset-0 bg-black/30" />
         <div className="relative z-10 flex h-full flex-col items-center justify-center text-center text-white">
-          <h1 className="font-headline text-4xl font-bold md:text-5xl lg:text-6xl animate-in fade-in slide-in-from-bottom-4 duration-1000">
-            Discover Your Style
-          </h1>
-          <p className="mt-4 max-w-2xl text-lg text-primary-foreground/90 animate-in fade-in slide-in-from-bottom-2 duration-1000 delay-200">
-            Explore our curated collection of the finest products, designed for the modern lifestyle.
-          </p>
+          {loading ? (
+             <div className="space-y-4">
+                <Skeleton className="h-12 w-80" />
+                <Skeleton className="h-6 w-96" />
+             </div>
+          ) : (
+            <>
+              <h1 className="font-headline text-4xl font-bold md:text-5xl lg:text-6xl animate-in fade-in slide-in-from-bottom-4 duration-1000">
+                {content?.heroTitle || 'Discover Your Style'}
+              </h1>
+              <p className="mt-4 max-w-2xl text-lg text-primary-foreground/90 animate-in fade-in slide-in-from-bottom-2 duration-1000 delay-200">
+                {content?.heroTagline || 'Explore our curated collection of the finest products, designed for the modern lifestyle.'}
+              </p>
+            </>
+          )}
           <Button asChild size="lg" className="mt-8 animate-in fade-in zoom-in-90 duration-1000 delay-400">
-            <Link href="/products">Shop Now</Link>
+            <Link href={content?.heroButtonLink || "/products"}>Shop Now</Link>
           </Button>
         </div>
       </section>
