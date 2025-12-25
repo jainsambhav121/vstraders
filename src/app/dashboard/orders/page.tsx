@@ -123,6 +123,34 @@ export default function OrdersPage() {
         ? orders
         : orders.filter((order) => order.status === activeTab);
 
+    const exportToCSV = (data: Order[]) => {
+        const headers = ['Order ID', 'Customer Name', 'Customer Email', 'Date', 'Total', 'Status', 'Items', 'Payment Status'];
+        const csvRows = [
+            headers.join(','),
+            ...data.map(order => [
+                order.id,
+                `"${order.customerName.replace(/"/g, '""')}"`,
+                order.customerEmail,
+                order.date,
+                order.total,
+                order.status,
+                order.items,
+                order.paymentStatus
+            ].join(','))
+        ];
+
+        const csvString = csvRows.join('\n');
+        const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement('a');
+        const url = URL.createObjectURL(blob);
+        link.setAttribute('href', url);
+        link.setAttribute('download', 'orders.csv');
+        link.style.visibility = 'hidden';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    };
+
   return (
     <Tabs defaultValue="all" onValueChange={(value) => setActiveTab(value as OrderStatus | 'all')}>
       <div className="flex items-center">
@@ -150,7 +178,7 @@ export default function OrdersPage() {
               <DropdownMenuItem>Date</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
-          <Button size="sm" variant="outline" className="h-8 gap-1">
+          <Button size="sm" variant="outline" className="h-8 gap-1" onClick={() => exportToCSV(filteredOrders)}>
             <File className="h-3.5 w-3.5" />
             <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
               Export
