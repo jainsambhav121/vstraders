@@ -1,6 +1,9 @@
+
+'use client';
+
 import Image from 'next/image';
 import Link from 'next/link';
-import { blogPosts } from '@/lib/data';
+import { useBlogPosts } from '@/hooks/use-blog';
 import BlogPostCard from '@/components/blog-post-card';
 import {
   Breadcrumb,
@@ -12,10 +15,13 @@ import {
 } from '@/components/ui/breadcrumb';
 import { Button } from '@/components/ui/button';
 import { ArrowRight } from 'lucide-react';
+import { Skeleton } from '@/components/ui/skeleton';
 
 export default function BlogPage() {
-  const featuredPosts = blogPosts.filter((post) => post.featured);
-  const otherPosts = blogPosts.filter((post) => !post.featured);
+  const { posts, loading } = useBlogPosts();
+  
+  const featuredPosts = posts.filter((post) => post.featured);
+  const otherPosts = posts.filter((post) => !post.featured);
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -36,7 +42,12 @@ export default function BlogPage() {
         <p className="mt-2 text-lg text-muted-foreground">Insights and stories from our team</p>
       </header>
 
-      {featuredPosts.length > 0 && (
+      {loading ? (
+        <div className="mb-16 grid grid-cols-1 gap-8 md:grid-cols-2">
+            <Skeleton className="h-80 w-full" />
+            <Skeleton className="h-80 w-full" />
+        </div>
+      ) : featuredPosts.length > 0 && (
         <section className="mb-16">
           <h2 className="mb-8 text-center font-headline text-3xl font-bold">Featured Posts</h2>
           <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
@@ -66,11 +77,26 @@ export default function BlogPage() {
 
       <section>
         <h2 className="mb-8 text-center font-headline text-3xl font-bold">All Posts</h2>
-        <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
-          {[...featuredPosts, ...otherPosts].map((post) => (
-            <BlogPostCard key={post.id} post={post} />
-          ))}
-        </div>
+        {loading ? (
+            <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
+                {Array.from({length: 3}).map((_, i) => (
+                    <div key={i} className="space-y-4">
+                        <Skeleton className="aspect-video w-full" />
+                        <div className="space-y-2">
+                            <Skeleton className="h-6 w-3/4" />
+                            <Skeleton className="h-4 w-1/2" />
+                            <Skeleton className="h-12 w-full" />
+                        </div>
+                    </div>
+                ))}
+            </div>
+        ) : (
+            <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
+            {[...posts].map((post) => (
+                <BlogPostCard key={post.id} post={post} />
+            ))}
+            </div>
+        )}
       </section>
     </div>
   );

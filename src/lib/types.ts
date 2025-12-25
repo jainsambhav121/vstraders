@@ -121,9 +121,12 @@ export type BlogPost = {
   author: string;
   date: string;
   excerpt: string;
+  content: string;
   imageUrl: string;
   imageAlt: string;
   featured: boolean;
+  seoTitle?: string;
+  seoMetaDescription?: string;
 };
 
 export type FaqItem = {

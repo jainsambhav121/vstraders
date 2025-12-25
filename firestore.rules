@@ -36,6 +36,11 @@ service cloud.firestore {
         allow write: if isAdmin() || isManager();
     }
 
+    match /blogPosts/{postId} {
+        allow read: if true;
+        allow write: if isAdmin() || isManager();
+    }
+
     match /homepageContent/main {
         allow read: if true;
         allow write: if isAdmin() || isManager();

@@ -21,6 +21,7 @@ import {
   LogOut,
   FileText,
   Mail,
+  Newspaper
 } from 'lucide-react';
 import { useAuth } from '@/firebase';
 import { signOut } from 'firebase/auth';
@@ -31,6 +32,7 @@ const links = [
   { href: '/dashboard/orders', label: 'Orders', icon: ShoppingBag },
   { href: '/dashboard/products', label: 'Products', icon: Package },
   { href: '/dashboard/customers', label: 'Customers', icon: Users },
+  { href: '/dashboard/blog', label: 'Blog', icon: Newspaper },
   { href: '/dashboard/subscriptions', label: 'Subscriptions', icon: Mail },
   { href: '/dashboard/content', label: 'Content', icon: FileText },
 ];
@@ -60,7 +62,7 @@ export function SidebarNav() {
   };
 
   const isActive = (href: string) => {
-    return pathname === href;
+    return pathname.startsWith(href);
   };
 
   return (

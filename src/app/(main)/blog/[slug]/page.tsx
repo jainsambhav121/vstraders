@@ -3,7 +3,7 @@
 
 import { useParams, notFound } from 'next/navigation';
 import Image from 'next/image';
-import { blogPosts } from '@/lib/data';
+import { useBlogPosts } from '@/hooks/use-blog';
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -12,23 +12,39 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb';
-import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import BlogPostCard from '@/components/blog-post-card';
 import { Separator } from '@/components/ui/separator';
+import { Skeleton } from '@/components/ui/skeleton';
 
 export default function BlogPostPage() {
   const params = useParams();
   const { slug } = params;
+  const { posts, loading } = useBlogPosts();
 
-  const post = blogPosts.find((p) => p.slug === slug);
+  const post = posts.find((p) => p.slug === slug);
+  const relatedPosts = posts.filter(p => p.id !== post?.id).slice(0, 3);
+
+  if (loading) {
+    return (
+        <div className="container mx-auto max-w-4xl px-4 py-8 md:py-12">
+            <Skeleton className="h-6 w-1/2 mb-8" />
+            <Skeleton className="h-96 w-full mb-8" />
+            <Skeleton className="h-10 w-3/4 mb-4" />
+            <Skeleton className="h-6 w-1/3 mb-8" />
+            <div className="space-y-4">
+                <Skeleton className="h-4 w-full" />
+                <Skeleton className="h-4 w-full" />
+                <Skeleton className="h-4 w-5/6" />
+            </div>
+        </div>
+    )
+  }
 
   if (!post) {
     notFound();
   }
   
-  const relatedPosts = blogPosts.filter(p => p.id !== post.id).slice(0, 3);
-
   return (
     <div className="container mx-auto max-w-4xl px-4 py-8 md:py-12">
       <Breadcrumb className="mb-8">
@@ -74,15 +90,10 @@ export default function BlogPostPage() {
           </div>
         </header>
 
-        <div className="prose max-w-none text-muted-foreground prose-lg">
-          <p className="lead">{post.excerpt}</p>
-          <p>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam. Sed nisi. Nulla quis sem at nibh elementum imperdiet. Duis sagittis ipsum. Praesent mauris. Fusce nec tellus sed augue semper porta. Mauris massa. Vestibulum lacinia arcu eget nulla. 
-          </p>
-           <p>
-            Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Curabitur sodales ligula in libero. Sed dignissim lacinia nunc. Curabitur tortor. Pellentesque nibh. Aenean quam. In scelerisque sem at dolor. Maecenas mattis. Sed convallis tristique sem. Proin ut ligula vel nunc egestas porttitor. Morbi lectus risus, iaculis vel, suscipit quis, luctus non, massa. Fusce ac turpis quis ligula lacinia aliquet.
-          </p>
-        </div>
+        <div 
+            className="prose max-w-none text-muted-foreground prose-lg"
+            dangerouslySetInnerHTML={{ __html: post.content.replace(/\n/g, '<br />') }}
+        />
       </article>
 
       <Separator className="my-12" />

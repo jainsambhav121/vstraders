@@ -161,6 +161,26 @@
       },
       "required": ["question", "answer"]
     },
+     "BlogPost": {
+      "title": "Blog Post",
+      "description": "Represents a single blog post or article.",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "slug": { "type": "string" },
+        "author": { "type": "string" },
+        "excerpt": { "type": "string" },
+        "content": { "type": "string" },
+        "imageUrl": { "type": "string", "format": "uri" },
+        "imageAlt": { "type": "string" },
+        "featured": { "type": "boolean" },
+        "publishedAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" },
+        "seoTitle": { "type": "string" },
+        "seoMetaDescription": { "type": "string" }
+      },
+      "required": ["title", "slug", "author", "content", "imageUrl"]
+    },
     "HomepageContent": {
       "title": "Homepage Content",
       "description": "Content for the homepage sections.",
@@ -168,6 +188,11 @@
       "properties": {
         "heroText": { "type": "string" },
         "brandTagline": { "type": "string" },
+        "saleBannerTitle": { "type": "string" },
+        "saleBannerSubtitle": { "type": "string" },
+        "saleBannerLink": { "type": "string" },
+        "saleBannerIsActive": { "type": "boolean" },
+        "saleBannerImageUrl": { "type": "string", "format": "uri" },
         "updatedAt": { "type": "string", "format": "date-time" },
         "faqs": {
           "type": "array",
@@ -239,6 +264,10 @@
     "/banners/{bannerId}": {
       "schema": { "$ref": "#/entities/Banner" },
       "description": "Stores homepage banners."
+    },
+    "/blogPosts/{postId}": {
+      "schema": { "$ref": "#/entities/BlogPost" },
+      "description": "Stores individual blog posts."
     },
     "/homepageContent/main": {
       "schema": { "$ref": "#/entities/HomepageContent" },
