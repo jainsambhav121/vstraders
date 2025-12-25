@@ -44,7 +44,7 @@ export default function ProductCard({ product }: ProductCardProps) {
         </Link>
       </CardHeader>
       <CardContent className="flex-1 p-4">
-        <CardTitle className="mb-1 text-lg leading-tight">
+        <CardTitle className="mb-1 text-base md:text-lg leading-tight">
           <Link href={`/products/${product.id}`} className="hover:text-primary">
             {product.name}
           </Link>
@@ -63,7 +63,7 @@ export default function ProductCard({ product }: ProductCardProps) {
       </CardContent>
       <CardFooter className="flex items-center justify-between p-4 pt-0">
         <p className="text-lg md:text-xl font-semibold">₹{product.finalPrice.toFixed(2)}</p>
-        <Button onClick={handleAddToCart} size="sm" className="md:w-auto">
+        <Button onClick={handleAddToCart} size="sm" className="md:w-auto shrink-0">
             <ShoppingCart className="h-4 w-4 md:hidden" />
             <span className="hidden md:inline">Add to Cart</span>
         </Button>
