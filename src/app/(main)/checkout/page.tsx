@@ -65,11 +65,12 @@ export default function CheckoutPage() {
     }
   }, [user, userLoading, form]);
   
-  if (cartCount === 0 && typeof window !== 'undefined') {
-      router.push('/');
-      return null;
-  }
-
+  useEffect(() => {
+    if (cartCount === 0 && typeof window !== 'undefined') {
+        router.push('/');
+    }
+  }, [cartCount, router]);
+  
   const onSubmit = async (values: z.infer<typeof checkoutSchema>) => {
     if (!firestore) {
         toast({ variant: "destructive", title: "Error", description: "Database not available."});
@@ -102,7 +103,7 @@ export default function CheckoutPage() {
   };
 
 
-  if (userLoading) {
+  if (userLoading || cartCount === 0) {
       return <div className="flex h-screen items-center justify-center"><Loader2 className="h-8 w-8 animate-spin" /></div>
   }
 
