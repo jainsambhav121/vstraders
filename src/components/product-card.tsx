@@ -61,8 +61,8 @@ export default function ProductCard({ product }: ProductCardProps) {
             <span className="text-sm text-muted-foreground">({product.reviewCount})</span>
         </div>
       </CardContent>
-      <CardFooter className="flex items-center justify-between p-4 pt-0">
-        <p className="text-base font-semibold md:text-lg">₹{product.finalPrice.toFixed(2)}</p>
+      <CardFooter className="flex items-center justify-end md:justify-between p-4 pt-0">
+        <p className="hidden md:block text-base font-semibold">₹{product.finalPrice.toFixed(2)}</p>
         <Button onClick={handleAddToCart} size="sm" className="md:w-auto shrink-0">
             <ShoppingCart className="h-4 w-4 md:hidden" />
             <span className="hidden md:inline">Add to Cart</span>
