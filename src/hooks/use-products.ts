@@ -55,6 +55,8 @@ export function useProducts() {
             seo: data.seo || {},
             rating: data.rating || 0,
             reviewCount: data.reviewCount || 0,
+            productName: data.name,
+            specifications: data.details || [],
           };
         });
         setProducts(productsData);
@@ -76,5 +78,3 @@ export function useProducts() {
 
   return { products, loading, error };
 }
-
-    
