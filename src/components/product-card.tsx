@@ -6,7 +6,7 @@ import Link from 'next/link';
 import type { Product } from '@/lib/types';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Star } from 'lucide-react';
+import { Star, ShoppingCart } from 'lucide-react';
 import { useCart } from '@/context/cart-context';
 import { useToast } from '@/hooks/use-toast';
 
@@ -63,7 +63,10 @@ export default function ProductCard({ product }: ProductCardProps) {
       </CardContent>
       <CardFooter className="flex items-center justify-between p-4 pt-0">
         <p className="text-lg md:text-xl font-semibold">₹{product.finalPrice.toFixed(2)}</p>
-        <Button onClick={handleAddToCart} size="sm">Add to Cart</Button>
+        <Button onClick={handleAddToCart} size="sm" className="md:w-auto">
+            <ShoppingCart className="h-4 w-4 md:hidden" />
+            <span className="hidden md:inline">Add to Cart</span>
+        </Button>
       </CardFooter>
     </Card>
   );
