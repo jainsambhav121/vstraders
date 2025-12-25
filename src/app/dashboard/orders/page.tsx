@@ -35,6 +35,7 @@ import {
   DropdownMenuSubContent,
   DropdownMenuSubTrigger,
   DropdownMenuPortal,
+  DropdownMenuCheckboxItem,
 } from '@/components/ui/dropdown-menu';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -95,9 +96,12 @@ const ORDER_STATUSES: OrderStatus[] = [
     'Pending', 'Confirmed', 'Processing', 'Packed', 'Shipped', 'Delivered', 'Cancelled', 'Returned'
 ];
 
+const PAYMENT_STATUSES: PaymentStatus[] = ['Paid', 'Pending', 'Failed', 'Refunded'];
+
 export default function OrdersPage() {
     const { orders, loading, error } = useOrders();
     const [activeTab, setActiveTab] = useState<OrderStatus | 'all'>('all');
+    const [paymentStatusFilter, setPaymentStatusFilter] = useState<PaymentStatus | null>(null);
     const firestore = useFirestore();
 
     const handleStatusChange = async (orderId: string, newStatus: OrderStatus) => {
@@ -119,9 +123,11 @@ export default function OrdersPage() {
         }
     };
 
-    const filteredOrders = activeTab === 'all'
-        ? orders
-        : orders.filter((order) => order.status === activeTab);
+    const filteredOrders = orders.filter(order => {
+        const tabMatch = activeTab === 'all' || order.status === activeTab;
+        const paymentStatusMatch = !paymentStatusFilter || order.paymentStatus === paymentStatusFilter;
+        return tabMatch && paymentStatusMatch;
+    });
 
     const exportToCSV = (data: Order[]) => {
         const headers = ['Order ID', 'Customer Name', 'Customer Email', 'Date', 'Total', 'Status', 'Items', 'Payment Status'];
@@ -174,8 +180,30 @@ export default function OrdersPage() {
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>Filter by</DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>Status</DropdownMenuItem>
-              <DropdownMenuItem>Date</DropdownMenuItem>
+              <DropdownMenuSub>
+                <DropdownMenuSubTrigger>Payment Status</DropdownMenuSubTrigger>
+                <DropdownMenuPortal>
+                  <DropdownMenuSubContent>
+                    {PAYMENT_STATUSES.map(status => (
+                      <DropdownMenuCheckboxItem
+                        key={status}
+                        checked={paymentStatusFilter === status}
+                        onSelect={() => setPaymentStatusFilter(current => current === status ? null : status)}
+                      >
+                        {status}
+                      </DropdownMenuCheckboxItem>
+                    ))}
+                  </DropdownMenuSubContent>
+                </DropdownMenuPortal>
+              </DropdownMenuSub>
+              {paymentStatusFilter && (
+                <>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={() => setPaymentStatusFilter(null)} className="text-destructive">
+                    Clear Filter
+                  </DropdownMenuItem>
+                </>
+              )}
             </DropdownMenuContent>
           </DropdownMenu>
           <Button size="sm" variant="outline" className="h-8 gap-1" onClick={() => exportToCSV(filteredOrders)}>
