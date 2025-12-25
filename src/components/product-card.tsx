@@ -62,8 +62,8 @@ export default function ProductCard({ product }: ProductCardProps) {
         </div>
       </CardContent>
       <CardFooter className="flex items-center justify-between p-4 pt-0">
-        <p className="text-xl font-semibold">₹{product.finalPrice.toFixed(2)}</p>
-        <Button onClick={handleAddToCart}>Add to Cart</Button>
+        <p className="text-lg md:text-xl font-semibold">₹{product.finalPrice.toFixed(2)}</p>
+        <Button onClick={handleAddToCart} size="sm">Add to Cart</Button>
       </CardFooter>
     </Card>
   );
