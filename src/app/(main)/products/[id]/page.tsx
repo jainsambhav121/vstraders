@@ -42,7 +42,18 @@ export default function ProductDetailPage() {
 
 
   const product = products.find((p) => p.id === id);
-  const relatedProducts = products.filter(p => p.category === product?.category && p.id !== product?.id).slice(0, 4);
+  
+  const relatedProducts = useMemo(() => {
+    if (!product || products.length <= 1) return [];
+    
+    let filtered = products.filter(p => p.category === product.category && p.id !== product.id);
+
+    if (filtered.length === 0) {
+      filtered = products.filter(p => p.id !== product.id);
+    }
+    
+    return filtered.slice(0, 4);
+  }, [product, products]);
 
   useEffect(() => {
     if (product) {
@@ -333,3 +344,4 @@ export default function ProductDetailPage() {
     </div>
   );
 }
+
