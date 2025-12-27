@@ -87,10 +87,10 @@ export default function ProductCard({ product }: ProductCardProps) {
         </div>
       </CardContent>
       <CardFooter className="flex items-center justify-between p-4 pt-0">
-        <p className="text-base md:text-lg font-semibold">₹{product.finalPrice.toFixed(2)}</p>
+        <p className="text-base font-semibold md:text-lg">₹{product.finalPrice.toFixed(2)}</p>
         <Button onClick={handleAddToCart} size="sm" className="shrink-0">
-            <ShoppingCart className="h-4 w-4 md:mr-2" />
-            <span className="hidden md:inline">Add to Cart</span>
+            <ShoppingCart className="h-4 w-4 sm:mr-2" />
+            <span className="hidden sm:inline">Add to Cart</span>
         </Button>
       </CardFooter>
     </Card>
