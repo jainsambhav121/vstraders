@@ -1,7 +1,7 @@
 
 'use client';
 
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useEffect, ReactNode, useCallback } from 'react';
 
 const MAX_RECENTLY_VIEWED = 10;
 
@@ -26,12 +26,12 @@ export function RecentlyViewedProvider({ children }: { children: ReactNode }) {
     localStorage.setItem('vstraders-recently-viewed', JSON.stringify(recentlyViewed));
   }, [recentlyViewed]);
 
-  const addRecentlyViewed = (productId: string) => {
+  const addRecentlyViewed = useCallback((productId: string) => {
     setRecentlyViewed(prev => {
       const updated = [productId, ...prev.filter(id => id !== productId)];
       return updated.slice(0, MAX_RECENTLY_VIEWED);
     });
-  };
+  }, []);
 
   const value = {
     recentlyViewed,
