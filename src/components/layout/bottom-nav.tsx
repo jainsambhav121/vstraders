@@ -2,7 +2,7 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { Home, Search, ShoppingCart, User } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import {
@@ -15,6 +15,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useUser } from '@/hooks/use-user';
+import React, { useState } from 'react';
 
 
 const navItems = [
@@ -25,8 +26,19 @@ const navItems = [
 export default function BottomNav() {
   const pathname = usePathname();
   const { user } = useUser();
+  const router = useRouter();
+  const [searchQuery, setSearchQuery] = useState('');
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
 
   const profileLink = user ? '/profile' : '/login';
+  
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      router.push(`/search?q=${searchQuery}`);
+      setIsSearchOpen(false);
+    }
+  };
 
   return (
     <div className="md:hidden fixed bottom-0 left-0 z-50 w-full h-16 bg-background border-t border-border">
@@ -47,7 +59,7 @@ export default function BottomNav() {
                 </Link>
             )
         })}
-         <Dialog>
+         <Dialog open={isSearchOpen} onOpenChange={setIsSearchOpen}>
             <DialogTrigger asChild>
                  <button type="button" className="inline-flex flex-col items-center justify-center px-5 hover:bg-gray-50 dark:hover:bg-gray-800 group text-muted-foreground">
                     <Search className="w-5 h-5 mb-1" />
@@ -58,14 +70,16 @@ export default function BottomNav() {
                 <DialogHeader>
                   <DialogTitle>Search Products</DialogTitle>
                 </DialogHeader>
-                <div className="relative">
+                <form onSubmit={handleSearch} className="relative">
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                   <Input
                     type="search"
                     placeholder="Search products..."
                     className="w-full rounded-full bg-muted pl-10"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
                   />
-                </div>
+                </form>
               </DialogContent>
         </Dialog>
         {navItems.slice(1).map((item) => {

@@ -7,6 +7,9 @@ import { FirebaseClientProvider } from '@/firebase/client-provider';
 import { MobileExperienceProvider } from '@/components/mobile-experience-provider';
 import { ThemeProvider } from "@/components/theme-provider"
 import { CartProvider } from '@/context/cart-context';
+import { WishlistProvider } from '@/context/wishlist-context';
+import { RecentlyViewedProvider } from '@/context/recently-viewed-context';
+import { Suspense } from 'react';
 
 const openSans = Open_Sans({
   subsets: ['latin'],
@@ -43,7 +46,13 @@ export default function RootLayout({
         >
           <FirebaseClientProvider>
             <CartProvider>
-              <MobileExperienceProvider>{children}</MobileExperienceProvider>
+              <WishlistProvider>
+                <RecentlyViewedProvider>
+                  <Suspense>
+                    <MobileExperienceProvider>{children}</MobileExperienceProvider>
+                  </Suspense>
+                </RecentlyViewedProvider>
+              </WishlistProvider>
             </CartProvider>
           </FirebaseClientProvider>
           <Toaster />

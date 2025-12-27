@@ -6,7 +6,7 @@ import { notFound, useParams } from 'next/navigation';
 import { useProducts } from '@/hooks/use-products';
 import { reviews } from '@/lib/data';
 import { Button } from '@/components/ui/button';
-import { Star, Truck, CheckCircle, ShieldCheck, Plus, Minus } from 'lucide-react';
+import { Star, Truck, CheckCircle, ShieldCheck, Plus, Minus, Heart } from 'lucide-react';
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -28,6 +28,8 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
 import type { ProductVariant } from '@/lib/types';
 import { cn } from '@/lib/utils';
+import { useWishlist } from '@/context/wishlist-context';
+import { useRecentlyViewed } from '@/context/recently-viewed-context';
 
 export default function ProductDetailPage() {
   const params = useParams();
@@ -35,6 +37,8 @@ export default function ProductDetailPage() {
   const { products, loading } = useProducts();
   const { addToCart } = useCart();
   const { toast } = useToast();
+  const { wishlist, addToWishlist, removeFromWishlist } = useWishlist();
+  const { addRecentlyViewed } = useRecentlyViewed();
 
   const [selectedVariant, setSelectedVariant] = useState<ProductVariant | null>(null);
   const [quantity, setQuantity] = useState(1);
@@ -42,18 +46,16 @@ export default function ProductDetailPage() {
 
 
   const product = products.find((p) => p.id === id);
-  
-  const relatedProducts = useMemo(() => {
-    if (!product || products.length <= 1) return [];
-    
-    let filtered = products.filter(p => p.category === product.category && p.id !== product.id);
+  const isInWishlist = !!wishlist.find(item => item.id === product?.id);
 
-    if (filtered.length === 0) {
-      filtered = products.filter(p => p.id !== product.id);
+  const recommendationPool = products.filter(p => p.id !== product?.id);
+  const recommendedProducts = recommendationPool.slice(0, 4);
+  
+  useEffect(() => {
+    if (product) {
+      addRecentlyViewed(product.id);
     }
-    
-    return filtered.slice(0, 4);
-  }, [product, products]);
+  }, [product, addRecentlyViewed]);
 
   useEffect(() => {
     if (product) {
@@ -149,6 +151,18 @@ export default function ProductDetailPage() {
       description: `${productToAdd.name} (x${quantity}) has been added to your cart.`,
     });
   };
+
+  const handleWishlistToggle = () => {
+    if (!product) return;
+    if (isInWishlist) {
+      removeFromWishlist(product.id);
+      toast({ title: 'Removed from wishlist' });
+    } else {
+      addToWishlist(product);
+      toast({ title: 'Added to wishlist' });
+    }
+  };
+
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -261,6 +275,9 @@ export default function ProductDetailPage() {
                 <Button variant="ghost" size="icon" onClick={() => setQuantity(q => q + 1)}><Plus className="h-4 w-4" /></Button>
             </div>
             <Button size="lg" className="flex-1" onClick={handleAddToCart}>Add to Cart</Button>
+            <Button variant="outline" size="icon" onClick={handleWishlistToggle} aria-label="Toggle Wishlist">
+              <Heart className={cn("h-5 w-5", isInWishlist && "fill-red-500 text-red-500")} />
+            </Button>
           </div>
 
           <div className="mt-8 space-y-4 rounded-lg border p-4">
@@ -334,9 +351,9 @@ export default function ProductDetailPage() {
        <Separator className="my-12" />
 
       <div>
-        <h2 className="mb-6 text-center font-headline text-3xl font-bold">Related Products</h2>
+        <h2 className="mb-6 text-center font-headline text-3xl font-bold">You Might Also Like</h2>
         <div className="grid grid-cols-2 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
-          {relatedProducts.map((p) => (
+          {recommendedProducts.map((p) => (
             <ProductCard key={p.id} product={p} />
           ))}
         </div>
@@ -344,4 +361,3 @@ export default function ProductDetailPage() {
     </div>
   );
 }
-

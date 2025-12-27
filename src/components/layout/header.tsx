@@ -2,6 +2,7 @@
 'use client';
 
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import {
   Sheet,
   SheetContent,
@@ -39,7 +40,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { useFirestore } from '@/firebase';
 import { doc, getDoc } from 'firebase/firestore';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Separator } from '../ui/separator';
 import { useCart } from '@/context/cart-context';
 
@@ -56,7 +57,11 @@ export default function Header() {
   const { setTheme } = useTheme();
   const { cartCount } = useCart();
   const firestore = useFirestore();
+  const router = useRouter();
   const [isAdmin, setIsAdmin] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [isSearchDialogOpen, setIsSearchDialogOpen] = useState(false);
+
 
   useEffect(() => {
     const checkAdmin = async () => {
@@ -74,6 +79,15 @@ export default function Header() {
   }, [user, firestore]);
 
   const profileLink = user ? (isAdmin ? '/dashboard' : '/profile') : '/login';
+  
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      router.push(`/search?q=${searchQuery}`);
+      // Close dialog if open
+      setIsSearchDialogOpen(false);
+    }
+  };
 
 
   return (
@@ -160,14 +174,16 @@ export default function Header() {
         </div>
 
         <div className="flex flex-1 items-center justify-center md:justify-end gap-4">
-          <div className="relative hidden w-full max-w-md flex-1 md:block">
+          <form onSubmit={handleSearch} className="relative hidden w-full max-w-md flex-1 md:block">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
               type="search"
               placeholder="Search products..."
               className="w-full rounded-full bg-muted pl-10"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
             />
-          </div>
+          </form>
            {/* Mobile-only: App name in the center */}
           <div className="flex items-center md:hidden">
              <Link href="/" className="flex items-center gap-2 text-lg font-bold">
@@ -177,7 +193,7 @@ export default function Header() {
           </div>
 
           <div className="flex items-center gap-2">
-            <Dialog>
+            <Dialog open={isSearchDialogOpen} onOpenChange={setIsSearchDialogOpen}>
               <DialogTrigger asChild>
                 <Button variant="ghost" size="icon" aria-label="Search" className="md:hidden">
                   <Search className="h-6 w-6" />
@@ -187,14 +203,16 @@ export default function Header() {
                 <DialogHeader>
                   <DialogTitle>Search Products</DialogTitle>
                 </DialogHeader>
-                <div className="relative">
+                <form onSubmit={handleSearch} className="relative">
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                   <Input
                     type="search"
                     placeholder="Search products..."
                     className="w-full rounded-full bg-muted pl-10"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
                   />
-                </div>
+                </form>
               </DialogContent>
             </Dialog>
 

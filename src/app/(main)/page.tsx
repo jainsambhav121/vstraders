@@ -21,12 +21,18 @@ import React from 'react';
 import { useDoc } from '@/hooks/use-doc';
 import { cn } from '@/lib/utils';
 import type { HeroSlide } from '@/lib/types';
+import { useRecentlyViewed } from '@/context/recently-viewed-context';
 
 export default function HomePage() {
   const { products, loading: productsLoading } = useProducts();
   const { data: content, loading: contentLoading } = useDoc<any>('homepageContent/main');
+  const { recentlyViewed } = useRecentlyViewed();
+  
   const featuredProducts = products.filter(p => p.status.isFeatured).slice(0, 8);
   const newArrivals = products.slice(0, 8); 
+  const trendingProducts = products.filter(p => p.status.isBestSeller).slice(0, 8);
+  const recentlyViewedProducts = products.filter(p => recentlyViewed.includes(p.id));
+
 
   const heroSlides: HeroSlide[] = content?.heroSlides || [];
 
@@ -211,6 +217,41 @@ export default function HomePage() {
               </div>
             </section>
         ) : null}
+
+        <section className="mt-12 md:mt-16 lg:mt-20">
+          <h2 className="mb-6 text-center font-headline text-3xl font-bold">
+            Trending Now
+          </h2>
+          {loading ? (
+              <div className="grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
+                {Array.from({ length: 4 }).map((_, i) => (
+                  <div key={i} className="space-y-2">
+                    <Skeleton className="aspect-square w-full" />
+                    <Skeleton className="h-4 w-3/4" />
+                    <Skeleton className="h-4 w-1/2" />
+                    <Skeleton className="h-8 w-1/4" />
+                  </div>
+                ))}
+              </div>
+          ) : (
+            <Carousel
+              opts={{ align: 'start', loop: trendingProducts.length > 4 }}
+              className="w-full"
+            >
+              <CarouselContent>
+                {trendingProducts.map((product) => (
+                  <CarouselItem key={product.id} className="basis-1/2 md:basis-1/3 lg:basis-1/4">
+                    <div className="p-1">
+                      <ProductCard product={product} />
+                    </div>
+                  </CarouselItem>
+                ))}
+              </CarouselContent>
+              <CarouselPrevious className="absolute left-0 top-1/2 -translate-y-1/2 z-10 -translate-x-4 hidden md:flex" />
+              <CarouselNext className="absolute right-0 top-1/2 -translate-y-1/2 z-10 translate-x-4 hidden md:flex" />
+            </Carousel>
+          )}
+        </section>
         
         <section className="mt-12 md:mt-16 lg:mt-20">
           <h2 className="mb-6 text-center fontheadline text-3xl font-bold">
@@ -246,6 +287,27 @@ export default function HomePage() {
             </Carousel>
           )}
         </section>
+
+        {recentlyViewedProducts.length > 0 && (
+          <section className="mt-12 md:mt-16 lg:mt-20">
+            <h2 className="mb-6 text-center font-headline text-3xl font-bold">
+              Recently Viewed
+            </h2>
+            <Carousel opts={{ align: 'start', loop: recentlyViewedProducts.length > 4 }} className="w-full">
+              <CarouselContent>
+                {recentlyViewedProducts.map((product) => (
+                  <CarouselItem key={product.id} className="basis-1/2 md:basis-1/3 lg:basis-1/4">
+                    <div className="p-1">
+                      <ProductCard product={product} />
+                    </div>
+                  </CarouselItem>
+                ))}
+              </CarouselContent>
+              <CarouselPrevious className="absolute left-0 top-1/2 -translate-y-1/2 z-10 -translate-x-4 hidden md:flex" />
+              <CarouselNext className="absolute right-0 top-1/2 -translate-y-1/2 z-10 translate-x-4 hidden md:flex" />
+            </Carousel>
+          </section>
+        )}
 
         <section className="mt-12 border-t py-12 md:mt-16 lg:mt-20">
             <div className="grid grid-cols-1 gap-8 text-center md:grid-cols-3">
