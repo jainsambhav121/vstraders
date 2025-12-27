@@ -7,7 +7,6 @@ import {
   Sheet,
   SheetContent,
   SheetTrigger,
-  SheetClose
 } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -19,7 +18,8 @@ import {
   Heart,
   Store,
   Moon,
-  Sun
+  Sun,
+  Mic
 } from 'lucide-react';
 import {
   Dialog,
@@ -40,7 +40,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { useFirestore } from '@/firebase';
 import { doc, getDoc } from 'firebase/firestore';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { Separator } from '../ui/separator';
 import { useCart } from '@/context/cart-context';
 
@@ -61,6 +61,9 @@ export default function Header() {
   const [isAdmin, setIsAdmin] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [isSearchDialogOpen, setIsSearchDialogOpen] = useState(false);
+  
+  const [isListening, setIsListening] = useState(false);
+  const recognitionRef = useRef<any>(null);
 
 
   useEffect(() => {
@@ -84,9 +87,49 @@ export default function Header() {
     e.preventDefault();
     if (searchQuery.trim()) {
       router.push(`/search?q=${searchQuery}`);
-      // Close dialog if open
       setIsSearchDialogOpen(false);
     }
+  };
+  
+  const handleVoiceSearch = () => {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+      alert("Sorry, your browser doesn't support voice search.");
+      return;
+    }
+
+    if (isListening) {
+        recognitionRef.current?.stop();
+        setIsListening(false);
+        return;
+    }
+    
+    const recognition = new SpeechRecognition();
+    recognitionRef.current = recognition;
+    recognition.lang = 'en-US';
+    recognition.interimResults = false;
+    recognition.maxAlternatives = 1;
+
+    recognition.onstart = () => {
+        setIsListening(true);
+    }
+    
+    recognition.onresult = (event) => {
+      const transcript = event.results[0][0].transcript;
+      setSearchQuery(transcript);
+      router.push(`/search?q=${transcript}`);
+      setIsSearchDialogOpen(false);
+    };
+
+    recognition.onerror = (event) => {
+      console.error('Voice recognition error', event.error);
+    };
+
+    recognition.onend = () => {
+        setIsListening(false);
+    }
+
+    recognition.start();
   };
 
 
@@ -174,15 +217,25 @@ export default function Header() {
         </div>
 
         <div className="flex flex-1 items-center justify-center md:justify-end gap-4">
-          <form onSubmit={handleSearch} className="relative hidden w-full max-w-md flex-1 md:block">
+          <form onSubmit={handleSearch} className="relative hidden w-full max-w-md flex-1 md:flex items-center">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
               type="search"
               placeholder="Search products..."
-              className="w-full rounded-full bg-muted pl-10"
+              className="w-full rounded-full bg-muted pl-10 pr-10"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
+            <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8 rounded-full"
+                onClick={handleVoiceSearch}
+                aria-label="Search with voice"
+            >
+                <Mic className={`h-4 w-4 ${isListening ? 'text-red-500 animate-pulse' : 'text-muted-foreground'}`} />
+            </Button>
           </form>
            {/* Mobile-only: App name in the center */}
           <div className="flex items-center md:hidden">
@@ -203,15 +256,25 @@ export default function Header() {
                 <DialogHeader>
                   <DialogTitle>Search Products</DialogTitle>
                 </DialogHeader>
-                <form onSubmit={handleSearch} className="relative">
+                <form onSubmit={handleSearch} className="relative flex items-center">
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                   <Input
                     type="search"
                     placeholder="Search products..."
-                    className="w-full rounded-full bg-muted pl-10"
+                    className="w-full rounded-full bg-muted pl-10 pr-10"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                   />
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8 rounded-full"
+                    onClick={handleVoiceSearch}
+                    aria-label="Search with voice"
+                   >
+                     <Mic className={`h-4 w-4 ${isListening ? 'text-red-500 animate-pulse' : 'text-muted-foreground'}`} />
+                  </Button>
                 </form>
               </DialogContent>
             </Dialog>
