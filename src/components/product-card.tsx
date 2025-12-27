@@ -91,10 +91,10 @@ export default function ProductCard({ product }: ProductCardProps) {
         <Button 
           onClick={handleAddToCart} 
           size="sm" 
-          className="shrink-0 md:w-9 md:h-9 md:rounded-full md:p-0 lg:w-auto lg:h-9 lg:px-3 lg:rounded-md"
+          className="shrink-0 w-9 h-9 rounded-full p-0 md:w-auto md:h-9 md:px-3 md:rounded-md"
         >
-            <ShoppingCart className="h-4 w-4 lg:mr-2" />
-            <span className="hidden lg:inline">Add to Cart</span>
+            <ShoppingCart className="h-4 w-4 md:mr-2" />
+            <span className="hidden md:inline">Add to Cart</span>
         </Button>
       </CardFooter>
     </Card>
