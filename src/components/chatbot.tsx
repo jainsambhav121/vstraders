@@ -46,14 +46,14 @@ export default function Chatbot() {
     <div>
       <Button
         onClick={() => setIsOpen(!isOpen)}
-        className="fixed bottom-4 right-4 z-50 h-16 w-16 rounded-full shadow-lg"
+        className="fixed bottom-20 right-4 z-50 h-16 w-16 rounded-full shadow-lg md:bottom-4"
         aria-label="Toggle Chatbot"
       >
         {isOpen ? <X className="h-8 w-8" /> : <Bot className="h-8 w-8" />}
       </Button>
 
       {isOpen && (
-        <Card className="fixed bottom-24 right-4 z-50 w-full max-w-sm shadow-lg">
+        <Card className="fixed bottom-40 right-4 z-50 w-full max-w-sm shadow-lg md:bottom-24">
           <CardHeader className="flex flex-row items-center justify-between">
             <CardTitle className="flex items-center gap-2">
               <Bot className="h-6 w-6" /> AI Assistant
