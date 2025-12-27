@@ -1,4 +1,5 @@
 
+
 import type { User as FirebaseUser } from 'firebase/auth';
 import type { LucideIcon } from 'lucide-react';
 
@@ -132,6 +133,13 @@ export type BlogPost = {
 export type FaqItem = {
     question: string;
     answer: string;
+};
+
+export type HeroSlide = {
+  title: string;
+  tagline: string;
+  imageUrl: string;
+  buttonLink: string;
 };
 
 export type AuthenticatedUser = FirebaseUser;

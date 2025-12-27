@@ -11,18 +11,24 @@ import {
   Carousel,
   CarouselContent,
   CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
 } from "@/components/ui/carousel"
+import Autoplay from "embla-carousel-autoplay"
 import { useProducts } from '@/hooks/use-products';
 import { Skeleton } from '@/components/ui/skeleton';
 import React from 'react';
 import { useDoc } from '@/hooks/use-doc';
 import { cn } from '@/lib/utils';
+import type { HeroSlide } from '@/lib/types';
 
 export default function HomePage() {
   const { products, loading: productsLoading } = useProducts();
   const { data: content, loading: contentLoading } = useDoc<any>('homepageContent/main');
-  const featuredProducts = products.filter(p => p.status.isFeatured).slice(0, 4);
-  const newArrivals = products.slice(0, 4); // Using latest products as new arrivals for now
+  const featuredProducts = products.filter(p => p.status.isFeatured).slice(0, 8);
+  const newArrivals = products.slice(0, 8); 
+
+  const heroSlides: HeroSlide[] = content?.heroSlides || [];
 
   const loading = productsLoading || contentLoading;
 
@@ -32,36 +38,41 @@ export default function HomePage() {
         {loading ? (
            <Skeleton className="h-full w-full" />
         ) : (
-          <Image
-            src={content?.heroImageUrl || "https://picsum.photos/seed/hero/1800/800"}
-            alt={content?.heroTitle || "Promotional banner"}
-            fill
-            className="object-cover"
-            priority
-            data-ai-hint="promotional banner"
-          />
+          <Carousel
+            className="w-full h-full"
+            plugins={[Autoplay({ delay: 5000, stopOnInteraction: true })]}
+            opts={{ loop: true }}
+          >
+            <CarouselContent>
+              {heroSlides.map((slide, index) => (
+                <CarouselItem key={index} className="relative h-[50vh] min-h-[400px] w-full">
+                  <Image
+                    src={slide.imageUrl || "https://picsum.photos/seed/hero/1800/800"}
+                    alt={slide.title || "Promotional banner"}
+                    fill
+                    className="object-cover"
+                    priority={index === 0}
+                    data-ai-hint="promotional banner"
+                  />
+                  <div className="absolute inset-0 bg-black/30" />
+                  <div className="relative z-10 flex h-full flex-col items-center justify-center text-center text-white">
+                    <h1 className="font-headline text-4xl font-bold md:text-5xl lg:text-6xl animate-in fade-in slide-in-from-bottom-4 duration-1000">
+                      {slide.title || 'Discover Your Style'}
+                    </h1>
+                    <p className="mt-4 max-w-2xl text-lg text-primary-foreground/90 animate-in fade-in slide-in-from-bottom-2 duration-1000 delay-200">
+                      {slide.tagline || 'Explore our curated collection of the finest products, designed for the modern lifestyle.'}
+                    </p>
+                    <Button asChild size="lg" className="mt-8 animate-in fade-in zoom-in-90 duration-1000 delay-400">
+                      <Link href={slide.buttonLink || "/products"}>Shop Now</Link>
+                    </Button>
+                  </div>
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+            <CarouselPrevious className="absolute left-4 top-1/2 -translate-y-1/2 z-20 hidden md:flex" />
+            <CarouselNext className="absolute right-4 top-1/2 -translate-y-1/2 z-20 hidden md:flex" />
+          </Carousel>
         )}
-        <div className="absolute inset-0 bg-black/30" />
-        <div className="relative z-10 flex h-full flex-col items-center justify-center text-center text-white">
-          {loading ? (
-             <div className="space-y-4">
-                <Skeleton className="h-12 w-80" />
-                <Skeleton className="h-6 w-96" />
-             </div>
-          ) : (
-            <>
-              <h1 className="font-headline text-4xl font-bold md:text-5xl lg:text-6xl animate-in fade-in slide-in-from-bottom-4 duration-1000">
-                {content?.heroTitle || 'Discover Your Style'}
-              </h1>
-              <p className="mt-4 max-w-2xl text-lg text-primary-foreground/90 animate-in fade-in slide-in-from-bottom-2 duration-1000 delay-200">
-                {content?.heroTagline || 'Explore our curated collection of the finest products, designed for the modern lifestyle.'}
-              </p>
-            </>
-          )}
-          <Button asChild size="lg" className="mt-8 animate-in fade-in zoom-in-90 duration-1000 delay-400">
-            <Link href={content?.heroButtonLink || "/products"}>Shop Now</Link>
-          </Button>
-        </div>
       </section>
 
       <div className="container mx-auto px-4">
@@ -122,22 +133,35 @@ export default function HomePage() {
           <h2 className="mb-6 text-center font-headline text-3xl font-bold">
             Featured Products
           </h2>
-          <div className="grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
-            {loading ? (
-              Array.from({ length: 4 }).map((_, i) => (
-                <div key={i} className="space-y-2">
-                  <Skeleton className="aspect-square w-full" />
-                  <Skeleton className="h-4 w-3/4" />
-                  <Skeleton className="h-4 w-1/2" />
-                  <Skeleton className="h-8 w-1/4" />
-                </div>
-              ))
-            ) : (
-              featuredProducts.map((product) => (
-                <ProductCard key={product.id} product={product} />
-              ))
-            )}
-          </div>
+          {loading ? (
+              <div className="grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
+                {Array.from({ length: 4 }).map((_, i) => (
+                  <div key={i} className="space-y-2">
+                    <Skeleton className="aspect-square w-full" />
+                    <Skeleton className="h-4 w-3/4" />
+                    <Skeleton className="h-4 w-1/2" />
+                    <Skeleton className="h-8 w-1/4" />
+                  </div>
+                ))}
+              </div>
+          ) : (
+            <Carousel
+              opts={{ align: 'start', loop: true }}
+              className="w-full"
+            >
+              <CarouselContent>
+                {featuredProducts.map((product) => (
+                  <CarouselItem key={product.id} className="basis-1/2 md:basis-1/3 lg:basis-1/4">
+                    <div className="p-1">
+                      <ProductCard product={product} />
+                    </div>
+                  </CarouselItem>
+                ))}
+              </CarouselContent>
+              <CarouselPrevious className="absolute left-0 top-1/2 -translate-y-1/2 z-10 -translate-x-4 hidden md:flex" />
+              <CarouselNext className="absolute right-0 top-1/2 -translate-y-1/2 z-10 translate-x-4 hidden md:flex" />
+            </Carousel>
+          )}
         </section>
 
         {loading ? (
@@ -192,22 +216,35 @@ export default function HomePage() {
           <h2 className="mb-6 text-center fontheadline text-3xl font-bold">
             New Arrivals
           </h2>
-           <div className="grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
-             {loading ? (
-                Array.from({ length: 4 }).map((_, i) => (
+          {loading ? (
+              <div className="grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
+                {Array.from({ length: 4 }).map((_, i) => (
                   <div key={i} className="space-y-2">
                     <Skeleton className="aspect-square w-full" />
                     <Skeleton className="h-4 w-3/4" />
                     <Skeleton className="h-4 w-1/2" />
                     <Skeleton className="h-8 w-1/4" />
                   </div>
-                ))
-              ) : (
-                newArrivals.map((product) => (
-                  <ProductCard key={product.id} product={product} />
-                ))
-              )}
-          </div>
+                ))}
+              </div>
+          ) : (
+            <Carousel
+              opts={{ align: 'start', loop: true }}
+              className="w-full"
+            >
+              <CarouselContent>
+                {newArrivals.map((product) => (
+                  <CarouselItem key={product.id} className="basis-1/2 md:basis-1/3 lg:basis-1/4">
+                    <div className="p-1">
+                      <ProductCard product={product} />
+                    </div>
+                  </CarouselItem>
+                ))}
+              </CarouselContent>
+              <CarouselPrevious className="absolute left-0 top-1/2 -translate-y-1/2 z-10 -translate-x-4 hidden md:flex" />
+              <CarouselNext className="absolute right-0 top-1/2 -translate-y-1/2 z-10 translate-x-4 hidden md:flex" />
+            </Carousel>
+          )}
         </section>
 
         <section className="mt-12 border-t py-12 md:mt-16 lg:mt-20">

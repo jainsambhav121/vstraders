@@ -33,16 +33,20 @@ import { useFirestore } from '@/firebase';
 import { doc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore';
 import { Switch } from '@/components/ui/switch';
 
+const heroSlideSchema = z.object({
+  title: z.string().min(1, "Title is required"),
+  tagline: z.string().min(1, "Tagline is required"),
+  imageUrl: z.string().url({ message: "Please enter a valid URL." }),
+  buttonLink: z.string().min(1, "Button link is required"),
+});
+
 const faqItemSchema = z.object({
   question: z.string().min(1, 'Question cannot be empty.'),
   answer: z.string().min(1, 'Answer cannot be empty.'),
 });
 
 const contentFormSchema = z.object({
-  heroTitle: z.string(),
-  heroTagline: z.string(),
-  heroImageUrl: z.string().url({ message: "Please enter a valid URL." }).or(z.literal('')),
-  heroButtonLink: z.string().or(z.literal('')),
+  heroSlides: z.array(heroSlideSchema).min(1, "Please add at least one hero slide."),
   aboutStory: z.string(),
   aboutMission: z.string(),
   aboutVision: z.string(),
@@ -61,10 +65,7 @@ export default function ContentPage() {
   const form = useForm<z.infer<typeof contentFormSchema>>({
     resolver: zodResolver(contentFormSchema),
     defaultValues: {
-      heroTitle: '',
-      heroTagline: '',
-      heroImageUrl: "",
-      heroButtonLink: "",
+      heroSlides: [],
       aboutStory: ``,
       aboutMission: ``,
       aboutVision: ``,
@@ -82,6 +83,11 @@ export default function ContentPage() {
     control: form.control,
     name: "faqs",
   });
+  
+  const { fields: heroSlideFields, append: appendHeroSlide, remove: removeHeroSlide, replace: replaceHeroSlides } = useFieldArray({
+    control: form.control,
+    name: "heroSlides",
+  });
 
   useEffect(() => {
     const fetchContent = async () => {
@@ -91,17 +97,29 @@ export default function ContentPage() {
 
         if (docSnap.exists()) {
             const data = docSnap.data();
+            // Fallback for old data structure
+            const slides = data.heroSlides || (data.heroTitle ? [{
+                title: data.heroTitle,
+                tagline: data.heroTagline,
+                imageUrl: data.heroImageUrl,
+                buttonLink: data.heroButtonLink,
+            }] : []);
+
             form.reset({
                 ...form.formState.defaultValues,
                 ...data,
+                heroSlides: slides,
             });
             if (data.faqs) {
                 replaceFaqs(data.faqs);
             }
+            if (slides) {
+                replaceHeroSlides(slides);
+            }
         }
     };
     fetchContent();
-  }, [firestore, form, replaceFaqs]);
+  }, [firestore, form, replaceFaqs, replaceHeroSlides]);
 
 
   async function onSubmit(values: z.infer<typeof contentFormSchema>) {
@@ -113,9 +131,13 @@ export default function ContentPage() {
         });
         return;
     }
+    
+    // Remove old hero fields if they exist
+    const { heroTitle, heroTagline, heroImageUrl, heroButtonLink, ...newValues } = values as any;
+
     try {
         const docRef = doc(firestore, 'homepageContent', 'main');
-        await setDoc(docRef, { ...values, updatedAt: serverTimestamp() }, { merge: true });
+        await setDoc(docRef, { ...newValues, updatedAt: serverTimestamp() }, { merge: true });
         toast({
             title: 'Content Updated',
             description: 'Your website content has been successfully updated.',
@@ -159,64 +181,69 @@ export default function ContentPage() {
                     <CardHeader>
                     <CardTitle>Hero Section</CardTitle>
                     <CardDescription>
-                        Manage the main banner on your homepage.
+                        Manage the auto-playing banner slides on your homepage.
                     </CardDescription>
                     </CardHeader>
-                    <CardContent className="space-y-6">
-                        <FormField
-                            control={form.control}
-                            name="heroTitle"
-                            render={({ field }) => (
-                                <FormItem>
-                                <FormLabel>Hero Title</FormLabel>
-                                <FormControl>
-                                    <Input {...field} />
-                                </FormControl>
-                                <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                        <FormField
-                            control={form.control}
-                            name="heroTagline"
-                            render={({ field }) => (
-                                <FormItem>
-                                <FormLabel>Hero Tagline</FormLabel>
-                                <FormControl>
-                                    <Textarea className="min-h-[100px]" {...field} />
-                                </FormControl>
-                                <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                        <FormField
-                            control={form.control}
-                            name="heroImageUrl"
-                            render={({ field }) => (
-                                <FormItem>
-                                <FormLabel>Hero Image URL</FormLabel>
-                                <FormControl>
-                                    <Input placeholder="https://example.com/hero-image.jpg" {...field} />
-                                </FormControl>
-                                <FormDescription>Enter the full URL for the hero banner image.</FormDescription>
-                                <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                        <FormField
-                            control={form.control}
-                            name="heroButtonLink"
-                            render={({ field }) => (
-                                <FormItem>
-                                <FormLabel>Hero Button Link</FormLabel>
-                                <FormControl>
-                                    <Input placeholder="/products" {...field} />
-                                </FormControl>
-                                <FormDescription>Enter the destination URL for the main call-to-action button (e.g., /products).</FormDescription>
-                                <FormMessage />
-                                </FormItem>
-                            )}
-                        />
+                    <CardContent className="space-y-4">
+                        <div className="space-y-4">
+                            {heroSlideFields.map((field, index) => (
+                                <div key={field.id} className="border p-4 rounded-lg space-y-4 relative">
+                                    <h4 className="font-semibold">Slide {index + 1}</h4>
+                                     <FormField
+                                        control={form.control}
+                                        name={`heroSlides.${index}.imageUrl`}
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>Image URL</FormLabel>
+                                                <FormControl><Input placeholder="https://example.com/image.jpg" {...field} /></FormControl>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        <FormField
+                                            control={form.control}
+                                            name={`heroSlides.${index}.title`}
+                                            render={({ field }) => (
+                                                <FormItem>
+                                                    <FormLabel>Title</FormLabel>
+                                                    <FormControl><Input {...field} /></FormControl>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}
+                                        />
+                                        <FormField
+                                            control={form.control}
+                                            name={`heroSlides.${index}.tagline`}
+                                            render={({ field }) => (
+                                                <FormItem>
+                                                    <FormLabel>Tagline</FormLabel>
+                                                    <FormControl><Input {...field} /></FormControl>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}
+                                        />
+                                    </div>
+                                    <FormField
+                                        control={form.control}
+                                        name={`heroSlides.${index}.buttonLink`}
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>Button Link</FormLabel>
+                                                <FormControl><Input placeholder="/products" {...field} /></FormControl>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
+                                    <Button type="button" variant="destructive" size="icon" className="absolute top-2 right-2" onClick={() => removeHeroSlide(index)}>
+                                        <Trash2 className="h-4 w-4" />
+                                    </Button>
+                                </div>
+                            ))}
+                        </div>
+                        <Button type="button" variant="outline" size="sm" className="mt-4" onClick={() => appendHeroSlide({ title: '', tagline: '', imageUrl: '', buttonLink: '' })}>
+                            <PlusCircle className="mr-2 h-4 w-4" /> Add Slide
+                        </Button>
                     </CardContent>
                 </Card>
                 <Card>

@@ -186,8 +186,20 @@
       "description": "Content for the homepage sections.",
       "type": "object",
       "properties": {
-        "heroText": { "type": "string" },
-        "brandTagline": { "type": "string" },
+        "heroSlides": {
+          "type": "array",
+          "description": "A list of slides for the hero carousel.",
+          "items": {
+            "type": "object",
+            "properties": {
+              "title": { "type": "string" },
+              "tagline": { "type": "string" },
+              "imageUrl": { "type": "string", "format": "uri" },
+              "buttonLink": { "type": "string" }
+            },
+            "required": ["title", "tagline", "imageUrl", "buttonLink"]
+          }
+        },
         "saleBannerTitle": { "type": "string" },
         "saleBannerSubtitle": { "type": "string" },
         "saleBannerLink": { "type": "string" },
