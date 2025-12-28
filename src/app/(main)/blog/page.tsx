@@ -92,7 +92,7 @@ export default function BlogPage() {
             </div>
         ) : (
             <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
-            {[...posts].map((post) => (
+            {otherPosts.map((post) => (
                 <BlogPostCard key={post.id} post={post} />
             ))}
             </div>
