@@ -38,6 +38,7 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body
         className={`${openSans.variable} ${playfairDisplay.variable} font-body antialiased`}
+        suppressHydrationWarning={true}
       >
         <ThemeProvider
           attribute="class"
