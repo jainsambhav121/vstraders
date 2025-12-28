@@ -4,10 +4,10 @@ import type { Category, Review, BlogPost } from './types';
 import { Pill, BedDouble, Sofa, Feather } from 'lucide-react';
 
 export const categories: Category[] = [
-  { id: 'cat-1', name: 'Pillows', slug: 'pillows', icon: Pill },
-  { id: 'cat-2', name: 'Mattress', slug: 'mattresses', icon: BedDouble },
-  { id: 'cat-3', name: 'Covers', slug: 'covers', icon: Sofa },
-  { id: 'cat-4', name: 'Cushions', slug: 'cushions', icon: Feather },
+  { id: 'cat-1', name: 'Pillows', slug: 'pillows', icon: Pill, description: 'Foam, Fiber & Quilted Pillows' },
+  { id: 'cat-2', name: 'Mattress', slug: 'mattresses', icon: BedDouble, description: 'Polyurethane, Queen & Folding Mattresses' },
+  { id: 'cat-3', name: 'Covers', slug: 'covers', icon: Sofa, description: 'Mattress & Cushion Covers' },
+  { id: 'cat-4', name: 'Cushions', slug: 'cushions', icon: Feather, description: 'Microfiber & Comfort Cushions' },
 ];
 
 export const reviews: Review[] = [

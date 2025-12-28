@@ -100,7 +100,7 @@ export default function HomePage() {
                 {categories.map((category) => {
                   const Icon = category.icon;
                   return (
-                  <CarouselItem key={category.id} className="basis-1/3">
+                  <CarouselItem key={category.id} className="basis-1/2">
                      <Link
                         href={`/category/${category.slug}`}
                         className="group flex flex-col items-center justify-center gap-2 text-center"
@@ -108,9 +108,10 @@ export default function HomePage() {
                         <div className="flex h-20 w-20 items-center justify-center rounded-full border bg-card transition-all group-hover:bg-primary group-hover:text-primary-foreground">
                           <Icon className="h-8 w-8 text-accent-foreground group-hover:text-primary-foreground" />
                         </div>
-                        <span className="font-semibold text-card-foreground text-sm">
+                        <span className="font-semibold text-card-foreground">
                           {category.name}
                         </span>
+                        <p className="text-xs text-muted-foreground">{category.description}</p>
                       </Link>
                   </CarouselItem>
                   )
@@ -133,6 +134,7 @@ export default function HomePage() {
                 <span className="font-semibold text-card-foreground">
                   {category.name}
                 </span>
+                <p className="text-sm text-muted-foreground">{category.description}</p>
               </Link>
             )})}
           </div>

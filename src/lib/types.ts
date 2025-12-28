@@ -8,6 +8,7 @@ export type Category = {
   name: string;
   slug: string;
   icon: LucideIcon;
+  description: string;
 };
 
 export type ProductImage = {
