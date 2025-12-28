@@ -28,10 +28,10 @@ export default function BlogPostPage() {
   if (loading) {
     return (
         <div className="container mx-auto max-w-4xl px-4 py-8 md:py-12">
-            <Skeleton className="h-6 w-1/2 mb-8" />
-            <Skeleton className="h-96 w-full mb-8" />
-            <Skeleton className="h-10 w-3/4 mb-4" />
-            <Skeleton className="h-6 w-1/3 mb-8" />
+            <Skeleton className="mb-8 h-6 w-1/2" />
+            <Skeleton className="relative mb-8 h-96 w-full" />
+            <Skeleton className="mb-4 h-10 w-3/4" />
+            <Skeleton className="mb-8 h-6 w-1/3" />
             <div className="space-y-4">
                 <Skeleton className="h-4 w-full" />
                 <Skeleton className="h-4 w-full" />
@@ -65,7 +65,7 @@ export default function BlogPostPage() {
       
       <article>
         <header className="mb-8">
-          <div className="relative mb-8 h-64 w-full md:h-96 overflow-hidden rounded-lg">
+          <div className="relative mb-8 h-64 w-full overflow-hidden rounded-lg md:h-96">
              <Image
                 src={post.imageUrl}
                 alt={post.imageAlt}
@@ -91,7 +91,7 @@ export default function BlogPostPage() {
         </header>
 
         <div 
-            className="prose max-w-none text-muted-foreground prose-lg"
+            className="prose prose-lg max-w-none text-muted-foreground"
             dangerouslySetInnerHTML={{ __html: post.content.replace(/\n/g, '<br />') }}
         />
       </article>
