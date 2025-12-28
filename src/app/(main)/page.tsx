@@ -141,9 +141,12 @@ export default function HomePage() {
         </section>
 
         <section className="mt-12 md:mt-16 lg:mt-20">
-          <h2 className="mb-6 text-center font-headline text-3xl font-bold">
+          <h2 className="mb-2 text-center font-headline text-3xl font-bold">
             Featured Products
           </h2>
+          <p className="mb-6 text-center text-muted-foreground max-w-2xl mx-auto">
+            Our best-selling products are trusted by customers across India for their comfort, quality, and affordability. These bedding essentials are ideal for daily home use as well as commercial requirements.
+          </p>
           {loading ? (
               <div className="grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
                 {Array.from({ length: 4 }).map((_, i) => (
