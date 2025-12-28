@@ -35,7 +35,6 @@ import { useEffect } from 'react';
 
 const blogPostSchema = z.object({
   title: z.string().min(2, { message: 'Title must be at least 2 characters.' }),
-  slug: z.string().min(2, { message: 'Slug must be at least 2 characters.' }),
   excerpt: z.string().min(10, { message: 'Excerpt must be at least 10 characters.' }),
   content: z.string().min(20, { message: 'Content must be at least 20 characters.' }),
   imageUrl: z.string().url({ message: 'Please enter a valid URL.' }),
@@ -55,7 +54,6 @@ export default function AddBlogPostPage() {
     resolver: zodResolver(blogPostSchema),
     defaultValues: {
       title: '',
-      slug: '',
       excerpt: '',
       content: '',
       imageUrl: '',
@@ -65,15 +63,6 @@ export default function AddBlogPostPage() {
       seoMetaDescription: '',
     },
   });
-  
-  useEffect(() => {
-    const subscription = form.watch((value, { name }) => {
-      if (name === 'title') {
-        form.setValue('slug', (value.title || '').toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]+/g, ''));
-      }
-    });
-    return () => subscription.unsubscribe();
-  }, [form]);
 
 
   async function onSubmit(values: z.infer<typeof blogPostSchema>) {
@@ -143,13 +132,6 @@ export default function AddBlogPostPage() {
                   <FormItem>
                     <FormLabel>Title</FormLabel>
                     <FormControl><Input placeholder="e.g. My Awesome Blog Post" {...field} /></FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )} />
-                 <FormField control={form.control} name="slug" render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>URL Slug</FormLabel>
-                    <FormControl><Input placeholder="e.g. my-awesome-blog-post" {...field} /></FormControl>
                     <FormMessage />
                   </FormItem>
                 )} />
@@ -236,4 +218,3 @@ export default function AddBlogPostPage() {
     </Form>
   );
 }
-

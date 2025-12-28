@@ -52,7 +52,7 @@ export default function BlogPage() {
           <h2 className="mb-8 text-center font-headline text-3xl font-bold">Featured Posts</h2>
           <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
             {featuredPosts.map((post) => (
-              <Link key={post.id} href={`/blog/${post.slug}`} className="group relative block overflow-hidden rounded-lg">
+              <Link key={post.id} href={`/blog/${post.id}`} className="group relative block overflow-hidden rounded-lg">
                 <Image
                   src={post.imageUrl}
                   alt={post.imageAlt}

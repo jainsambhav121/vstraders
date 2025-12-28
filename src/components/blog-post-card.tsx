@@ -14,7 +14,7 @@ export default function BlogPostCard({ post }: BlogPostCardProps) {
   return (
     <Card className="flex h-full flex-col overflow-hidden">
       <CardHeader className="p-0">
-        <Link href={`/blog/${post.slug}`} className="block aspect-video">
+        <Link href={`/blog/${post.id}`} className="block aspect-video">
           <Image
             src={post.imageUrl}
             alt={post.imageAlt}
@@ -27,7 +27,7 @@ export default function BlogPostCard({ post }: BlogPostCardProps) {
       </CardHeader>
       <CardContent className="flex flex-1 flex-col p-6">
         <CardTitle className="mb-2 text-xl">
-          <Link href={`/blog/${post.slug}`} className="hover:text-primary">
+          <Link href={`/blog/${post.id}`} className="hover:text-primary">
             {post.title}
           </Link>
         </CardTitle>
@@ -37,7 +37,7 @@ export default function BlogPostCard({ post }: BlogPostCardProps) {
         <p className="flex-1 text-muted-foreground">{post.excerpt}</p>
         <div className="mt-4">
           <Button asChild variant="secondary" className="group">
-            <Link href={`/blog/${post.slug}`}>
+            <Link href={`/blog/${post.id}`}>
                 Read More
                 <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
             </Link>

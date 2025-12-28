@@ -36,7 +36,6 @@ import { Skeleton } from '@/components/ui/skeleton';
 
 const blogPostSchema = z.object({
   title: z.string().min(2, { message: 'Title must be at least 2 characters.' }),
-  slug: z.string().min(2, { message: 'Slug must be at least 2 characters.' }),
   excerpt: z.string().min(10, { message: 'Excerpt must be at least 10 characters.' }),
   content: z.string().min(20, { message: 'Content must be at least 20 characters.' }),
   imageUrl: z.string().url({ message: 'Please enter a valid URL.' }),
@@ -57,7 +56,6 @@ export default function EditBlogPostPage() {
     resolver: zodResolver(blogPostSchema),
     defaultValues: {
       title: '',
-      slug: '',
       excerpt: '',
       content: '',
       imageUrl: '',
@@ -79,7 +77,6 @@ export default function EditBlogPostPage() {
             const postData = postSnap.data();
             form.reset({
                 title: postData.title,
-                slug: postData.slug,
                 excerpt: postData.excerpt,
                 content: postData.content,
                 imageUrl: postData.imageUrl,
@@ -185,13 +182,6 @@ export default function EditBlogPostPage() {
                     <FormMessage />
                   </FormItem>
                 )} />
-                 <FormField control={form.control} name="slug" render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>URL Slug</FormLabel>
-                    <FormControl><Input {...field} /></FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )} />
                 <FormField control={form.control} name="excerpt" render={({ field }) => (
                   <FormItem>
                     <FormLabel>Excerpt</FormLabel>
@@ -275,4 +265,3 @@ export default function EditBlogPostPage() {
     </Form>
   );
 }
-

@@ -172,7 +172,6 @@
       "type": "object",
       "properties": {
         "title": { "type": "string" },
-        "slug": { "type": "string" },
         "author": { "type": "string" },
         "excerpt": { "type": "string" },
         "content": { "type": "string" },
@@ -184,7 +183,7 @@
         "seoTitle": { "type": "string" },
         "seoMetaDescription": { "type": "string" }
       },
-      "required": ["title", "slug", "author", "content", "imageUrl"]
+      "required": ["title", "author", "content", "imageUrl"]
     },
     "HomepageContent": {
       "title": "Homepage Content",

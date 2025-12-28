@@ -122,7 +122,6 @@ export type Review = {
 export type BlogPost = {
   id: string;
   title: string;
-  slug: string;
   author: string;
   date: string;
   excerpt: string;
