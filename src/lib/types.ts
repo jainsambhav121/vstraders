@@ -53,6 +53,7 @@ export type Product = {
     isEnabled: boolean;
     isFeatured: boolean;
     isBestSeller: boolean;
+    isNew: boolean;
   };
   seo: {
     slug: string;

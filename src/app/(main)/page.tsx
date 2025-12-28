@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import Image from 'next/image';
@@ -29,7 +30,7 @@ export default function HomePage() {
   const { recentlyViewed } = useRecentlyViewed();
   
   const featuredProducts = products.filter(p => p.status.isFeatured).slice(0, 8);
-  const newArrivals = products.slice(0, 8); 
+  const newArrivals = products.filter(p => p.status.isNew).slice(0, 8);
   const trendingProducts = products.filter(p => p.status.isBestSeller).slice(0, 8);
   const recentlyViewedProducts = products.filter(p => recentlyViewed.includes(p.id));
 

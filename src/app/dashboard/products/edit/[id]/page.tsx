@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -72,6 +73,7 @@ const formSchema = z.object({
   isEnabled: z.boolean().default(true),
   isFeatured: z.boolean().default(false),
   isBestSeller: z.boolean().default(false),
+  isNew: z.boolean().default(false),
   slug: z.string().min(2, { message: 'Slug must be at least 2 characters.' }),
   seoTitle: z.string().optional(),
   seoMetaDescription: z.string().optional(),
@@ -104,6 +106,7 @@ export default function EditProductPage() {
       isEnabled: true,
       isFeatured: false,
       isBestSeller: false,
+      isNew: false,
       slug: '',
       seoTitle: '',
       seoMetaDescription: '',
@@ -131,6 +134,7 @@ export default function EditProductPage() {
         isEnabled: product.status.isEnabled,
         isFeatured: product.status.isFeatured,
         isBestSeller: product.status.isBestSeller,
+        isNew: product.status.isNew || false,
         slug: product.seo.slug,
         seoTitle: product.seo.title,
         seoMetaDescription: product.seo.metaDescription,
@@ -188,6 +192,7 @@ export default function EditProductPage() {
           isEnabled: values.isEnabled,
           isFeatured: values.isFeatured,
           isBestSeller: values.isBestSeller,
+          isNew: values.isNew,
         },
         seo: {
           slug: values.slug,
@@ -580,6 +585,12 @@ export default function EditProductPage() {
                   <FormField control={form.control} name="isBestSeller" render={({ field }) => (
                     <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
                       <div className="space-y-0.5"><FormLabel>Best Seller</FormLabel></div>
+                      <FormControl><Switch checked={field.value} onCheckedChange={field.onChange} /></FormControl>
+                    </FormItem>
+                  )} />
+                   <FormField control={form.control} name="isNew" render={({ field }) => (
+                    <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
+                      <div className="space-y-0.5"><FormLabel>New Product</FormLabel></div>
                       <FormControl><Switch checked={field.value} onCheckedChange={field.onChange} /></FormControl>
                     </FormItem>
                   )} />

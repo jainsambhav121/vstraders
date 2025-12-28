@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import Image from 'next/image';
@@ -18,7 +19,6 @@ type ProductCardProps = {
   product: Product;
 };
 
-// Assuming a fixed free shipping threshold for now
 const FREE_SHIPPING_THRESHOLD = 4000;
 
 export default function ProductCard({ product }: ProductCardProps) {
@@ -29,7 +29,7 @@ export default function ProductCard({ product }: ProductCardProps) {
   const isInWishlist = !!wishlist.find(item => item.id === product.id);
 
   const handleAddToCart = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault(); // prevent navigation
+    e.preventDefault(); 
     addToCart(product);
     toast({
       title: "Added to cart",
@@ -48,15 +48,12 @@ export default function ProductCard({ product }: ProductCardProps) {
     }
   };
   
-  const discountText = product.discount?.value ? (
-    product.discount.type === 'percentage'
-      ? `${product.discount.value}% OFF`
-      : `₹${product.discount.value} OFF`
-  ) : null;
+  const discountAmount = product.basePrice - product.finalPrice;
+  const showDiscount = discountAmount > 0;
 
   return (
-    <Card className="flex h-full flex-col group/card">
-      <CardHeader className="p-0 relative">
+    <Card className="flex h-full flex-col group/card overflow-hidden">
+       <CardHeader className="p-0 relative">
         <Link href={`/products/${product.id}`} className="block">
           <div className="aspect-square overflow-hidden rounded-t-lg">
             <Image
@@ -64,16 +61,27 @@ export default function ProductCard({ product }: ProductCardProps) {
               alt={product.name}
               width={600}
               height={600}
-              className="h-full w-full object-cover transition-transform duration-300 hover:scale-105"
+              className="h-full w-full object-cover transition-transform duration-300 group-hover/card:scale-105"
               data-ai-hint="product image"
             />
           </div>
         </Link>
-        {discountText && (
-            <Badge variant="destructive" className="absolute top-2 left-2">
-                {discountText}
-            </Badge>
-        )}
+        <div className="absolute top-2 left-2 flex flex-col gap-2">
+            {showDiscount && (
+                <Badge variant="destructive">
+                    {product.discount?.type === 'percentage' 
+                        ? `${product.discount.value}% OFF`
+                        : `₹${product.discount?.value} OFF`
+                    }
+                </Badge>
+            )}
+            {product.status.isNew && (
+                <Badge variant="secondary" className="bg-blue-500 text-white">NEW</Badge>
+            )}
+            {product.status.isBestSeller && (
+                <Badge variant="secondary" className="bg-yellow-500 text-white">BESTSELLER</Badge>
+            )}
+        </div>
         <Button 
           variant="secondary" 
           size="icon" 
@@ -110,15 +118,18 @@ export default function ProductCard({ product }: ProductCardProps) {
       </CardContent>
       <CardFooter className="flex items-center justify-between p-4 pt-0">
         <div className="flex flex-col">
-          <p className="text-base font-semibold md:text-lg">₹{product.finalPrice.toFixed(2)}</p>
-          {product.discount && (
-            <p className="text-xs text-muted-foreground line-through">₹{product.basePrice.toFixed(2)}</p>
-          )}
+            <p className="text-base font-semibold md:text-lg">₹{product.finalPrice.toFixed(2)}</p>
+            {showDiscount && (
+                <div className="flex items-center gap-2 text-xs">
+                    <p className="text-muted-foreground line-through">₹{product.basePrice.toFixed(2)}</p>
+                    <p className="font-semibold text-green-600">Save ₹{discountAmount.toFixed(2)}</p>
+                </div>
+            )}
         </div>
         <Button 
           onClick={handleAddToCart} 
           size="sm" 
-          className="shrink-0 w-9 h-9 rounded-full p-0 md:w-auto md:h-9 md:px-3 md:rounded-md"
+          className="shrink-0"
         >
             <ShoppingCart className="h-4 w-4 md:mr-2" />
             <span className="hidden md:inline">Add to Cart</span>

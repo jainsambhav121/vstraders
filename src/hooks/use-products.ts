@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -52,7 +53,7 @@ export function useProducts() {
             videoUrl: data.videoUrl,
             variants: data.variants || [],
             details: data.details || [],
-            status: data.status || { isEnabled: true, isFeatured: false, isBestSeller: false },
+            status: data.status || { isEnabled: true, isFeatured: false, isBestSeller: false, isNew: false },
             seo: data.seo || {},
             rating: data.rating || 0,
             reviewCount: data.reviewCount || 0,
