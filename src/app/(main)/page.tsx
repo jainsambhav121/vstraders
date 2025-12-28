@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { categories } from '@/lib/data';
 import ProductCard from '@/components/product-card';
-import { ArrowRight, Tag, Truck } from 'lucide-react';
+import { ArrowRight, Tag, Truck, Check } from 'lucide-react';
 import {
   Carousel,
   CarouselContent,
@@ -319,6 +319,55 @@ export default function HomePage() {
             </Carousel>
           </section>
         )}
+
+        <section className="mt-12 rounded-lg bg-muted/50 py-12 md:mt-16 lg:mt-20">
+          <div className="container mx-auto px-4">
+            <h2 className="mb-8 text-center font-headline text-3xl font-bold">
+              Why Choose VSTRADER?
+            </h2>
+            <div className="mx-auto grid max-w-4xl grid-cols-1 gap-6 sm:grid-cols-2">
+              <div className="flex items-start gap-4">
+                <Check className="mt-1 h-6 w-6 flex-shrink-0 text-primary" />
+                <div>
+                  <h4 className="font-semibold">Premium quality materials</h4>
+                </div>
+              </div>
+              <div className="flex items-start gap-4">
+                <Check className="mt-1 h-6 w-6 flex-shrink-0 text-primary" />
+                <div>
+                  <h4 className="font-semibold">Affordable pricing without compromise</h4>
+                </div>
+              </div>
+              <div className="flex items-start gap-4">
+                <Check className="mt-1 h-6 w-6 flex-shrink-0 text-primary" />
+                <div>
+                  <h4 className="font-semibold">Suitable for homes, hotels, hostels & PGs</h4>
+                </div>
+              </div>
+              <div className="flex items-start gap-4">
+                <Check className="mt-1 h-6 w-6 flex-shrink-0 text-primary" />
+                <div>
+                  <h4 className="font-semibold">Tested for comfort and durability</h4>
+                </div>
+              </div>
+              <div className="flex items-start gap-4">
+                <Check className="mt-1 h-6 w-6 flex-shrink-0 text-primary" />
+                <div>
+                  <h4 className="font-semibold">Fast delivery across India</h4>
+                </div>
+              </div>
+               <div className="flex items-start gap-4">
+                <Check className="mt-1 h-6 w-6 flex-shrink-0 text-primary" />
+                <div>
+                  <h4 className="font-semibold">Dedicated customer support</h4>
+                </div>
+              </div>
+            </div>
+            <p className="mt-8 text-center text-lg font-medium text-foreground">
+              At VSTRADERS, your comfort is our priority
+            </p>
+          </div>
+        </section>
 
         <section className="mt-12 border-t py-12 md:mt-16 lg:mt-20">
             <div className="grid grid-cols-1 gap-8 text-center md:grid-cols-3">
