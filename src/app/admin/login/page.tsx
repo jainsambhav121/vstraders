@@ -29,7 +29,7 @@ import {
 import { useToast } from '@/hooks/use-toast';
 import { FirebaseError } from 'firebase/app';
 import type { User } from '@/lib/types';
-import { Loader2 } from 'lucide-react';
+import { Loader2, Eye, EyeOff } from 'lucide-react';
 
 const loginSchema = z.object({
   email: z.string().email({ message: 'Please enter a valid email.' }),
@@ -49,6 +49,7 @@ export default function AdminLoginPage() {
   const router = useRouter();
   const { toast } = useToast();
   const [pageMode, setPageMode] = useState<'loading' | 'login' | 'signup'>('loading');
+  const [showPassword, setShowPassword] = useState(false);
 
   useEffect(() => {
     const checkAdmins = async () => {
@@ -229,7 +230,22 @@ export default function AdminLoginPage() {
                   <FormItem>
                     <FormLabel>Password</FormLabel>
                     <FormControl>
-                      <Input type="password" {...field} />
+                      <div className="relative">
+                        <Input type={showPassword ? 'text' : 'password'} {...field} />
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="icon"
+                          className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8"
+                          onClick={() => setShowPassword(!showPassword)}
+                        >
+                          {showPassword ? (
+                            <EyeOff className="h-4 w-4" />
+                          ) : (
+                            <Eye className="h-4 w-4" />
+                          )}
+                        </Button>
+                      </div>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
