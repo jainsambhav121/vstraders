@@ -37,6 +37,7 @@
     --sidebar-border: 240 4% 25%;
     --sidebar-ring: 240 4% 59%;
     --radius: 1rem;
+    font-size: 20px;
   }
  
   .dark {
