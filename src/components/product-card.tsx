@@ -17,11 +17,12 @@ import { Badge } from './ui/badge';
 
 type ProductCardProps = {
   product: Product;
+  className?: string;
 };
 
 const FREE_SHIPPING_THRESHOLD = 4000;
 
-export default function ProductCard({ product }: ProductCardProps) {
+export default function ProductCard({ product, className }: ProductCardProps) {
   const { addToCart } = useCart();
   const { toast } = useToast();
   const { wishlist, addToWishlist, removeFromWishlist } = useWishlist();
@@ -30,6 +31,7 @@ export default function ProductCard({ product }: ProductCardProps) {
 
   const handleAddToCart = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault(); 
+    e.stopPropagation();
     addToCart(product);
     toast({
       title: "Added to cart",
@@ -39,6 +41,7 @@ export default function ProductCard({ product }: ProductCardProps) {
 
   const handleWishlistToggle = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
+    e.stopPropagation();
     if (isInWishlist) {
       removeFromWishlist(product.id);
       toast({ title: 'Removed from wishlist' });
@@ -52,89 +55,87 @@ export default function ProductCard({ product }: ProductCardProps) {
   const showDiscount = discountAmount > 0;
 
   return (
-    <Card className="flex h-full flex-col group/card overflow-hidden">
-       <CardHeader className="p-0 relative">
-        <Link href={`/products/${product.id}`} className="block">
-          <div className="aspect-square overflow-hidden rounded-t-lg">
-            <Image
-              src={product.primaryImage || 'https://placehold.co/600x600'}
-              alt={product.name}
-              width={600}
-              height={600}
-              className="h-full w-full object-cover transition-transform duration-300 group-hover/card:scale-105"
-              data-ai-hint="product image"
-            />
+    <Link href={`/products/${product.id}`} className="h-full block group/card">
+      <Card className={cn("flex h-full flex-col overflow-hidden transition-shadow duration-300 group-hover/card:shadow-lg", className)}>
+        <CardHeader className="p-0 relative">
+            <div className="aspect-square overflow-hidden rounded-t-lg">
+              <Image
+                src={product.primaryImage || 'https://placehold.co/600x600'}
+                alt={product.name}
+                width={600}
+                height={600}
+                className="h-full w-full object-cover transition-transform duration-300 group-hover/card:scale-105"
+                data-ai-hint="product image"
+              />
+            </div>
+          <div className="absolute top-2 left-2 flex flex-col gap-2">
+              {showDiscount && (
+                  <Badge variant="destructive">
+                      {product.discount?.type === 'percentage' 
+                          ? `${product.discount.value}% OFF`
+                          : `₹${product.discount?.value} OFF`
+                      }
+                  </Badge>
+              )}
+              {product.status.isNew && (
+                  <Badge variant="secondary" className="bg-blue-500 text-white">NEW</Badge>
+              )}
+              {product.status.isBestSeller && (
+                  <Badge variant="secondary" className="bg-yellow-500 text-white">BESTSELLER</Badge>
+              )}
           </div>
-        </Link>
-        <div className="absolute top-2 left-2 flex flex-col gap-2">
-            {showDiscount && (
-                <Badge variant="destructive">
-                    {product.discount?.type === 'percentage' 
-                        ? `${product.discount.value}% OFF`
-                        : `₹${product.discount?.value} OFF`
-                    }
-                </Badge>
-            )}
-            {product.status.isNew && (
-                <Badge variant="secondary" className="bg-blue-500 text-white">NEW</Badge>
-            )}
-            {product.status.isBestSeller && (
-                <Badge variant="secondary" className="bg-yellow-500 text-white">BESTSELLER</Badge>
-            )}
-        </div>
-        <Button 
-          variant="secondary" 
-          size="icon" 
-          className="absolute top-2 right-2 h-8 w-8 rounded-full opacity-0 group-hover/card:opacity-100 transition-opacity"
-          onClick={handleWishlistToggle}
-          aria-label="Toggle Wishlist"
-        >
-          <Heart className={cn("h-4 w-4", isInWishlist ? "fill-red-500 text-red-500" : "text-muted-foreground")} />
-        </Button>
-      </CardHeader>
-      <CardContent className="flex-1 p-4">
-        <CardTitle className="mb-1 text-sm md:text-base leading-tight md:leading-tight">
-          <Link href={`/products/${product.id}`} className="hover:text-primary">
-            {product.name}
-          </Link>
-        </CardTitle>
-        <div className="flex items-center gap-2">
-            <div className="flex items-center">
-                {[...Array(5)].map((_, i) => (
-                    <Star
-                        key={i}
-                        className={`h-4 w-4 ${i < Math.floor(product.rating) ? 'fill-yellow-400 text-yellow-400' : 'fill-muted stroke-muted-foreground'}`}
-                    />
-                ))}
-            </div>
-            <span className="text-sm text-muted-foreground">({product.reviewCount})</span>
-        </div>
-         {product.finalPrice > FREE_SHIPPING_THRESHOLD && (
-            <div className="mt-2 flex items-center gap-1 text-xs text-green-600">
-                <Truck className="h-4 w-4" />
-                <span>Free Shipping</span>
-            </div>
-        )}
-      </CardContent>
-      <CardFooter className="flex items-center justify-between p-4 pt-0">
-        <div className="flex flex-col">
-            <p className="text-base font-semibold md:text-lg">₹{product.finalPrice.toFixed(2)}</p>
-            {showDiscount && (
-                <div className="flex items-center gap-2 text-xs">
-                    <p className="text-muted-foreground line-through">₹{product.basePrice.toFixed(2)}</p>
-                    <p className="font-semibold text-green-600">Save ₹{discountAmount.toFixed(2)}</p>
-                </div>
-            )}
-        </div>
-        <Button 
-          onClick={handleAddToCart} 
-          size="sm" 
-          className="shrink-0"
-        >
-            <ShoppingCart className="h-4 w-4 md:mr-2" />
-            <span className="hidden md:inline">Add to Cart</span>
-        </Button>
-      </CardFooter>
-    </Card>
+          <Button 
+            variant="secondary" 
+            size="icon" 
+            className="absolute top-2 right-2 h-8 w-8 rounded-full opacity-0 group-hover/card:opacity-100 transition-opacity"
+            onClick={handleWishlistToggle}
+            aria-label="Toggle Wishlist"
+          >
+            <Heart className={cn("h-4 w-4", isInWishlist ? "fill-red-500 text-red-500" : "text-muted-foreground")} />
+          </Button>
+        </CardHeader>
+        <CardContent className="flex-1 p-4">
+          <CardTitle className="mb-1 text-sm md:text-base leading-tight md:leading-tight group-hover/card:text-primary">
+              {product.name}
+          </CardTitle>
+          <div className="flex items-center gap-2">
+              <div className="flex items-center">
+                  {[...Array(5)].map((_, i) => (
+                      <Star
+                          key={i}
+                          className={`h-4 w-4 ${i < Math.floor(product.rating) ? 'fill-yellow-400 text-yellow-400' : 'fill-muted stroke-muted-foreground'}`}
+                      />
+                  ))}
+              </div>
+              <span className="text-sm text-muted-foreground">({product.reviewCount})</span>
+          </div>
+          {product.finalPrice > FREE_SHIPPING_THRESHOLD && (
+              <div className="mt-2 flex items-center gap-1 text-xs text-green-600">
+                  <Truck className="h-4 w-4" />
+                  <span>Free Shipping</span>
+              </div>
+          )}
+        </CardContent>
+        <CardFooter className="flex items-center justify-between p-4 pt-0">
+          <div className="flex flex-col">
+              <p className="text-base font-semibold md:text-lg">₹{product.finalPrice.toFixed(2)}</p>
+              {showDiscount && (
+                  <div className="flex items-center gap-2 text-xs">
+                      <p className="text-muted-foreground line-through">₹{product.basePrice.toFixed(2)}</p>
+                      <p className="font-semibold text-green-600">Save ₹{discountAmount.toFixed(2)}</p>
+                  </div>
+              )}
+          </div>
+          <Button 
+            onClick={handleAddToCart} 
+            size="sm" 
+            className="shrink-0"
+          >
+              <ShoppingCart className="h-4 w-4 md:mr-2" />
+              <span className="hidden md:inline">Add to Cart</span>
+          </Button>
+        </CardFooter>
+      </Card>
+    </Link>
   );
 }

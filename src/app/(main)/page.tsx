@@ -100,7 +100,7 @@ export default function HomePage() {
                 {categories.map((category) => {
                   const Icon = category.icon;
                   return (
-                    <CarouselItem key={category.id} className="basis-1/3 p-2">
+                    <CarouselItem key={category.id} className="basis-1/2 p-2 sm:basis-1/3">
                       <Link
                         href={`/category/${category.slug}`}
                         className="group flex flex-col items-center justify-center gap-2 text-center"
@@ -165,8 +165,8 @@ export default function HomePage() {
               <CarouselContent>
                 {featuredProducts.map((product) => (
                   <CarouselItem key={product.id} className="basis-1/2 md:basis-1/3 lg:basis-1/4">
-                    <div className="p-1">
-                      <ProductCard product={product} />
+                    <div className="p-1 h-full">
+                      <ProductCard product={product} className="h-full" />
                     </div>
                   </CarouselItem>
                 ))}
@@ -248,8 +248,8 @@ export default function HomePage() {
               <CarouselContent>
                 {trendingProducts.map((product) => (
                   <CarouselItem key={product.id} className="basis-1/2 md:basis-1/3 lg:basis-1/4">
-                    <div className="p-1">
-                      <ProductCard product={product} />
+                    <div className="p-1 h-full">
+                       <ProductCard product={product} className="h-full" />
                     </div>
                   </CarouselItem>
                 ))}
@@ -286,8 +286,8 @@ export default function HomePage() {
               <CarouselContent>
                 {newArrivals.map((product) => (
                   <CarouselItem key={product.id} className="basis-1/2 md:basis-1/3 lg:basis-1/4">
-                    <div className="p-1">
-                      <ProductCard product={product} />
+                     <div className="p-1 h-full">
+                       <ProductCard product={product} className="h-full" />
                     </div>
                   </CarouselItem>
                 ))}
@@ -307,8 +307,8 @@ export default function HomePage() {
               <CarouselContent>
                 {recentlyViewedProducts.map((product) => (
                   <CarouselItem key={product.id} className="basis-1/2 md:basis-1/3 lg:basis-1/4">
-                    <div className="p-1">
-                      <ProductCard product={product} />
+                     <div className="p-1 h-full">
+                       <ProductCard product={product} className="h-full" />
                     </div>
                   </CarouselItem>
                 ))}
@@ -390,5 +390,4 @@ export default function HomePage() {
       </div>
     </div>
   );
-
-    
+}
