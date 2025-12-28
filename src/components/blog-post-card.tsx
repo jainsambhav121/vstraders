@@ -4,6 +4,7 @@ import type { BlogPost } from '@/lib/types';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { ArrowRight } from 'lucide-react';
+import { Button } from './ui/button';
 
 type BlogPostCardProps = {
   post: BlogPost;
@@ -35,10 +36,12 @@ export default function BlogPostCard({ post }: BlogPostCardProps) {
         </p>
         <p className="flex-1 text-muted-foreground">{post.excerpt}</p>
         <div className="mt-4">
-          <Link href={`/blog/${post.slug}`} className="group inline-flex items-center font-semibold text-primary">
-            Read More
-            <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
-          </Link>
+          <Button asChild variant="secondary" className="group">
+            <Link href={`/blog/${post.slug}`}>
+                Read More
+                <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+            </Link>
+          </Button>
         </div>
       </CardContent>
     </Card>
