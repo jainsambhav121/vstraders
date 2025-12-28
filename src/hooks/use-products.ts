@@ -49,6 +49,7 @@ export function useProducts() {
             stock: data.stock,
             images: data.images || [],
             primaryImage: data.primaryImage,
+            videoUrl: data.videoUrl,
             variants: data.variants || [],
             details: data.details || [],
             status: data.status || { isEnabled: true, isFeatured: false, isBestSeller: false },

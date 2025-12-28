@@ -55,6 +55,7 @@ const formSchema = z.object({
   stock: z.coerce.number().int().min(0),
   images: z.array(z.object({ url: z.string().url({ message: 'Please enter a valid URL.' }) })).min(1, 'Please add at least one image.'),
   primaryImageIndex: z.coerce.number().int().min(0),
+  videoUrl: z.string().url({ message: "Please enter a valid URL." }).optional().or(z.literal('')),
   variants: z.array(z.object({
     id: z.string(),
     size: z.string().optional(),
@@ -97,6 +98,7 @@ export default function EditProductPage() {
       stock: 0,
       images: [{ url: '' }],
       primaryImageIndex: 0,
+      videoUrl: '',
       variants: [],
       details: [],
       isEnabled: true,
@@ -123,6 +125,7 @@ export default function EditProductPage() {
         stock: product.stock,
         images: product.images.map(url => ({ url })),
         primaryImageIndex: primaryImageIndex === -1 ? 0 : primaryImageIndex,
+        videoUrl: product.videoUrl || '',
         variants: product.variants,
         details: product.details || [],
         isEnabled: product.status.isEnabled,
@@ -169,6 +172,7 @@ export default function EditProductPage() {
         stock: values.stock,
         images: values.images.map(img => img.url),
         primaryImage: values.images[values.primaryImageIndex]?.url,
+        videoUrl: values.videoUrl,
         variants: values.variants.map(v => {
           const variant: any = { ...v, stock: Number(v.stock) };
           if (v.price != null) {
@@ -352,53 +356,68 @@ export default function EditProductPage() {
 
             <Card>
               <CardHeader>
-                <CardTitle>Images</CardTitle>
-                <CardDescription>Update images for your product. The first image will be the primary one.</CardDescription>
+                <CardTitle>Media</CardTitle>
+                <CardDescription>Update images and video for your product.</CardDescription>
               </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  {imageFields.map((field, index) => (
-                    <div key={field.id} className="flex items-center gap-4">
-                       <Image
-                        src={form.watch(`images.${index}.url`) || "https://placehold.co/80x80"}
-                        alt={product.name}
-                        width={80}
-                        height={80}
-                        className="aspect-square rounded-md object-cover"
-                      />
-                      <FormField
-                        control={form.control}
-                        name={`images.${index}.url`}
-                        render={({ field }) => (
-                          <FormItem className="flex-1">
-                            <FormControl><Input placeholder="https://example.com/image.jpg" {...field} /></FormControl>
-                            <FormMessage />
-                          </FormItem>
+              <CardContent className="space-y-6">
+                 <div>
+                    <FormLabel>Images</FormLabel>
+                    <FormDescription className="mb-2">The first image will be the primary one.</FormDescription>
+                    <div className="space-y-4">
+                    {imageFields.map((field, index) => (
+                        <div key={field.id} className="flex items-center gap-4">
+                        <Image
+                            src={form.watch(`images.${index}.url`) || "https://placehold.co/80x80"}
+                            alt={product.name}
+                            width={80}
+                            height={80}
+                            className="aspect-square rounded-md object-cover"
+                        />
+                        <FormField
+                            control={form.control}
+                            name={`images.${index}.url`}
+                            render={({ field }) => (
+                            <FormItem className="flex-1">
+                                <FormControl><Input placeholder="https://example.com/image.jpg" {...field} /></FormControl>
+                                <FormMessage />
+                            </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={form.control}
+                            name="primaryImageIndex"
+                            render={({ field }) => (
+                            <FormItem className="flex items-center space-x-2">
+                                <FormControl>
+                                    <input type="radio" {...field} value={index} checked={Number(field.value) === index} onChange={() => field.onChange(index)} className="form-radio h-4 w-4 text-primary focus:ring-primary"/>
+                                </FormControl>
+                                <FormLabel className="text-sm font-medium">Primary</FormLabel>
+                            </FormItem>
+                            )}
+                        />
+                        {imageFields.length > 1 && (
+                            <Button type="button" variant="destructive" size="icon" onClick={() => removeImage(index)}>
+                            <Trash2 className="h-4 w-4" />
+                            </Button>
                         )}
-                      />
-                      <FormField
-                        control={form.control}
-                        name="primaryImageIndex"
-                        render={({ field }) => (
-                          <FormItem className="flex items-center space-x-2">
-                             <FormControl>
-                                <input type="radio" {...field} value={index} checked={Number(field.value) === index} onChange={() => field.onChange(index)} className="form-radio h-4 w-4 text-primary focus:ring-primary"/>
-                            </FormControl>
-                            <FormLabel className="text-sm font-medium">Primary</FormLabel>
-                          </FormItem>
-                        )}
-                      />
-                      {imageFields.length > 1 && (
-                        <Button type="button" variant="destructive" size="icon" onClick={() => removeImage(index)}>
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
-                      )}
+                        </div>
+                    ))}
+                    <Button type="button" variant="outline" size="sm" onClick={() => appendImage({ url: '' })}>
+                        <PlusCircle className="mr-2 h-4 w-4" /> Add Image
+                    </Button>
                     </div>
-                  ))}
-                   <Button type="button" variant="outline" size="sm" onClick={() => appendImage({ url: '' })}>
-                    <PlusCircle className="mr-2 h-4 w-4" /> Add Image
-                  </Button>
                 </div>
+                <FormField
+                    control={form.control}
+                    name="videoUrl"
+                    render={({ field }) => (
+                    <FormItem>
+                        <FormLabel>Product Video URL</FormLabel>
+                        <FormControl><Input placeholder="https://www.youtube.com/watch?v=..." {...field} value={field.value || ''} /></FormControl>
+                        <FormMessage />
+                    </FormItem>
+                    )}
+                />
               </CardContent>
             </Card>
 

@@ -46,6 +46,7 @@ export type Product = {
   stock: number;
   images: ProductImage[];
   primaryImage: string;
+  videoUrl?: string;
   specifications: ProductSpecification[];
   variants: ProductVariant[];
   status: {

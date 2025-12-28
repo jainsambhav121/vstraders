@@ -6,7 +6,7 @@ import { notFound, useParams } from 'next/navigation';
 import { useProducts } from '@/hooks/use-products';
 import { reviews } from '@/lib/data';
 import { Button } from '@/components/ui/button';
-import { Star, Truck, CheckCircle, ShieldCheck, Plus, Minus, Heart } from 'lucide-react';
+import { Star, Truck, CheckCircle, ShieldCheck, Plus, Minus, Heart, Share2, Video } from 'lucide-react';
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -31,6 +31,11 @@ import { cn } from '@/lib/utils';
 import { useWishlist } from '@/context/wishlist-context';
 import { useRecentlyViewed } from '@/context/recently-viewed-context';
 
+type ActiveMedia = {
+    type: 'image' | 'video';
+    url: string;
+}
+
 export default function ProductDetailPage() {
   const params = useParams();
   const { id } = params;
@@ -42,7 +47,7 @@ export default function ProductDetailPage() {
 
   const [selectedVariant, setSelectedVariant] = useState<ProductVariant | null>(null);
   const [quantity, setQuantity] = useState(1);
-  const [activeImage, setActiveImage] = useState<string | undefined>(undefined);
+  const [activeMedia, setActiveMedia] = useState<ActiveMedia | null>(null);
 
 
   const product = products.find((p) => p.id === id);
@@ -64,7 +69,8 @@ export default function ProductDetailPage() {
         } else {
             setSelectedVariant(null);
         }
-        setActiveImage(product.primaryImage || (product.images.length > 0 ? product.images[0] : 'https://placehold.co/800x800'));
+        const initialImage = product.primaryImage || (product.images.length > 0 ? product.images[0] : 'https://placehold.co/800x800');
+        setActiveMedia({type: 'image', url: initialImage});
     }
   }, [product]);
 
@@ -163,6 +169,38 @@ export default function ProductDetailPage() {
     }
   };
 
+  const handleShare = async () => {
+    const shareData = {
+      title: product.name,
+      text: `Check out this product: ${product.name}`,
+      url: window.location.href,
+    };
+    try {
+      if (navigator.share) {
+        await navigator.share(shareData);
+      } else {
+        await navigator.clipboard.writeText(window.location.href);
+        toast({ title: "Link Copied", description: "Product link copied to clipboard." });
+      }
+    } catch (error) {
+      console.error('Share error:', error);
+      toast({ variant: 'destructive', title: "Share Failed", description: "Could not share the product." });
+    }
+  };
+
+  const getYoutubeEmbedUrl = (url: string) => {
+    if (!url) return null;
+    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+    const match = url.match(regExp);
+
+    if (match && match[2].length == 11) {
+        return 'https://www.youtube.com/embed/' + match[2] + '?autoplay=1';
+    }
+    return null;
+  }
+  
+  const videoEmbedUrl = getYoutubeEmbedUrl(product.videoUrl || '');
+
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -185,23 +223,38 @@ export default function ProductDetailPage() {
       <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:gap-12">
         <div>
            <div className="aspect-square w-full overflow-hidden rounded-lg border">
-               <Image
-                  src={activeImage || 'https://placehold.co/800x800'}
-                  alt={product.name}
-                  width={800}
-                  height={800}
-                  className="h-full w-full object-cover"
-                  data-ai-hint="product image"
+               {activeMedia?.type === 'image' ? (
+                <Image
+                    src={activeMedia.url || 'https://placehold.co/800x800'}
+                    alt={product.name}
+                    width={800}
+                    height={800}
+                    className="h-full w-full object-cover"
+                    data-ai-hint="product image"
+                    priority
                 />
+               ) : activeMedia?.type === 'video' && videoEmbedUrl ? (
+                <iframe
+                    width="100%"
+                    height="100%"
+                    src={videoEmbedUrl}
+                    title="Product video player"
+                    frameBorder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen>
+                </iframe>
+               ) : (
+                 <div className="h-full w-full bg-muted flex items-center justify-center text-muted-foreground">Invalid video URL</div>
+               )}
            </div>
            <div className="mt-4 grid grid-cols-5 gap-4">
                 {product.images.map((image, index) => (
                     <button
                         key={index}
-                        onClick={() => setActiveImage(image)}
+                        onClick={() => setActiveMedia({type: 'image', url: image})}
                         className={cn(
                             "overflow-hidden rounded-lg border-2 aspect-square",
-                            activeImage === image ? 'border-primary' : 'border-transparent'
+                            activeMedia?.type === 'image' && activeMedia.url === image ? 'border-primary' : 'border-transparent'
                         )}
                     >
                         <Image
@@ -213,6 +266,17 @@ export default function ProductDetailPage() {
                         />
                     </button>
                 ))}
+                {product.videoUrl && (
+                    <button
+                        onClick={() => setActiveMedia({type: 'video', url: product.videoUrl || ''})}
+                        className={cn(
+                            "overflow-hidden rounded-lg border-2 aspect-square flex items-center justify-center bg-muted",
+                            activeMedia?.type === 'video' ? 'border-primary' : 'border-transparent'
+                        )}
+                    >
+                       <Video className="h-8 w-8 text-muted-foreground" />
+                    </button>
+                )}
             </div>
         </div>
 
@@ -277,6 +341,9 @@ export default function ProductDetailPage() {
             <Button size="lg" className="flex-1" onClick={handleAddToCart}>Add to Cart</Button>
             <Button variant="outline" size="icon" onClick={handleWishlistToggle} aria-label="Toggle Wishlist">
               <Heart className={cn("h-5 w-5", isInWishlist && "fill-red-500 text-red-500")} />
+            </Button>
+            <Button variant="outline" size="icon" onClick={handleShare} aria-label="Share Product">
+              <Share2 className="h-5 w-5" />
             </Button>
           </div>
 

@@ -51,6 +51,11 @@
             "required": ["url", "isPrimary"]
           }
         },
+        "videoUrl": {
+          "type": "string",
+          "format": "uri",
+          "description": "A URL for a product video."
+        },
         "variants": {
           "type": "array",
           "description": "Different versions of the product (e.g., by size, color).",
