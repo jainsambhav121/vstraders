@@ -51,6 +51,11 @@
             "required": ["url", "isPrimary"]
           }
         },
+        "videoUrl": {
+          "type": "string",
+          "format": "uri",
+          "description": "A URL for a product video."
+        },
         "variants": {
           "type": "array",
           "description": "Different versions of the product (e.g., by size, color).",
@@ -161,13 +166,45 @@
       },
       "required": ["question", "answer"]
     },
+     "BlogPost": {
+      "title": "Blog Post",
+      "description": "Represents a single blog post or article.",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "slug": { "type": "string" },
+        "author": { "type": "string" },
+        "excerpt": { "type": "string" },
+        "content": { "type": "string" },
+        "imageUrl": { "type": "string", "format": "uri" },
+        "imageAlt": { "type": "string" },
+        "featured": { "type": "boolean" },
+        "publishedAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" },
+        "seoTitle": { "type": "string" },
+        "seoMetaDescription": { "type": "string" }
+      },
+      "required": ["title", "slug", "author", "content", "imageUrl"]
+    },
     "HomepageContent": {
       "title": "Homepage Content",
       "description": "Content for the homepage sections.",
       "type": "object",
       "properties": {
-        "heroText": { "type": "string" },
-        "brandTagline": { "type": "string" },
+        "heroSlides": {
+          "type": "array",
+          "description": "A list of slides for the hero carousel.",
+          "items": {
+            "type": "object",
+            "properties": {
+              "title": { "type": "string" },
+              "tagline": { "type": "string" },
+              "imageUrl": { "type": "string", "format": "uri" },
+              "buttonLink": { "type": "string" }
+            },
+            "required": ["title", "tagline", "imageUrl", "buttonLink"]
+          }
+        },
         "saleBannerTitle": { "type": "string" },
         "saleBannerSubtitle": { "type": "string" },
         "saleBannerLink": { "type": "string" },
@@ -244,6 +281,10 @@
     "/banners/{bannerId}": {
       "schema": { "$ref": "#/entities/Banner" },
       "description": "Stores homepage banners."
+    },
+    "/blogPosts/{postId}": {
+      "schema": { "$ref": "#/entities/BlogPost" },
+      "description": "Stores individual blog posts."
     },
     "/homepageContent/main": {
       "schema": { "$ref": "#/entities/HomepageContent" },

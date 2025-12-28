@@ -1,0 +1,59 @@
+
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isOwner(userId) {
+      return request.auth.uid == userId;
+    }
+
+    function isAdmin() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+
+    function isManager() {
+        return get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'manager';
+    }
+
+    match /users/{userId} {
+      allow read: if true;
+      allow write: if isOwner(userId) || isAdmin();
+    }
+
+    match /products/{productId} {
+      allow read: if true;
+      allow write: if isAdmin() || isManager();
+    }
+    
+    match /orders/{orderId} {
+        allow read, write: if isAdmin() || isManager();
+        allow create: if request.auth != null;
+    }
+
+    match /banners/{bannerId} {
+        allow read: if true;
+        allow write: if isAdmin() || isManager();
+    }
+
+    match /blogPosts/{postId} {
+        allow read: if true;
+        allow write: if isAdmin() || isManager();
+    }
+
+    match /homepageContent/main {
+        allow read: if true;
+        allow write: if isAdmin() || isManager();
+    }
+    
+    match /settings/main {
+        allow read: if true;
+        allow write: if isAdmin() || isManager();
+    }
+    
+    match /subscriptions/{subscriptionId} {
+      allow read, write: if isAdmin() || isManager();
+      allow create: if true;
+    }
+  }
+}

@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import Link from 'next/link';
@@ -62,6 +63,9 @@ export function SidebarNav() {
   };
 
   const isActive = (href: string) => {
+    if (href === '/dashboard') {
+        return pathname === href;
+    }
     return pathname.startsWith(href);
   };
 

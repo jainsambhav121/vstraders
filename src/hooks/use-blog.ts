@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -27,12 +28,16 @@ export function useBlogPosts() {
       (snapshot) => {
         const postsData: BlogPost[] = snapshot.docs.map((doc) => {
           const data = doc.data();
+          const publishedAt = data.publishedAt instanceof Timestamp 
+              ? data.publishedAt.toDate() 
+              : new Date();
+              
           return {
             id: doc.id,
             title: data.title,
             slug: data.slug,
             author: data.author,
-            date: data.publishedAt instanceof Timestamp ? data.publishedAt.toDate().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : 'N/A',
+            date: publishedAt.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }),
             excerpt: data.excerpt,
             content: data.content,
             imageUrl: data.imageUrl,
