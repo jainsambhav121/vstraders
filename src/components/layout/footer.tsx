@@ -61,7 +61,7 @@ export default function Footer() {
             <Store className="h-6 w-6 text-primary" />
             <span>VSTRADERS</span>
           </Link>
-          <p>Your one-stop shop for the latest and greatest products.</p>
+          <p>VSTRADERS is a trusted manufacturer and supplier of premium mattresses, pillows, cushions, and foam products in India. We specialize in PU foam mattresses, memory foam pillows, microfiber cushions, sofa cum beds, and custom comfort solutions for homes.</p>
           <div className="flex space-x-4">
             <Link href="#" aria-label="Twitter">
               <Twitter className="h-6 w-6 transition-colors hover:text-primary" />
