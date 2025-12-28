@@ -7,8 +7,28 @@ import { useFirestore } from '@/firebase';
 import { errorEmitter } from '@/firebase/error-emitter';
 import { FirestorePermissionError } from '@/firebase/errors';
 
+// Define a type for your settings for better type safety
+export type Settings = {
+    storeName: string;
+    supportEmail: string;
+    twitterUrl: string;
+    facebookUrl: string;
+    instagramUrl: string;
+    freeShippingThreshold: number;
+    flatRate: number;
+    allowCod: boolean;
+    stripeApiKey: string;
+    razorpayApiKey: string;
+    metaTitle: string;
+    metaDescription: string;
+    metaKeywords: string;
+    shippingPolicy: string;
+    privacyPolicy: string;
+    termsAndConditions: string;
+}
+
 export function useSettings() {
-  const [settings, setSettings] = useState<DocumentData | null>(null);
+  const [settings, setSettings] = useState<Settings | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
   const firestore = useFirestore();
@@ -24,7 +44,7 @@ export function useSettings() {
       docRef,
       (docSnap) => {
         if (docSnap.exists()) {
-          setSettings(docSnap.data());
+          setSettings(docSnap.data() as Settings);
         } else {
           setSettings(null);
         }
