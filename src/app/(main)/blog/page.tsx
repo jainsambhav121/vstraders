@@ -44,8 +44,8 @@ export default function BlogPage() {
 
       {loading ? (
         <div className="mb-16 grid grid-cols-1 gap-8 md:grid-cols-2">
-            <Skeleton className="h-80 w-full" />
-            <Skeleton className="h-80 w-full" />
+            <Skeleton className="h-80 w-full rounded-lg" />
+            <Skeleton className="h-80 w-full rounded-lg" />
         </div>
       ) : featuredPosts.length > 0 && (
         <section className="mb-16">
@@ -81,7 +81,7 @@ export default function BlogPage() {
             <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
                 {Array.from({length: 3}).map((_, i) => (
                     <div key={i} className="space-y-4">
-                        <Skeleton className="aspect-video w-full" />
+                        <Skeleton className="aspect-video w-full rounded-lg" />
                         <div className="space-y-2">
                             <Skeleton className="h-6 w-3/4" />
                             <Skeleton className="h-4 w-1/2" />
