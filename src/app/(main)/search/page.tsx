@@ -32,11 +32,10 @@ import {
 import { Button } from '@/components/ui/button';
 import { Filter, SortAsc } from 'lucide-react';
 import { categories } from '@/lib/data';
-import type { Product } from '@/lib/types';
 import { useRecentlyViewed } from '@/context/recently-viewed-context';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
 
-type SortOption = 'price-asc' | 'price-desc' | 'name-asc' | 'name-desc';
+type SortOption = 'name-asc' | 'name-desc' | 'price-asc' | 'price-desc';
 
 export default function SearchPage() {
   const searchParams = useSearchParams();

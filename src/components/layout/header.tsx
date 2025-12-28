@@ -26,7 +26,6 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog"
 import { Badge } from '@/components/ui/badge';
 import { MobileLink } from './mobile-link';
@@ -43,6 +42,13 @@ import { doc, getDoc } from 'firebase/firestore';
 import React, { useEffect, useState, useRef } from 'react';
 import { Separator } from '../ui/separator';
 import { useCart } from '@/context/cart-context';
+
+declare global {
+  interface Window {
+    SpeechRecognition: any;
+    webkitSpeechRecognition: any;
+  }
+}
 
 const navLinks = [
   { href: '/', label: 'Home' },
@@ -114,15 +120,16 @@ export default function Header() {
         setIsListening(true);
     }
     
-    recognition.onresult = (event) => {
+    recognition.onresult = (event: any) => {
       const transcript = event.results[0][0].transcript;
       setSearchQuery(transcript);
       router.push(`/search?q=${transcript}`);
       setIsSearchDialogOpen(false);
     };
 
-    recognition.onerror = (event) => {
+    recognition.onerror = (event: any) => {
       console.error('Voice recognition error', event.error);
+       setIsListening(false);
     };
 
     recognition.onend = () => {
