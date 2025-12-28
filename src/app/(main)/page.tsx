@@ -52,29 +52,27 @@ export default function HomePage() {
           >
             <CarouselContent>
               {heroSlides.map((slide, index) => (
-                <CarouselItem key={index}>
-                   <Link href={slide.buttonLink || "/products"} className="relative h-[50vh] min-h-[400px] w-full block group">
-                      <Image
-                        src={slide.imageUrl || "https://picsum.photos/seed/hero/1800/800"}
-                        alt={slide.title || "Promotional banner"}
-                        fill
-                        className="object-cover"
-                        priority={index === 0}
-                        data-ai-hint="promotional banner"
-                      />
-                      <div className="absolute inset-0 bg-black/30" />
-                      <div className="relative z-10 flex h-full flex-col items-center justify-center text-center text-white">
-                        <h1 className="font-headline text-4xl font-bold md:text-5xl lg:text-6xl animate-in fade-in slide-in-from-bottom-4 duration-1000">
-                          {slide.title || 'Discover Your Style'}
-                        </h1>
-                        <p className="mt-4 max-w-2xl text-lg text-primary-foreground/90 animate-in fade-in slide-in-from-bottom-2 duration-1000 delay-200">
-                          {slide.tagline || 'Explore our curated collection of the finest products, designed for the modern lifestyle.'}
-                        </p>
-                        <Button size="lg" className="mt-8 animate-in fade-in zoom-in-90 duration-1000 delay-400 group-hover:bg-primary/80 transition-colors">
-                          Shop Now
-                        </Button>
-                      </div>
-                  </Link>
+                <CarouselItem key={index} className="relative h-[50vh] min-h-[400px] w-full">
+                  <Image
+                    src={slide.imageUrl || "https://picsum.photos/seed/hero/1800/800"}
+                    alt={slide.title || "Promotional banner"}
+                    fill
+                    className="object-cover"
+                    priority={index === 0}
+                    data-ai-hint="promotional banner"
+                  />
+                  <div className="absolute inset-0 bg-black/30" />
+                  <div className="relative z-10 flex h-full flex-col items-center justify-center text-center text-white">
+                    <h1 className="font-headline text-4xl font-bold md:text-5xl lg:text-6xl animate-in fade-in slide-in-from-bottom-4 duration-1000">
+                      {slide.title || 'Discover Your Style'}
+                    </h1>
+                    <p className="mt-4 max-w-2xl text-lg text-primary-foreground/90 animate-in fade-in slide-in-from-bottom-2 duration-1000 delay-200">
+                      {slide.tagline || 'Explore our curated collection of the finest products, designed for the modern lifestyle.'}
+                    </p>
+                    <Button asChild size="lg" className="mt-8 animate-in fade-in zoom-in-90 duration-1000 delay-400">
+                       <Link href={slide.buttonLink || "/products"}>Shop Now</Link>
+                    </Button>
+                  </div>
                 </CarouselItem>
               ))}
             </CarouselContent>
@@ -114,7 +112,6 @@ export default function HomePage() {
                         <span className="font-semibold text-card-foreground">
                           {category.name}
                         </span>
-                        <p className="text-xs text-muted-foreground">{category.description}</p>
                       </Link>
                   </CarouselItem>
                   )
