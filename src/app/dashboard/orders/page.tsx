@@ -37,15 +37,26 @@ import {
   DropdownMenuPortal,
   DropdownMenuCheckboxItem,
 } from '@/components/ui/dropdown-menu';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { ListFilter, File, Search, MoreHorizontal } from 'lucide-react';
+import { ListFilter, File, Search, MoreHorizontal, Trash2 } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import type { Order, OrderStatus, PaymentStatus } from '@/lib/types';
 import { cn } from '@/lib/utils';
 import { useOrders } from '@/hooks/use-orders';
 import { Skeleton } from '@/components/ui/skeleton';
-import { doc, updateDoc } from 'firebase/firestore';
+import { doc, updateDoc, deleteDoc } from 'firebase/firestore';
 import { useFirestore } from '@/firebase';
 import { toast } from '@/hooks/use-toast';
 
@@ -121,6 +132,20 @@ export default function OrdersPage() {
                 description: 'Could not update the order status.'
             });
         }
+    };
+    
+    const handleDelete = async (orderId: string) => {
+      if (!firestore) {
+        toast({ variant: 'destructive', title: 'Error', description: 'Firestore not initialized.' });
+        return;
+      }
+      try {
+        await deleteDoc(doc(firestore, 'orders', orderId));
+        toast({ title: 'Order Deleted', description: 'The order has been successfully deleted.' });
+      } catch (err) {
+        console.error(err);
+        toast({ variant: 'destructive', title: 'Error', description: 'Failed to delete order.' });
+      }
     };
 
     const filteredOrders = orders.filter(order => {
@@ -292,38 +317,57 @@ export default function OrdersPage() {
                       <TableCell>{order.date}</TableCell>
                       <TableCell className="text-right">₹{order.total.toFixed(2)}</TableCell>
                       <TableCell>
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button aria-haspopup="true" size="icon" variant="ghost">
-                              <MoreHorizontal className="h-4 w-4" />
-                              <span className="sr-only">Toggle menu</span>
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                            <DropdownMenuItem asChild>
-                                <Link href={`/dashboard/orders/${order.id}`}>View Order</Link>
-                            </DropdownMenuItem>
-                             <DropdownMenuSub>
-                                <DropdownMenuSubTrigger>Update Status</DropdownMenuSubTrigger>
-                                <DropdownMenuPortal>
-                                <DropdownMenuSubContent>
-                                    {ORDER_STATUSES.map(status => (
-                                        <DropdownMenuItem
-                                            key={status}
-                                            onClick={() => handleStatusChange(order.id, status)}
-                                            disabled={order.status === status}
-                                        >
-                                            {status}
-                                        </DropdownMenuItem>
-                                    ))}
-                                </DropdownMenuSubContent>
-                                </DropdownMenuPortal>
-                            </DropdownMenuSub>
-                            <DropdownMenuSeparator />
-                            <DropdownMenuItem className="text-destructive">Cancel Order</DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
+                        <AlertDialog>
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <Button aria-haspopup="true" size="icon" variant="ghost">
+                                <MoreHorizontal className="h-4 w-4" />
+                                <span className="sr-only">Toggle menu</span>
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end">
+                              <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                              <DropdownMenuItem asChild>
+                                  <Link href={`/dashboard/orders/${order.id}`}>View Order</Link>
+                              </DropdownMenuItem>
+                              <DropdownMenuSub>
+                                  <DropdownMenuSubTrigger>Update Status</DropdownMenuSubTrigger>
+                                  <DropdownMenuPortal>
+                                  <DropdownMenuSubContent>
+                                      {ORDER_STATUSES.map(status => (
+                                          <DropdownMenuItem
+                                              key={status}
+                                              onClick={() => handleStatusChange(order.id, status)}
+                                              disabled={order.status === status}
+                                          >
+                                              {status}
+                                          </DropdownMenuItem>
+                                      ))}
+                                  </DropdownMenuSubContent>
+                                  </DropdownMenuPortal>
+                              </DropdownMenuSub>
+                              <DropdownMenuSeparator />
+                               <AlertDialogTrigger asChild>
+                                <DropdownMenuItem className="text-destructive">
+                                  <Trash2 className="mr-2 h-4 w-4" />
+                                  Delete
+                                </DropdownMenuItem>
+                              </AlertDialogTrigger>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                          <AlertDialogContent>
+                            <AlertDialogHeader>
+                              <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                              <AlertDialogDescription>
+                                This action cannot be undone. This will permanently delete this order.
+                              </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                              <AlertDialogCancel>Cancel</AlertDialogCancel>
+                              <AlertDialogAction onClick={() => handleDelete(order.id)}>Continue</AlertDialogAction>
+                            </AlertDialogFooter>
+                          </AlertDialogContent>
+                        </AlertDialog>
                       </TableCell>
                     </TableRow>
                   ))
