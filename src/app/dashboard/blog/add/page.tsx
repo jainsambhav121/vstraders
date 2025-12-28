@@ -31,7 +31,6 @@ import { Switch } from '@/components/ui/switch';
 import { useFirestore, useUser } from '@/firebase';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
 
 const blogPostSchema = z.object({
   title: z.string().min(2, { message: 'Title must be at least 2 characters.' }),
