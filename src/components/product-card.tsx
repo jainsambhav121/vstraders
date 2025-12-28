@@ -6,16 +6,20 @@ import Link from 'next/link';
 import type { Product } from '@/lib/types';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Star, ShoppingCart, Heart } from 'lucide-react';
+import { Star, ShoppingCart, Heart, Truck } from 'lucide-react';
 import { useCart } from '@/context/cart-context';
 import { useToast } from '@/hooks/use-toast';
 import { useWishlist } from '@/context/wishlist-context';
 import { cn } from '@/lib/utils';
 import React from 'react';
+import { Badge } from './ui/badge';
 
 type ProductCardProps = {
   product: Product;
 };
+
+// Assuming a fixed free shipping threshold for now
+const FREE_SHIPPING_THRESHOLD = 4000;
 
 export default function ProductCard({ product }: ProductCardProps) {
   const { addToCart } = useCart();
@@ -43,6 +47,12 @@ export default function ProductCard({ product }: ProductCardProps) {
       toast({ title: 'Added to wishlist' });
     }
   };
+  
+  const discountText = product.discount?.value ? (
+    product.discount.type === 'percentage'
+      ? `${product.discount.value}% OFF`
+      : `₹${product.discount.value} OFF`
+  ) : null;
 
   return (
     <Card className="flex h-full flex-col group/card">
@@ -59,11 +69,17 @@ export default function ProductCard({ product }: ProductCardProps) {
             />
           </div>
         </Link>
+        {discountText && (
+            <Badge variant="destructive" className="absolute top-2 left-2">
+                {discountText}
+            </Badge>
+        )}
         <Button 
           variant="secondary" 
           size="icon" 
           className="absolute top-2 right-2 h-8 w-8 rounded-full opacity-0 group-hover/card:opacity-100 transition-opacity"
           onClick={handleWishlistToggle}
+          aria-label="Toggle Wishlist"
         >
           <Heart className={cn("h-4 w-4", isInWishlist ? "fill-red-500 text-red-500" : "text-muted-foreground")} />
         </Button>
@@ -85,9 +101,20 @@ export default function ProductCard({ product }: ProductCardProps) {
             </div>
             <span className="text-sm text-muted-foreground">({product.reviewCount})</span>
         </div>
+         {product.finalPrice > FREE_SHIPPING_THRESHOLD && (
+            <div className="mt-2 flex items-center gap-1 text-xs text-green-600">
+                <Truck className="h-4 w-4" />
+                <span>Free Shipping</span>
+            </div>
+        )}
       </CardContent>
       <CardFooter className="flex items-center justify-between p-4 pt-0">
-        <p className="text-base font-semibold md:text-lg">₹{product.finalPrice.toFixed(2)}</p>
+        <div className="flex flex-col">
+          <p className="text-base font-semibold md:text-lg">₹{product.finalPrice.toFixed(2)}</p>
+          {product.discount && (
+            <p className="text-xs text-muted-foreground line-through">₹{product.basePrice.toFixed(2)}</p>
+          )}
+        </div>
         <Button 
           onClick={handleAddToCart} 
           size="sm" 
