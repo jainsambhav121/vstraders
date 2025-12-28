@@ -13,7 +13,7 @@ import {
   BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb';
 import { Button } from '@/components/ui/button';
-import { List, Grid, Filter, SlidersHorizontal } from 'lucide-react';
+import { List, Grid, Filter, ChevronLeft, ChevronRight } from 'lucide-react';
 import ProductListItem from '@/components/product-list-item';
 import { Skeleton } from '@/components/ui/skeleton';
 import {
@@ -29,6 +29,7 @@ import FilterSidebar from '@/components/filter-sidebar';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 
 type SortOption = 'newest' | 'price-asc' | 'price-desc' | 'rating-desc';
+const PRODUCTS_PER_PAGE = 12;
 
 export default function ProductsPage() {
   const [layout, setLayout] = useState('grid');
@@ -42,6 +43,8 @@ export default function ProductsPage() {
     ratings: [] as number[],
     availability: false,
   });
+  const [currentPage, setCurrentPage] = useState(1);
+
 
   const uniqueSizes = useMemo(() => {
     const allSizes = products.flatMap(p => p.variants.map(v => v.size).filter(Boolean));
@@ -97,6 +100,18 @@ export default function ProductsPage() {
       }
     });
   }, [products, filters, sortOption]);
+  
+  const totalPages = Math.ceil(filteredAndSortedProducts.length / PRODUCTS_PER_PAGE);
+  const paginatedProducts = filteredAndSortedProducts.slice(
+    (currentPage - 1) * PRODUCTS_PER_PAGE,
+    currentPage * PRODUCTS_PER_PAGE
+  );
+  
+  const handlePageChange = (page: number) => {
+    if (page >= 1 && page <= totalPages) {
+        setCurrentPage(page);
+    }
+  }
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -199,18 +214,32 @@ export default function ProductsPage() {
             <>
               {layout === 'grid' ? (
                   <div className="grid grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-10">
-                    {filteredAndSortedProducts.map((product) => (
+                    {paginatedProducts.map((product) => (
                       <ProductCard key={product.id} product={product} />
                     ))}
                   </div>
                 ) : (
                   <div className="space-y-4">
-                    {filteredAndSortedProducts.map((product) => (
+                    {paginatedProducts.map((product) => (
                       <ProductListItem key={product.id} product={product} />
                     ))}
                   </div>
               )}
             </>
+          )}
+
+          {totalPages > 1 && (
+            <div className="mt-12 flex justify-center items-center gap-4">
+                <Button variant="outline" size="icon" onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1}>
+                    <ChevronLeft className="h-4 w-4" />
+                </Button>
+                <span className="text-sm">
+                    Page {currentPage} of {totalPages}
+                </span>
+                <Button variant="outline" size="icon" onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages}>
+                    <ChevronRight className="h-4 w-4" />
+                </Button>
+            </div>
           )}
         </div>
       </div>
