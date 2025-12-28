@@ -259,9 +259,12 @@ export default function HomePage() {
         </section>
         
         <section className="mt-12 md:mt-16 lg:mt-20">
-          <h2 className="mb-6 text-center fontheadline text-3xl font-bold">
+          <h2 className="mb-2 text-center font-headline text-3xl font-bold">
             New Arrivals
           </h2>
+          <p className="mb-6 text-center text-muted-foreground">
+            Stay updated with our latest mattresses, pillows, and cushions, designed to offer improved comfort, modern materials, and better durability.
+          </p>
           {loading ? (
               <div className="grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
                 {Array.from({ length: 4 }).map((_, i) => (
