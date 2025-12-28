@@ -80,7 +80,7 @@ export default function Footer() {
           <ul className="space-y-2">
             <li><Link href="/category/pillows" className="hover:text-primary">Pillows</Link></li>
             <li><Link href="/category/cushions" className="hover:text-primary">Cushions</Link></li>
-            <li><Link href="/category/mattress" className="hover:text-primary">Mattress</Link></li>
+            <li><Link href="/category/mattresses" className="hover:text-primary">Mattress</Link></li>
             <li><Link href="/category/covers" className="hover:text-primary">Covers</Link></li>
             <li><Link href="/sale" className="hover:text-primary">Sale</Link></li>
           </ul>
