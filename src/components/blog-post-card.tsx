@@ -1,10 +1,9 @@
+
 import Image from 'next/image';
 import Link from 'next/link';
 import type { BlogPost } from '@/lib/types';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import { ArrowRight } from 'lucide-react';
-import { Button } from './ui/button';
 
 type BlogPostCardProps = {
   post: BlogPost;
@@ -12,38 +11,34 @@ type BlogPostCardProps = {
 
 export default function BlogPostCard({ post }: BlogPostCardProps) {
   return (
-    <Card className="flex h-full flex-col overflow-hidden">
-      <CardHeader className="p-0">
-        <Link href={`/blog/${post.id}`} className="block aspect-video">
-          <Image
-            src={post.imageUrl}
-            alt={post.imageAlt}
-            width={800}
-            height={450}
-            className="h-full w-full object-cover transition-transform duration-300 hover:scale-105"
-            data-ai-hint="blog post image"
-          />
-        </Link>
-      </CardHeader>
-      <CardContent className="flex flex-1 flex-col p-6">
-        <CardTitle className="mb-2 text-xl">
-          <Link href={`/blog/${post.id}`} className="hover:text-primary">
-            {post.title}
-          </Link>
-        </CardTitle>
-        <p className="mb-4 text-sm text-muted-foreground">
-          By {post.author} on {post.date}
-        </p>
-        <p className="flex-1 text-muted-foreground">{post.excerpt}</p>
-        <div className="mt-4">
-          <Button asChild variant="secondary" className="group">
-            <Link href={`/blog/${post.id}`}>
-                Read More
-                <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
-            </Link>
-          </Button>
-        </div>
-      </CardContent>
-    </Card>
+    <Link href={`/blog/${post.slug || post.id}`} className="group h-full">
+      <Card className="flex h-full flex-col overflow-hidden transition-shadow duration-300 group-hover:shadow-lg">
+        <CardHeader className="p-0">
+          <div className="aspect-video overflow-hidden">
+            <Image
+              src={post.imageUrl}
+              alt={post.imageAlt}
+              width={800}
+              height={450}
+              className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+              data-ai-hint="blog post image"
+            />
+          </div>
+        </CardHeader>
+        <CardContent className="flex flex-1 flex-col p-6">
+          <CardTitle className="mb-2 text-xl group-hover:text-primary">
+              {post.title}
+          </CardTitle>
+          <p className="mb-4 text-sm text-muted-foreground">
+            By {post.author} on {post.date}
+          </p>
+          <p className="flex-1 text-muted-foreground">{post.excerpt}</p>
+          <div className="mt-4 flex items-center font-semibold text-primary">
+              Read More
+              <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+          </div>
+        </CardContent>
+      </Card>
+    </Link>
   );
 }
