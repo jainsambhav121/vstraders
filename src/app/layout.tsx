@@ -10,8 +10,6 @@ import { CartProvider } from '@/context/cart-context';
 import { WishlistProvider } from '@/context/wishlist-context';
 import { RecentlyViewedProvider } from '@/context/recently-viewed-context';
 import { Suspense } from 'react';
-import { getFirestore, doc, getDoc } from 'firebase/firestore';
-import { initializeFirebase } from '@/firebase';
 
 const openSans = Open_Sans({
   subsets: ['latin'],
@@ -25,31 +23,11 @@ const playfairDisplay = Playfair_Display({
   variable: '--font-admin',
 });
 
-// This function is now async to fetch SEO settings
-export async function generateMetadata(): Promise<Metadata> {
-  // Initialize firebase admin to fetch data on server
-  const { firestore } = initializeFirebase();
-
-  try {
-    const settingsDoc = await getDoc(doc(firestore, 'settings', 'main'));
-    if (settingsDoc.exists()) {
-      const settings = settingsDoc.data();
-      return {
-        title: settings.metaTitle || 'VSTRADERS',
-        description: settings.metaDescription || 'Your one-stop shop for everything you need.',
-        keywords: settings.metaKeywords,
-      };
-    }
-  } catch (error) {
-    console.error("Failed to fetch SEO settings:", error);
-  }
-
-  // Fallback metadata
-  return {
+// Fallback metadata
+export const metadata: Metadata = {
     title: 'VSTRADERS',
     description: 'Your one-stop shop for everything you need.',
-  };
-}
+};
 
 export default function RootLayout({
   children,
