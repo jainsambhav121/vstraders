@@ -1,5 +1,4 @@
 
-
 'use client';
 
 import Image from 'next/image';
@@ -101,8 +100,8 @@ export default function HomePage() {
                 {categories.map((category) => {
                   const Icon = category.icon;
                   return (
-                  <CarouselItem key={category.id} className="basis-1/3 p-2">
-                     <Link
+                    <CarouselItem key={category.id} className="basis-1/3 p-2">
+                      <Link
                         href={`/category/${category.slug}`}
                         className="group flex flex-col items-center justify-center gap-2 text-center"
                       >
@@ -113,8 +112,8 @@ export default function HomePage() {
                           {category.name}
                         </span>
                       </Link>
-                  </CarouselItem>
-                  )
+                    </CarouselItem>
+                  );
                 })}
               </CarouselContent>
             </Carousel>
@@ -391,4 +390,5 @@ export default function HomePage() {
       </div>
     </div>
   );
-}
+
+    
