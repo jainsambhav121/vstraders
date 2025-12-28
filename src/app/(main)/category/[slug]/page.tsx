@@ -42,10 +42,11 @@ export default function CategoryPage() {
           </BreadcrumbItem>
         </BreadcrumbList>
       </Breadcrumb>
-      <div className="flex items-center justify-between mb-8">
+      <div className="text-center mb-8">
         <h1 className="font-headline text-4xl font-bold capitalize">
           {category?.name}
         </h1>
+        <p className="mt-2 text-lg text-muted-foreground">{category?.description}</p>
       </div>
 
       {loading ? (
