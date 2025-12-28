@@ -83,9 +83,12 @@ export default function HomePage() {
 
       <div className="container mx-auto px-4">
         <section>
-          <h2 className="mb-6 text-center font-headline text-3xl font-bold">
+          <h2 className="mb-2 text-center font-headline text-3xl font-bold">
             Shop by Category
           </h2>
+          <p className="mb-6 text-center text-muted-foreground">
+            Explore our categories to find the perfect bedding products for your comfort needs.
+          </p>
           <div className="md:hidden">
             <Carousel
               opts={{
