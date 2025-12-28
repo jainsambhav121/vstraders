@@ -24,16 +24,47 @@ import {
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuTrigger,
+  DropdownMenuSeparator,
 } from '@/components/ui/dropdown-menu';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
 import { Button } from '@/components/ui/button';
-import { MoreHorizontal } from 'lucide-react';
+import { MoreHorizontal, Trash2 } from 'lucide-react';
 import { useUsers } from '@/hooks/use-users';
 import { Skeleton } from '@/components/ui/skeleton';
 import type { User } from '@/lib/types';
+import { useFirestore } from '@/firebase';
+import { doc, deleteDoc } from 'firebase/firestore';
+import { toast } from '@/hooks/use-toast';
 
 
 export default function CustomersPage() {
   const { users, loading, error } = useUsers();
+  const firestore = useFirestore();
+
+  const handleDelete = async (userId: string) => {
+    if (!firestore) {
+      toast({ variant: 'destructive', title: 'Error', description: 'Firestore not initialized.' });
+      return;
+    }
+    try {
+      await deleteDoc(doc(firestore, 'users', userId));
+      toast({ title: 'Customer Deleted', description: 'The customer has been successfully deleted.' });
+    } catch (err) {
+      console.error(err);
+      toast({ variant: 'destructive', title: 'Error', description: 'Failed to delete customer.' });
+    }
+  };
+
 
   return (
     <Card>
@@ -107,21 +138,42 @@ export default function CustomersPage() {
                     <TableCell>{user.orderCount}</TableCell>
                     <TableCell className="text-right">₹{user.totalSpent.toFixed(2)}</TableCell>
                     <TableCell>
-                    <DropdownMenu>
+                    <AlertDialog>
+                      <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                        <Button aria-haspopup="true" size="icon" variant="ghost">
+                          <Button aria-haspopup="true" size="icon" variant="ghost">
                             <MoreHorizontal className="h-4 w-4" />
                             <span className="sr-only">Toggle menu</span>
-                        </Button>
+                          </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
-                        <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                        <DropdownMenuItem>View Details</DropdownMenuItem>
-                        <DropdownMenuItem>
+                          <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                          <DropdownMenuItem>View Details</DropdownMenuItem>
+                          <DropdownMenuItem>
                             {user.isActive ? 'Deactivate' : 'Activate'}
-                        </DropdownMenuItem>
+                          </DropdownMenuItem>
+                           <DropdownMenuSeparator />
+                           <AlertDialogTrigger asChild>
+                              <DropdownMenuItem className="text-destructive">
+                                <Trash2 className="mr-2 h-4 w-4" />
+                                Delete
+                              </DropdownMenuItem>
+                            </AlertDialogTrigger>
                         </DropdownMenuContent>
-                    </DropdownMenu>
+                      </DropdownMenu>
+                      <AlertDialogContent>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                          <AlertDialogDescription>
+                            This action cannot be undone. This will permanently delete this customer's account and all associated data.
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel>Cancel</AlertDialogCancel>
+                          <AlertDialogAction onClick={() => handleDelete(user.id)}>Continue</AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
                     </TableCell>
                 </TableRow>
                 ))
