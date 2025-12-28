@@ -19,10 +19,10 @@ import { Skeleton } from '@/components/ui/skeleton';
 
 export default function BlogPostPage() {
   const params = useParams();
-  const { id } = params;
+  const { slug } = params;
   const { posts, loading } = useBlogPosts();
 
-  const post = posts.find((p) => p.id === id);
+  const post = posts.find((p) => p.id === slug);
   const relatedPosts = posts.filter(p => p.id !== post?.id).slice(0, 3);
 
   if (loading) {
