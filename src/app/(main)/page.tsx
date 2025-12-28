@@ -52,7 +52,7 @@ export default function HomePage() {
           >
             <CarouselContent>
               {heroSlides.map((slide, index) => (
-                <CarouselItem key={index} asChild>
+                <CarouselItem key={index}>
                    <Link href={slide.buttonLink || "/products"} className="relative h-[50vh] min-h-[400px] w-full block group">
                       <Image
                         src={slide.imageUrl || "https://picsum.photos/seed/hero/1800/800"}
