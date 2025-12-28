@@ -2,6 +2,7 @@
 
 import type { User as FirebaseUser } from 'firebase/auth';
 import type { LucideIcon } from 'lucide-react';
+import type { Timestamp } from 'firebase/firestore';
 
 export type Category = {
   id: string;
@@ -129,6 +130,8 @@ export type BlogPost = {
   imageUrl: string;
   imageAlt: string;
   featured: boolean;
+  publishedAt?: Timestamp;
+  updatedAt?: Timestamp;
   seoTitle?: string;
   seoMetaDescription?: string;
 };

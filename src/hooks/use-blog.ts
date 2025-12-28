@@ -2,7 +2,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { collection, onSnapshot, query, Timestamp } from 'firebase/firestore';
+import { collection, onSnapshot, query, Timestamp, orderBy } from 'firebase/firestore';
 import { useFirestore } from '@/firebase';
 import type { BlogPost } from '@/lib/types';
 import { errorEmitter } from '@/firebase/error-emitter';
@@ -20,7 +20,7 @@ export function useBlogPosts() {
     }
 
     const blogCollection = collection(firestore, 'blogPosts');
-    const blogQuery = query(blogCollection);
+    const blogQuery = query(blogCollection, orderBy('publishedAt', 'desc'));
 
     const unsubscribe = onSnapshot(
       blogQuery,
@@ -40,6 +40,8 @@ export function useBlogPosts() {
             featured: data.featured || false,
             seoTitle: data.seoTitle,
             seoMetaDescription: data.seoMetaDescription,
+            publishedAt: data.publishedAt,
+            updatedAt: data.updatedAt,
           };
         });
         setPosts(postsData);
