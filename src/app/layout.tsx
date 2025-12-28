@@ -20,7 +20,7 @@ const openSans = Open_Sans({
 const playfairDisplay = Playfair_Display({
   subsets: ['latin'],
   display: 'swap',
-  variable: '--font-admin',
+  variable: '--font-serif',
 });
 
 // Fallback metadata
