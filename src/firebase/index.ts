@@ -4,6 +4,7 @@ import { getAuth, type Auth } from 'firebase/auth';
 import { getFirestore, type Firestore } from 'firebase/firestore';
 import { getAnalytics, type Analytics } from "firebase/analytics";
 import { firebaseConfig } from './config';
+import { useUser } from '@/hooks/use-user';
 
 let firebaseApp: FirebaseApp;
 let auth: Auth;
@@ -31,5 +32,5 @@ function initializeFirebase() {
   return { firebaseApp, auth, firestore, analytics };
 }
 
-export { initializeFirebase };
+export { initializeFirebase, useUser };
 export * from './provider';
