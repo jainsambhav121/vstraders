@@ -164,8 +164,8 @@ export default function BlogPostsPage() {
                           <DropdownMenuItem asChild>
                             <Link href={`/dashboard/blog/edit/${post.id}`}>Edit</Link>
                           </DropdownMenuItem>
-                          <DropdownMenuItem asChild>
-                             <Link href={`/blog/${post.id}`} className="w-full h-full">View</Link>
+                          <DropdownMenuItem>
+                             <a href={`/blog/${post.id}`} target="_blank" rel="noopener noreferrer" className="w-full h-full">View</a>
                           </DropdownMenuItem>
                           <DropdownMenuSeparator />
                            <AlertDialogTrigger asChild>
