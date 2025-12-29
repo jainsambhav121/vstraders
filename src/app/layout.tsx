@@ -1,6 +1,6 @@
 
 import type { Metadata } from 'next';
-import { Open_Sans, Playfair_Display } from 'next/font/google';
+import { Inter } from 'next/font/google';
 import './globals.css';
 import { Toaster } from '@/components/ui/toaster';
 import { FirebaseClientProvider } from '@/firebase/client-provider';
@@ -11,16 +11,10 @@ import { WishlistProvider } from '@/context/wishlist-context';
 import { RecentlyViewedProvider } from '@/context/recently-viewed-context';
 import { Suspense } from 'react';
 
-const openSans = Open_Sans({
+const inter = Inter({
   subsets: ['latin'],
   display: 'swap',
   variable: '--font-sans',
-});
-
-const playfairDisplay = Playfair_Display({
-  subsets: ['latin'],
-  display: 'swap',
-  variable: '--font-serif',
 });
 
 // Fallback metadata
@@ -37,7 +31,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${openSans.variable} ${playfairDisplay.variable} font-body antialiased`}
+        className={`${inter.variable} font-body antialiased`}
         suppressHydrationWarning={true}
       >
         <ThemeProvider
