@@ -28,9 +28,7 @@ export default function BlogPostPage() {
   // Fetch other posts for the "related" section
   const { posts: allPosts, loading: allPostsLoading } = useBlogPosts();
 
-  const relatedPosts = allPosts.filter(p => p.id !== post?.id).slice(0, 3);
-
-  if (postLoading) {
+  if (postLoading || allPostsLoading) {
     return (
         <div className="container mx-auto max-w-4xl px-4 py-8 md:py-12">
             <Skeleton className="mb-8 h-6 w-1/2" />
@@ -46,13 +44,12 @@ export default function BlogPostPage() {
     )
   }
 
-  if (!post && !postLoading) {
+  if ((!post && !postLoading) || error) {
     notFound();
   }
   
-  if (error) {
-    return <div className="container mx-auto text-center py-12">Failed to load post. Please try again later.</div>
-  }
+  const relatedPosts = allPosts.filter(p => p.id !== post.id).slice(0, 3);
+
 
   return (
     <div className="container mx-auto max-w-4xl px-4 py-8 md:py-12">
@@ -77,7 +74,7 @@ export default function BlogPostPage() {
           <div className="relative mb-8 h-64 w-full overflow-hidden rounded-lg md:h-96">
              <Image
                 src={post.imageUrl}
-                alt={post.imageAlt}
+                alt={post.imageAlt || post.title}
                 fill
                 className="object-cover"
                 priority
