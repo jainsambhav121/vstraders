@@ -2,11 +2,12 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { collection, onSnapshot, query, Timestamp } from 'firebase/firestore';
+import { collection, onSnapshot, query, orderBy } from 'firebase/firestore';
 import { useFirestore } from '@/firebase';
 import type { Order } from '@/lib/types';
 import { errorEmitter } from '@/firebase/error-emitter';
 import { FirestorePermissionError } from '@/firebase/errors';
+import { mapDocToOrder } from '@/lib/data-mappers';
 
 export function useOrders() {
   const [orders, setOrders] = useState<Order[]>([]);
@@ -16,42 +17,29 @@ export function useOrders() {
 
   useEffect(() => {
     if (!firestore) {
-      // Don't do anything if firestore is not initialized
+      setLoading(false);
       return;
     }
 
     const ordersCollection = collection(firestore, 'orders');
-    const ordersQuery = query(ordersCollection);
+    // Order by creation date in descending order to get the newest orders first
+    const ordersQuery = query(ordersCollection, orderBy('createdAt', 'desc'));
 
     const unsubscribe = onSnapshot(
       ordersQuery,
       (snapshot) => {
-        const ordersData: Order[] = snapshot.docs.map((doc) => {
-          const data = doc.data();
-          
-          let orderDate = '';
-          if (data.createdAt && data.createdAt instanceof Timestamp) {
-            orderDate = data.createdAt.toDate().toLocaleDateString();
-          } else if (data.date) {
-            orderDate = data.date;
-          }
-
-          return {
-            id: doc.id,
-            customerName: data.customerDetails?.name || 'N/A',
-            customerEmail: data.customerDetails?.email || 'N/A',
-            date: orderDate,
-            total: data.totalAmount || 0,
-            status: data.orderStatus || 'Pending',
-            items: data.products?.length || 0,
-            paymentStatus: data.paymentStatus || 'Pending',
-          };
-        });
-        setOrders(ordersData);
-        setLoading(false);
+        try {
+          const ordersData: Order[] = snapshot.docs.map(mapDocToOrder);
+          setOrders(ordersData);
+        } catch (e: any) {
+            setError(new Error("Failed to parse order data."));
+            console.error(e);
+        } finally {
+            setLoading(false);
+        }
       },
       (err) => {
-        console.error("Firestore error: ", err);
+        console.error("Firestore error fetching orders: ", err);
         const permissionError = new FirestorePermissionError({
           path: ordersCollection.path,
           operation: 'list',
@@ -62,7 +50,6 @@ export function useOrders() {
       }
     );
 
-    // Cleanup subscription on unmount
     return () => unsubscribe();
   }, [firestore]);
 

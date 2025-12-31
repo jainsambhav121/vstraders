@@ -2,11 +2,12 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { collection, onSnapshot, query } from 'firebase/firestore';
+import { collection, onSnapshot, query, orderBy } from 'firebase/firestore';
 import { useFirestore } from '@/firebase';
 import type { User } from '@/lib/types';
 import { errorEmitter } from '@/firebase/error-emitter';
 import { FirestorePermissionError } from '@/firebase/errors';
+import { mapDocToUser } from '@/lib/data-mappers';
 
 export function useUsers() {
   const [users, setUsers] = useState<User[]>([]);
@@ -16,35 +17,28 @@ export function useUsers() {
 
   useEffect(() => {
     if (!firestore) {
+      setLoading(false);
       return;
     }
 
     const usersCollection = collection(firestore, 'users');
-    const usersQuery = query(usersCollection);
+    const usersQuery = query(usersCollection, orderBy('createdAt', 'desc'));
 
     const unsubscribe = onSnapshot(
       usersQuery,
       (snapshot) => {
-        const usersData: User[] = snapshot.docs.map((doc) => {
-          const data = doc.data();
-          return {
-            id: doc.id,
-            name: data.name,
-            email: data.email,
-            isActive: data.isActive,
-            role: data.role,
-            // Mock data for fields not in Firestore
-            avatar: `https://i.pravatar.cc/150?u=${doc.id}`,
-            totalSpent: data.totalSpent || 0, 
-            orderCount: data.orderCount || 0,
-            createdAt: data.createdAt?.toDate().toLocaleDateString() || new Date().toLocaleDateString(),
-          };
-        });
-        setUsers(usersData);
-        setLoading(false);
+        try {
+            const usersData: User[] = snapshot.docs.map(mapDocToUser);
+            setUsers(usersData);
+        } catch (e: any) {
+            setError(new Error("Failed to parse user data."));
+            console.error(e);
+        } finally {
+            setLoading(false);
+        }
       },
       (err) => {
-        console.error("Firestore error: ", err);
+        console.error("Firestore error fetching users: ", err);
         const permissionError = new FirestorePermissionError({
           path: usersCollection.path,
           operation: 'list',

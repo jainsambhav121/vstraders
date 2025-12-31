@@ -12,8 +12,12 @@ export function useUser() {
   const auth = useAuth();
 
   useEffect(() => {
+    // If auth is not yet available, we are in a loading state.
     if (!auth) {
-      setLoading(false);
+      // Keep loading true until auth is initialized.
+      // This check might be redundant if the provider ensures auth is always passed,
+      // but it's a good safeguard.
+      setLoading(true);
       return;
     }
 
@@ -22,6 +26,7 @@ export function useUser() {
       setLoading(false);
     });
 
+    // Cleanup subscription on unmount
     return () => unsubscribe();
   }, [auth]);
 

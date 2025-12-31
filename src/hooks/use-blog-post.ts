@@ -2,11 +2,12 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { doc, onSnapshot, Timestamp } from 'firebase/firestore';
+import { doc, onSnapshot } from 'firebase/firestore';
 import { useFirestore } from '@/firebase';
 import type { BlogPost } from '@/lib/types';
 import { errorEmitter } from '@/firebase/error-emitter';
 import { FirestorePermissionError } from '@/firebase/errors';
+import { mapDocToBlogPost } from '@/lib/data-mappers';
 
 export function useBlogPost(postId: string) {
   const [post, setPost] = useState<BlogPost | null>(null);
@@ -20,36 +21,23 @@ export function useBlogPost(postId: string) {
       return;
     }
 
+    setLoading(true);
     const docRef = doc(firestore, 'blogPosts', postId);
 
     const unsubscribe = onSnapshot(
       docRef,
       (docSnap) => {
         if (docSnap.exists()) {
-          const data = docSnap.data();
-          const publishedAt = data.publishedAt instanceof Timestamp 
-              ? data.publishedAt.toDate() 
-              : new Date();
-
-          const postData: BlogPost = {
-            id: docSnap.id,
-            title: data.title || '',
-            author: data.author || 'Anonymous',
-            date: publishedAt.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }),
-            excerpt: data.excerpt || '',
-            content: data.content || '',
-            imageUrl: data.imageUrl || '',
-            imageAlt: data.imageAlt || data.title || '',
-            featured: data.featured || false,
-            seoTitle: data.seoTitle,
-            seoMetaDescription: data.seoMetaDescription,
-            publishedAt: data.publishedAt,
-            updatedAt: data.updatedAt,
-          };
-          setPost(postData);
+          try {
+            const postData = mapDocToBlogPost(docSnap);
+            setPost(postData);
+          } catch(e: any) {
+             setError(new Error('Failed to parse blog post data.'));
+             console.error(e);
+          }
         } else {
           setPost(null);
-          setError(new Error('Blog post not found'));
+          // Don't set an error here, the `notFound()` function should be used in the component
         }
         setLoading(false);
       },

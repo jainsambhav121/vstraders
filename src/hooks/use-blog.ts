@@ -1,13 +1,13 @@
 
-
 'use client';
 
 import { useState, useEffect } from 'react';
-import { collection, onSnapshot, query, Timestamp, orderBy } from 'firebase/firestore';
+import { collection, onSnapshot, query, orderBy } from 'firebase/firestore';
 import { useFirestore } from '@/firebase';
 import type { BlogPost } from '@/lib/types';
 import { errorEmitter } from '@/firebase/error-emitter';
 import { FirestorePermissionError } from '@/firebase/errors';
+import { mapDocToBlogPost } from '@/lib/data-mappers';
 
 export function useBlogPosts() {
   const [posts, setPosts] = useState<BlogPost[]>([]);
@@ -17,6 +17,7 @@ export function useBlogPosts() {
 
   useEffect(() => {
     if (!firestore) {
+      setLoading(false);
       return;
     }
 
@@ -26,30 +27,15 @@ export function useBlogPosts() {
     const unsubscribe = onSnapshot(
       blogQuery,
       (snapshot) => {
-        const postsData: BlogPost[] = snapshot.docs.map((doc) => {
-          const data = doc.data();
-          const publishedAt = data.publishedAt instanceof Timestamp 
-              ? data.publishedAt.toDate() 
-              : new Date();
-              
-          return {
-            id: doc.id,
-            title: data.title,
-            author: data.author,
-            date: publishedAt.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }),
-            excerpt: data.excerpt,
-            content: data.content,
-            imageUrl: data.imageUrl,
-            imageAlt: data.imageAlt,
-            featured: data.featured || false,
-            seoTitle: data.seoTitle,
-            seoMetaDescription: data.seoMetaDescription,
-            publishedAt: data.publishedAt,
-            updatedAt: data.updatedAt,
-          };
-        });
-        setPosts(postsData);
-        setLoading(false);
+        try {
+          const postsData: BlogPost[] = snapshot.docs.map(mapDocToBlogPost);
+          setPosts(postsData);
+        } catch (e: any) {
+          setError(new Error('Failed to parse blog post data.'));
+          console.error(e);
+        } finally {
+          setLoading(false);
+        }
       },
       (err) => {
         console.error("Firestore error fetching blog posts: ", err);
