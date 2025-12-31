@@ -30,6 +30,7 @@ import type { ProductVariant } from '@/lib/types';
 import { cn } from '@/lib/utils';
 import { useWishlist } from '@/context/wishlist-context';
 import { useRecentlyViewed } from '@/context/recently-viewed-context';
+import Link from 'next/link';
 
 type ActiveMedia = {
     type: 'image' | 'video';
@@ -421,12 +422,12 @@ export default function ProductDetailPage() {
         <h2 className="mb-6 text-center font-headline text-3xl font-bold">You Might Also Like</h2>
         <div className="grid grid-cols-2 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
           {recommendedProducts.map((p) => (
-            <ProductCard key={p.id} product={p} />
+             <Link key={p.id} href={`/products/${p.id}`} className="block">
+                <ProductCard product={p} />
+             </Link>
           ))}
         </div>
       </div>
     </div>
   );
 }
-
-    
