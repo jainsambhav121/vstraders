@@ -1,6 +1,8 @@
+
 "use client"
 
 import * as React from "react"
+import { Slot } from "@radix-ui/react-slot"
 import useEmblaCarousel, {
   type UseEmblaCarouselType,
 } from "embla-carousel-react"
@@ -174,12 +176,13 @@ CarouselContent.displayName = "CarouselContent"
 
 const CarouselItem = React.forwardRef<
   HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement>
->(({ className, ...props }, ref) => {
+  React.HTMLAttributes<HTMLDivElement> & { asChild?: boolean }
+>(({ className, asChild = false, ...props }, ref) => {
   const { orientation } = useCarousel()
+  const Comp = asChild ? Slot : "div"
 
   return (
-    <div
+    <Comp
       ref={ref}
       role="group"
       aria-roledescription="slide"

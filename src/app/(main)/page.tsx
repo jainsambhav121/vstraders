@@ -53,7 +53,7 @@ export default function HomePage() {
             <CarouselContent>
               {heroSlides.map((slide, index) => (
                 <CarouselItem key={index}>
-                  <Link href={slide.buttonLink || "/products"} className="relative h-[50vh] min-h-[400px] w-full block">
+                  <div className="relative h-[50vh] min-h-[400px] w-full block">
                     <Image
                       src={slide.imageUrl || "https://picsum.photos/seed/hero/1800/800"}
                       alt={slide.title || "Promotional banner"}
@@ -70,11 +70,11 @@ export default function HomePage() {
                       <p className="mt-4 max-w-2xl text-lg text-primary-foreground/90 animate-in fade-in slide-in-from-bottom-2 duration-1000 delay-200">
                         {slide.tagline || 'Explore our curated collection of the finest products, designed for the modern lifestyle.'}
                       </p>
-                      <Button size="lg" className="mt-8 animate-in fade-in zoom-in-90 duration-1000 delay-400">
-                        Shop Now
+                      <Button size="lg" className="mt-8 animate-in fade-in zoom-in-90 duration-1000 delay-400" asChild>
+                        <Link href={slide.buttonLink || "/products"}>Shop Now</Link>
                       </Button>
                     </div>
-                  </Link>
+                  </div>
                 </CarouselItem>
               ))}
             </CarouselContent>
@@ -103,7 +103,7 @@ export default function HomePage() {
                 {categories.map((category) => {
                   const Icon = category.icon;
                   return (
-                  <CarouselItem key={category.id} className="basis-1/2">
+                  <CarouselItem key={category.id} className="basis-1/2" asChild>
                      <Link
                         href={`/category/${category.slug}`}
                         className="group flex flex-col items-center justify-center gap-2 text-center"
