@@ -14,6 +14,17 @@ import {
 } from '@/components/ui/breadcrumb';
 import { notFound, useParams } from 'next/navigation';
 import { Skeleton } from '@/components/ui/skeleton';
+import { collection, getDocs } from 'firebase/firestore';
+import { firestore } from '@/firebase/client-provider'; // Assume a client-side export
+
+// This function tells Next.js which paths to pre-render at build time.
+export async function generateStaticParams() {
+  // In a real app, you might fetch these from a database.
+  // For now, we use the static categories array.
+  return categories.map((category) => ({
+    slug: category.slug,
+  }));
+}
 
 export default function CategoryPage() {
   const params = useParams();

@@ -31,6 +31,18 @@ import { cn } from '@/lib/utils';
 import { useWishlist } from '@/context/wishlist-context';
 import { useRecentlyViewed } from '@/context/recently-viewed-context';
 import Link from 'next/link';
+import { firestore } from '@/firebase/client-provider'; // Assume a client-side export
+import { collection, getDocs } from 'firebase/firestore';
+
+
+// This function tells Next.js which paths to pre-render at build time.
+export async function generateStaticParams() {
+  if (!firestore) return [];
+  const productsCol = collection(firestore, 'products');
+  const productSnapshot = await getDocs(productsCol);
+  const products = productSnapshot.docs.map(doc => ({ id: doc.id }));
+  return products;
+}
 
 type ActiveMedia = {
     type: 'image' | 'video';
