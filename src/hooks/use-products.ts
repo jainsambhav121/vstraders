@@ -3,7 +3,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { collection, onSnapshot, query } from 'firebase/firestore';
+import { collection, onSnapshot, query, where } from 'firebase/firestore';
 import { useFirestore } from '@/firebase';
 import type { Product } from '@/lib/types';
 import { errorEmitter } from '@/firebase/error-emitter';
@@ -21,7 +21,7 @@ export function useProducts() {
     }
 
     const productsCollection = collection(firestore, 'products');
-    const productsQuery = query(productsCollection);
+    const productsQuery = query(productsCollection, where('status.isEnabled', '==', true));
 
     const unsubscribe = onSnapshot(
       productsQuery,
@@ -40,25 +40,27 @@ export function useProducts() {
             
           return {
             id: doc.id,
-            name: data.name,
-            description: data.description,
-            brand: data.brand,
-            basePrice: data.basePrice,
+            name: data.name || '',
+            description: data.description || '',
+            brand: data.brand || '',
+            basePrice: data.basePrice || 0,
             finalPrice: finalPrice,
             discount: data.discount,
-            category: data.category,
-            stock: data.stock,
+            category: data.category || '',
+            stock: data.stock || 0,
             images: data.images || [],
             primaryImage: data.primaryImage,
             videoUrl: data.videoUrl,
             variants: data.variants || [],
             details: data.details || [],
             status: data.status || { isEnabled: true, isFeatured: false, isBestSeller: false, isNew: false },
-            seo: data.seo || {},
+            seo: data.seo || { slug: doc.id },
             rating: data.rating || 0,
             reviewCount: data.reviewCount || 0,
-            productName: data.name,
+            productName: data.name || '',
             specifications: data.details || [],
+            createdAt: data.createdAt,
+            updatedAt: data.updatedAt,
           };
         });
         setProducts(productsData);

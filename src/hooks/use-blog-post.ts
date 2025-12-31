@@ -33,13 +33,13 @@ export function useBlogPost(postId: string) {
 
           const postData: BlogPost = {
             id: docSnap.id,
-            title: data.title,
-            author: data.author,
+            title: data.title || '',
+            author: data.author || 'Anonymous',
             date: publishedAt.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }),
-            excerpt: data.excerpt,
-            content: data.content,
-            imageUrl: data.imageUrl,
-            imageAlt: data.imageAlt,
+            excerpt: data.excerpt || '',
+            content: data.content || '',
+            imageUrl: data.imageUrl || '',
+            imageAlt: data.imageAlt || data.title || '',
             featured: data.featured || false,
             seoTitle: data.seoTitle,
             seoMetaDescription: data.seoMetaDescription,
@@ -49,6 +49,7 @@ export function useBlogPost(postId: string) {
           setPost(postData);
         } else {
           setPost(null);
+          setError(new Error('Blog post not found'));
         }
         setLoading(false);
       },
