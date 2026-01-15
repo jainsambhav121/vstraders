@@ -38,7 +38,7 @@ type ActiveMedia = {
 
 export default function ProductDetailPage() {
   const params = useParams();
-  const { id } = params;
+  const { slug: id } = params;
   const { products, loading } = useProducts();
   const { addToCart } = useCart();
   const { toast } = useToast();
