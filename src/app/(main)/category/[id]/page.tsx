@@ -17,16 +17,16 @@ import { Skeleton } from '@/components/ui/skeleton';
 
 export default function CategoryPage() {
   const params = useParams();
-  const { slug } = params;
+  const { id } = params;
   const { products, loading } = useProducts();
-  const category = categories.find((c) => c.slug === slug);
+  const category = categories.find((c) => c.slug === id);
   
   if (!category && !loading) {
     notFound();
   }
 
   const categoryProducts = products.filter(
-    (product) => product.category === slug
+    (product) => product.category === id
   );
 
   return (

@@ -23,14 +23,17 @@ export default function BlogPostPage() {
   const { id } = params;
 
   // Use the new hook to fetch a single post
-  const { post, loading: postLoading, error } = useBlogPost(id as string);
+  const { post: postById, loading: postLoading, error } = useBlogPost(id as string);
   
-  // Fetch other posts for the "related" section
+  // Fetch other posts
   const { posts: allPosts, loading: allPostsLoading } = useBlogPosts();
+
+  // Find post by ID or by slug if not found by ID
+  const post = postById || allPosts.find(p => p.slug === id);
 
   const relatedPosts = allPosts.filter(p => p.id !== post?.id).slice(0, 3);
 
-  if (postLoading) {
+  if (postLoading || (allPostsLoading && !post)) {
     return (
         <div className="container mx-auto max-w-4xl px-4 py-8 md:py-12">
             <Skeleton className="mb-8 h-6 w-1/2" />
