@@ -2,6 +2,7 @@
 'use client';
 
 import { useState, useMemo } from 'react';
+import Link from 'next/link';
 import { useProducts } from '@/hooks/use-products';
 import ProductCard from '@/components/product-card';
 import {
@@ -215,7 +216,9 @@ export default function ProductsPage() {
               {layout === 'grid' ? (
                   <div className="grid grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-10">
                     {paginatedProducts.map((product) => (
-                      <ProductCard key={product.id} product={product} />
+                      <Link key={product.id} href={`/products/${product.id}`} className="block">
+                        <ProductCard product={product} />
+                      </Link>
                     ))}
                   </div>
                 ) : (

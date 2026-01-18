@@ -2,6 +2,7 @@
 'use client';
 
 import { useSearchParams } from 'next/navigation';
+import Link from 'next/link';
 import { useProducts } from '@/hooks/use-products';
 import ProductCard from '@/components/product-card';
 import {
@@ -153,7 +154,9 @@ export default function SearchPage() {
       ) : filteredAndSortedProducts.length > 0 ? (
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-10">
           {filteredAndSortedProducts.map((product) => (
-            <ProductCard key={product.id} product={product} />
+            <Link key={product.id} href={`/products/${product.id}`} className="block">
+              <ProductCard product={product} />
+            </Link>
           ))}
         </div>
       ) : (

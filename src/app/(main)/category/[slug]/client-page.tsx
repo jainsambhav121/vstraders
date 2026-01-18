@@ -14,6 +14,7 @@ import {
 } from '@/components/ui/breadcrumb';
 import { notFound, useParams } from 'next/navigation';
 import { Skeleton } from '@/components/ui/skeleton';
+import Link from 'next/link';
 
 export default function CategoryPageClient() {
   const params = useParams();
@@ -64,7 +65,9 @@ export default function CategoryPageClient() {
       ) : categoryProducts.length > 0 ? (
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-10">
           {categoryProducts.map((product) => (
-            <ProductCard key={product.id} product={product} />
+            <Link key={product.id} href={`/products/${product.id}`} className="block">
+              <ProductCard product={product} />
+            </Link>
           ))}
         </div>
       ) : (
