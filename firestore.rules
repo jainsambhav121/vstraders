@@ -5,24 +5,24 @@ service cloud.firestore {
   match /databases/{database}/documents {
 
     function isOwner(userId) {
-      return request.auth.uid == userId;
+      return request.auth != null && request.auth.uid == userId;
     }
 
     function isAdmin() {
-      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+      return request.auth != null && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
     }
 
     function isManager() {
-        return get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'manager';
+        return request.auth != null && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'manager';
     }
 
     match /users/{userId} {
-      allow read: if true;
+      allow get, list: if true;
       allow write: if isOwner(userId) || isAdmin();
     }
 
     match /products/{productId} {
-      allow read: if true;
+      allow get, list: if true;
       allow write: if isAdmin() || isManager();
     }
     
@@ -37,7 +37,7 @@ service cloud.firestore {
     }
 
     match /blogPosts/{postId} {
-        allow read: if true;
+        allow get, list: if true;
         allow write: if isAdmin() || isManager();
     }
 
