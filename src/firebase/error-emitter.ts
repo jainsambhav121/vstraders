@@ -1,20 +1,29 @@
 
-// A simple event emitter
+// An event emitter for named events
 type Listener<T> = (data: T) => void;
 
 class EventEmitter<T> {
-  private listeners: Listener<T>[] = [];
+  private listeners: { [event: string]: Listener<T>[] } = {};
 
-  on(listener: Listener<T>): void {
-    this.listeners.push(listener);
+  on(event: string, listener: Listener<T>): void {
+    if (!this.listeners[event]) {
+      this.listeners[event] = [];
+    }
+    this.listeners[event].push(listener);
   }
 
-  off(listener: Listener<T>): void {
-    this.listeners = this.listeners.filter(l => l !== listener);
+  off(event: string, listener: Listener<T>): void {
+    if (!this.listeners[event]) {
+      return;
+    }
+    this.listeners[event] = this.listeners[event].filter(l => l !== listener);
   }
 
-  emit(data: T): void {
-    this.listeners.forEach(listener => listener(data));
+  emit(event: string, data: T): void {
+    if (!this.listeners[event]) {
+      return;
+    }
+    this.listeners[event].forEach(listener => listener(data));
   }
 }
 
