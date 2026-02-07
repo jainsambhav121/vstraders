@@ -15,15 +15,16 @@ import { Separator } from '@/components/ui/separator';
 export default function OrderDetailPage() {
   const params = useParams();
   const { id } = params;
+  const orderId = Array.isArray(id) ? id[0] : id;
   const firestore = useFirestore();
   const router = useRouter();
   const [order, setOrder] = useState<DocumentData | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!firestore || !id) return;
+    if (!firestore || !orderId) return;
 
-    const docRef = doc(firestore, 'orders', id as string);
+    const docRef = doc(firestore, 'orders', orderId);
     const unsubscribe = onSnapshot(docRef, (docSnap) => {
       if (docSnap.exists()) {
         setOrder(docSnap.data());
@@ -37,7 +38,11 @@ export default function OrderDetailPage() {
     });
 
     return () => unsubscribe();
-  }, [firestore, id]);
+  }, [firestore, orderId]);
+
+  if (!orderId) {
+    return notFound();
+  }
 
   if (loading) {
     return <div className="flex h-full items-center justify-center"><Loader2 className="h-8 w-8 animate-spin" /></div>;
@@ -64,7 +69,7 @@ export default function OrderDetailPage() {
         </div>
       <Card>
         <CardHeader>
-          <CardTitle>Order #{id.toString().slice(0, 8)}</CardTitle>
+          <CardTitle>Order #{orderId.toString().slice(0, 8)}</CardTitle>
           <CardDescription>Date: {orderDate}</CardDescription>
         </CardHeader>
         <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-8">

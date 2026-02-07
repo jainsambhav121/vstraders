@@ -26,7 +26,7 @@ import { Table, TableBody, TableCell, TableRow } from '@/components/ui/table';
 import React, { useState, useMemo, useEffect } from 'react';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
-import type { ProductVariant } from '@/lib/types';
+import type { ProductImageEntry, ProductSpecification, ProductVariant } from '@/lib/types';
 import { cn } from '@/lib/utils';
 import { useWishlist } from '@/context/wishlist-context';
 import { useRecentlyViewed } from '@/context/recently-viewed-context';
@@ -49,6 +49,8 @@ export default function ProductDetailPage() {
   const [quantity, setQuantity] = useState(1);
   const [activeMedia, setActiveMedia] = useState<ActiveMedia | null>(null);
 
+  const getImageUrl = (image: ProductImageEntry) =>
+    typeof image === 'string' ? image : image.url;
 
   const product = products.find((p) => p.id === id);
   const isInWishlist = !!wishlist.find(item => item.id === product?.id);
@@ -69,7 +71,8 @@ export default function ProductDetailPage() {
         } else {
             setSelectedVariant(null);
         }
-        const initialImage = product.primaryImage || (product.images.length > 0 ? product.images[0] : 'https://placehold.co/800x800');
+        const imageUrls = product.images.map(getImageUrl);
+        const initialImage = product.primaryImage || imageUrls[0] || 'https://placehold.co/800x800';
         setActiveMedia({type: 'image', url: initialImage});
     }
   }, [product]);
@@ -135,6 +138,7 @@ export default function ProductDetailPage() {
 
   if (!product) {
     notFound();
+    return null;
   }
 
   const handleAddToCart = () => {
@@ -200,6 +204,8 @@ export default function ProductDetailPage() {
   }
   
   const videoEmbedUrl = getYoutubeEmbedUrl(product.videoUrl || '');
+  const productImages = product.images.map(getImageUrl);
+  const productDetails: ProductSpecification[] = product.details ?? product.specifications ?? [];
 
 
   return (
@@ -248,7 +254,7 @@ export default function ProductDetailPage() {
                )}
            </div>
            <div className="mt-4 grid grid-cols-5 gap-4">
-                {product.images.map((image, index) => (
+                {productImages.map((image, index) => (
                     <button
                         key={index}
                         onClick={() => setActiveMedia({type: 'image', url: image})}
@@ -364,7 +370,7 @@ export default function ProductDetailPage() {
         </div>
       </div>
 
-       {product.details && product.details.length > 0 && (
+       {productDetails.length > 0 && (
         <div className="my-12">
             <Card>
                 <CardHeader>
@@ -373,7 +379,7 @@ export default function ProductDetailPage() {
                 <CardContent>
                     <Table>
                         <TableBody>
-                            {product.details.map((detail, index) => (
+                            {productDetails.map((detail, index) => (
                                 <TableRow key={index}>
                                     <TableCell className="font-semibold">{detail.label}</TableCell>
                                     <TableCell>{detail.value}</TableCell>

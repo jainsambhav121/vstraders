@@ -22,7 +22,8 @@ export default function BlogPostPage() {
   const { slug } = params;
   const { posts, loading } = useBlogPosts();
 
-  const post = posts.find((p) => p.id === slug);
+  const slugParam = Array.isArray(slug) ? slug[0] : slug;
+  const post = posts.find((p) => (p.slug ?? p.id) === slugParam);
   const relatedPosts = posts.filter(p => p.id !== post?.id).slice(0, 3);
 
   if (loading) {
@@ -43,6 +44,7 @@ export default function BlogPostPage() {
 
   if (!post) {
     notFound();
+    return null;
   }
   
   return (

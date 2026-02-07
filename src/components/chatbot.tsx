@@ -23,10 +23,12 @@ export default function Chatbot() {
     setIsTyping(true);
 
     try {
-      const history = messages.map(msg => ({
+      const history = messages.map(
+        (msg): { role: 'user' | 'model'; content: { text: string }[] } => ({
         role: msg.sender === 'user' ? 'user' : 'model',
         content: [{ text: msg.text }],
-      }));
+      })
+      );
 
       const botResponse = await chat({
         history,

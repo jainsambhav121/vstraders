@@ -43,6 +43,7 @@ import { useProducts } from '@/hooks/use-products';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useFirestore } from '@/firebase';
 import { doc, updateDoc, serverTimestamp } from 'firebase/firestore';
+import type { ProductImageEntry } from '@/lib/types';
 
 
 const formSchema = z.object({
@@ -89,6 +90,8 @@ export default function EditProductPage() {
 
   const { products, loading } = useProducts();
   const product = products.find((p) => p.id === id);
+  const getImageUrl = (image: ProductImageEntry) =>
+    typeof image === 'string' ? image : image.url;
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -116,7 +119,8 @@ export default function EditProductPage() {
 
   useEffect(() => {
     if (product) {
-      const primaryImageIndex = product.images.findIndex(img => img === product.primaryImage);
+      const imageUrls = product.images.map(getImageUrl);
+      const primaryImageIndex = imageUrls.findIndex(img => img === product.primaryImage);
       form.reset({
         name: product.name,
         description: product.description,
@@ -126,19 +130,19 @@ export default function EditProductPage() {
         discountType: product.discount?.type,
         discountValue: product.discount?.value,
         stock: product.stock,
-        images: product.images.map(url => ({ url })),
+        images: imageUrls.map(url => ({ url })),
         primaryImageIndex: primaryImageIndex === -1 ? 0 : primaryImageIndex,
         videoUrl: product.videoUrl || '',
         variants: product.variants,
-        details: product.details || [],
+        details: product.details || product.specifications || [],
         isEnabled: product.status.isEnabled,
         isFeatured: product.status.isFeatured,
         isBestSeller: product.status.isBestSeller,
         isNew: product.status.isNew || false,
-        slug: product.seo.slug,
-        seoTitle: product.seo.title,
-        seoMetaDescription: product.seo.metaDescription,
-        seoKeywords: Array.isArray(product.seo.keywords) ? product.seo.keywords.join(', ') : '',
+        slug: product.seo?.slug || '',
+        seoTitle: product.seo?.title || '',
+        seoMetaDescription: product.seo?.metaDescription || '',
+        seoKeywords: Array.isArray(product.seo?.keywords) ? product.seo?.keywords.join(', ') : '',
       });
     }
   }, [product, form]);
