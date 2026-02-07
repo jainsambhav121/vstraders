@@ -10,8 +10,10 @@ type BlogPostCardProps = {
 };
 
 export default function BlogPostCard({ post }: BlogPostCardProps) {
+  const slug = post.slug ?? post.id;
+
   return (
-    <Link href={`/blog/${post.id}`} className="group h-full block">
+    <Link href={`/blog/${slug}`} className="group h-full block">
       <Card className="flex h-full flex-col overflow-hidden transition-shadow duration-300 group-hover:shadow-lg">
         <CardHeader className="p-0">
           <div className="aspect-video overflow-hidden">

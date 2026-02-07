@@ -2,20 +2,27 @@
 // A simple event emitter
 type Listener<T> = (data: T) => void;
 
-class EventEmitter<T> {
-  private listeners: Listener<T>[] = [];
+class EventEmitter<Events extends Record<string, unknown>> {
+  private listeners: { [K in keyof Events]?: Listener<Events[K]>[] } = {};
 
-  on(listener: Listener<T>): void {
-    this.listeners.push(listener);
+  on<K extends keyof Events>(event: K, listener: Listener<Events[K]>): void {
+    if (!this.listeners[event]) {
+      this.listeners[event] = [];
+    }
+    this.listeners[event]?.push(listener);
   }
 
-  off(listener: Listener<T>): void {
-    this.listeners = this.listeners.filter(l => l !== listener);
+  off<K extends keyof Events>(event: K, listener: Listener<Events[K]>): void {
+    this.listeners[event] = (this.listeners[event] || []).filter(l => l !== listener);
   }
 
-  emit(data: T): void {
-    this.listeners.forEach(listener => listener(data));
+  emit<K extends keyof Events>(event: K, data: Events[K]): void {
+    (this.listeners[event] || []).forEach(listener => listener(data));
   }
 }
 
-export const errorEmitter = new EventEmitter<any>();
+type ErrorEvents = {
+  'permission-error': unknown;
+};
+
+export const errorEmitter = new EventEmitter<ErrorEvents>();

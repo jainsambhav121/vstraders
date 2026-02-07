@@ -14,8 +14,10 @@ export type Category = {
 
 export type ProductImage = {
   url: string;
-  isPrimary: boolean;
+  isPrimary?: boolean;
 };
+
+export type ProductImageEntry = string | ProductImage;
 
 export type ProductSpecification = {
   label: string;
@@ -45,10 +47,11 @@ export type Product = {
   finalPrice: number;
   category: string;
   stock: number;
-  images: ProductImage[];
-  primaryImage: string;
+  images: ProductImageEntry[];
+  primaryImage?: string;
   videoUrl?: string;
-  specifications: ProductSpecification[];
+  specifications?: ProductSpecification[];
+  details?: ProductSpecification[];
   variants: ProductVariant[];
   status: {
     isEnabled: boolean;
@@ -56,7 +59,7 @@ export type Product = {
     isBestSeller: boolean;
     isNew: boolean;
   };
-  seo: {
+  seo?: {
     slug: string;
     title: string;
     metaDescription: string;
@@ -122,6 +125,7 @@ export type Review = {
 export type BlogPost = {
   id: string;
   title: string;
+  slug?: string;
   author: string;
   date: string;
   excerpt: string;

@@ -35,6 +35,7 @@ export function useBlogPosts() {
           return {
             id: doc.id,
             title: data.title,
+            slug: data.slug || doc.id,
             author: data.author,
             date: publishedAt.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }),
             excerpt: data.excerpt,

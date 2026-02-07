@@ -36,11 +36,16 @@ const loginSchema = z.object({
   password: z.string().min(1, { message: 'Password is required.' }),
 });
 
-const signupSchema = z.object({
-    name: z.string().min(2, { message: 'Name must be at least 2 characters.'}),
-    email: z.string().email({ message: 'Please enter a valid email.' }),
-    password: z.string().min(6, { message: 'Password must be at least 6 characters.' }),
+const signupSchema = loginSchema.extend({
+  name: z.string().min(2, { message: 'Name must be at least 2 characters.'}),
+  password: z.string().min(6, { message: 'Password must be at least 6 characters.' }),
 });
+
+type AuthFormValues = {
+  name?: string;
+  email: string;
+  password: string;
+};
 
 
 export default function AdminLoginPage() {
@@ -81,7 +86,7 @@ export default function AdminLoginPage() {
   }, [firestore, toast]);
   
 
-  const form = useForm({
+  const form = useForm<AuthFormValues>({
     resolver: zodResolver(pageMode === 'login' ? loginSchema : signupSchema),
     defaultValues: {
       name: '',
@@ -90,7 +95,7 @@ export default function AdminLoginPage() {
     },
   });
 
-  const handleLogin = async (values: z.infer<typeof loginSchema>) => {
+  const handleLogin = async (values: AuthFormValues) => {
     if (!auth || !firestore) return;
     try {
       const userCredential = await signInWithEmailAndPassword(auth, values.email, values.password);
@@ -116,9 +121,13 @@ export default function AdminLoginPage() {
     }
   };
 
-  const handleSignup = async (values: z.infer<typeof signupSchema>) => {
+  const handleSignup = async (values: AuthFormValues) => {
     if (!auth || !firestore) return;
     try {
+        if (!values.name) {
+          toast({ variant: 'destructive', title: 'Sign Up Failed', description: 'Please provide your name.' });
+          return;
+        }
         const userCredential = await createUserWithEmailAndPassword(auth, values.email, values.password);
         const user = userCredential.user;
         

@@ -2,7 +2,6 @@
 'use server';
 
 import { ai } from '@/ai/genkit';
-import { generate } from 'genkit';
 import { z } from 'zod';
 
 const HistorySchema = z.array(
@@ -27,13 +26,9 @@ Your goal is to answer customer questions about products, orders, and policies.
 Keep your answers concise and helpful.
 The store sells pillows, cushions, mattresses and covers.`;
 
-    const response = await generate({
-      model: 'googleai/gemini-2.5-flash',
-      prompt: {
-        system: systemPrompt,
-        history,
-        messages: [{ role: 'user', content: [{ text: message }] }],
-      },
+    const response = await ai.generate({
+      system: systemPrompt,
+      messages: [...history, { role: 'user', content: [{ text: message }] }],
     });
 
     return response.text;
